@@ -1,0 +1,8 @@
+.claude/
+.DS_Store
+
+server/logs
+server/uploads
+server/cache
+server/node_modules
+package-lock.json

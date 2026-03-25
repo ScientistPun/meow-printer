@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Meow Printer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f7;
+      min-height: 100vh;
+      padding: 12px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
+    }
+    h1 { font-size: 20px; margin-bottom: 4px; color: #1d1d1f; text-align: center; }
+    .subtitle { color: #86868b; margin-bottom: 16px; font-size: 13px; text-align: center; }
+
+    /* 标签页 */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: #f5f5f7;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: #0071e3;
+      color: white;
+    }
+    .tab:active { opacity: 0.8; }
+
+    .section { margin-bottom: 20px; }
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #1d1d1f;
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+      -webkit-appearance: none;
+    }
+    .form-control:focus { border-color: #0071e3; }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .input-row .form-control { flex: 1; }
+    .input-suffix {
+      font-size: 13px;
+      color: #86868b;
+      white-space: nowrap;
+    }
+    .radio-group {
+      display: flex;
+      gap: 8px;
+    }
+    .radio-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 10px;
+      background: #f5f5f7;
+      border-radius: 8px;
+      flex: 1;
+    }
+    .radio-item input { display: none; }
+    .radio-item.selected {
+      background: #0071e3;
+      color: white;
+    }
+    .file-input-wrapper {
+      position: relative;
+      border: 2px dashed #d2d2d7;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .file-input-wrapper:active { background: #e8e8ed; }
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .file-icon { font-size: 40px; margin-bottom: 8px; }
+    .file-text { color: #86868b; font-size: 14px; line-height: 1.4; }
+    .file-name {
+      margin-top: 12px;
+      padding: 12px;
+      background: #f5f5f7;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #1d1d1f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: break-all;
+    }
+    .file-name .remove {
+      margin-left: auto;
+      color: #86868b;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 4px;
+    }
+    .file-name .remove:hover { color: #ff3b30; }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #0071e3;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .btn:active { background: #0064b8; }
+    .btn:disabled { background: #d2d2d7; cursor: not-allowed; }
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 13px;
+      margin-top: 0;
+    }
+    .btn-danger { background: #ff3b30; }
+    .btn-danger:active { background: #d63020; }
+    .btn-fixed { width: 120px; }
+    .list-item-content { flex: 1; min-width: 0; }
+    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .message {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .message.success { background: #d4edda; color: #155724; }
+    .message.error { background: #f8d7da; color: #721c24; }
+    .loading { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .more-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #f5f5f7;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1d1d1f;
+      margin-bottom: 12px;
+    }
+    .more-toggle:active { background: #e8e8ed; }
+    .more-toggle .arrow { transition: transform 0.2s; font-size: 10px; }
+    .more-toggle.open .arrow { transform: rotate(180deg); }
+    .more-settings { display: none; }
+    .more-settings.show { display: block; }
+    .more-settings .form-group { margin-bottom: 14px; }
+    .printer-loading {
+      padding: 10px 12px;
+      color: #86868b;
+      font-size: 14px;
+    }
+    .scaling-options { margin-bottom: 8px; }
+    .scaling-input {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .scaling-input .form-control { flex: 1; }
+
+    /* 日志样式 */
+    .log-header, .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .log-list {
+      background: #f5f5f7;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .log-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #e8e8ed;
+      cursor: pointer;
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-item:active { background: #e8e8ed; }
+    .log-item.active { background: #e8e8ed; }
+    .log-item-name { font-size: 14px; font-weight: 500; }
+    .log-item-size { font-size: 12px; color: #86868b; }
+    .log-content {
+      margin-top: 12px;
+      background: #1d1d1f;
+      border-radius: 8px;
+      padding: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .log-content pre {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #e8e8ed;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin: 0;
+    }
+    .log-line { margin-bottom: 4px; }
+    .log-line.error { color: #ff6b6b; }
+    .log-line.warn { color: #ffd43b; }
+    .log-empty {
+      text-align: center;
+      padding: 40px;
+      color: #86868b;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>🐱 Meow Printer</h1>
+      <p class="subtitle">上传文件并发送到打印机</p>
+
+      <!-- 标签页 -->
+      <div class="tabs">
+        <div class="tab" :class="{ active: activeTab === 'print' }" @click="activeTab = 'print'">
+          🖨️ 打印
+        </div>
+        <div class="tab" :class="{ active: activeTab === 'history' }" @click="switchToHistory">
+          📁 历史
+        </div>
+        <div class="tab" :class="{ active: activeTab === 'logs' }" @click="switchToLogs">
+          📋 日志
+        </div>
+      </div>
+
+      <!-- 打印页面 -->
+      <div v-show="activeTab === 'print'">
+        <!-- 文件选择 -->
+        <div class="section">
+          <div class="section-title">选择文件</div>
+          <div v-if="!fileName">
+            <div class="file-input-wrapper">
+              <input type="file" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+              <div class="file-icon">📄</div>
+              <div class="file-text">点击选择或拖拽文件到此处<br>支持 PDF、图片、Word</div>
+            </div>
+          </div>
+          <div v-else class="file-name">
+            <span>📄</span>
+            <span style="flex:1">{{ fileName }}</span>
+            <span class="remove" @click="removeFile">✕</span>
+          </div>
+        </div>
+
+        <!-- 基本设置 -->
+        <div class="section">
+          <div class="section-title">基本设置</div>
+
+          <div class="form-group">
+            <label>目标打印机</label>
+            <select class="form-control" v-model="options.printer" @change="onPrinterChange" v-if="printers.length > 0">
+              <option v-for="p in printers" :key="p.id" :value="p.id">{{ p.name }}</option>
+            </select>
+            <div v-else class="printer-loading">{{ printersLoading ? '加载中...' : '未检测到打印机' }}</div>
+          </div>
+
+          <div class="form-group">
+            <label>份数</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="options.copies" min="1" max="99">
+              <span class="input-suffix">份</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>布局</label>
+            <div class="radio-group">
+              <label class="radio-item" :class="{ selected: options.orientation === 'portrait' }">
+                <input type="radio" v-model="options.orientation" value="portrait">
+                ↓ 竖排
+              </label>
+              <label class="radio-item" :class="{ selected: options.orientation === 'landscape' }">
+                <input type="radio" v-model="options.orientation" value="landscape">
+                → 横排
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>页面范围</label>
+            <select class="form-control" v-model="options.pageSet">
+              <option value="all">全部</option>
+              <option value="odd">奇数页</option>
+              <option value="even">偶数页</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>每版页数</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="options.nup" min="1" max="16">
+              <span class="input-suffix">页/版</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 更多设置 -->
+        <div class="section">
+          <div class="more-toggle" :class="{ open: showMore }" @click="showMore = !showMore">
+            <span>更多设置</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="more-settings" :class="{ show: showMore }">
+
+            <div class="form-group">
+              <label>纸张尺寸</label>
+              <select class="form-control" v-model="options.media">
+                <option v-for="size in mediaOptions" :key="size" :value="size">{{ size }}</option>
+                <option value="Custom">自定义尺寸</option>
+              </select>
+            </div>
+
+            <!-- 自定义纸张尺寸输入 -->
+            <div class="form-group" v-if="options.media === 'Custom'">
+              <label>自定义尺寸 (mm)</label>
+              <div class="input-row">
+                <input type="number" class="form-control" v-model.number="options.customWidth" min="50" max="500" placeholder="宽">
+                <span class="input-suffix">×</span>
+                <input type="number" class="form-control" v-model.number="options.customHeight" min="50" max="500" placeholder="高">
+                <span class="input-suffix">mm</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>缩放</label>
+              <div class="scaling-options">
+                <div class="radio-group">
+                  <label class="radio-item" :class="{ selected: options.scalingType === 'fit' }">
+                    <input type="radio" v-model="options.scalingType" value="fit">
+                    适合页面
+                  </label>
+                  <label class="radio-item" :class="{ selected: options.scalingType === '100' }">
+                    <input type="radio" v-model="options.scalingType" value="100">
+                    100%
+                  </label>
+                  <label class="radio-item" :class="{ selected: options.scalingType === 'custom' }">
+                    <input type="radio" v-model="options.scalingType" value="custom">
+                    自定义
+                  </label>
+                </div>
+              </div>
+              <div class="scaling-input" v-if="options.scalingType === 'custom'">
+                <input type="number" class="form-control" v-model.number="options.scaling" min="10" max="400">
+                <span class="input-suffix">%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>页眉页脚</label>
+              <div class="radio-group">
+                <label class="radio-item" :class="{ selected: options.noHeaderFooter === false }">
+                  <input type="radio" v-model="options.noHeaderFooter" :value="false">
+                  显示
+                </label>
+                <label class="radio-item" :class="{ selected: options.noHeaderFooter === true }">
+                  <input type="radio" v-model="options.noHeaderFooter" :value="true">
+                  隐藏
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-small" @click="clearCache" :disabled="clearingCache">
+                🗑️ 清除缓存
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="btn" @click="printFile" :disabled="!fileName || !options.printer || loading">
+          <span v-if="loading" class="loading"><span class="spinner"></span>打印中...</span>
+          <span v-else>🖨️ 开始打印</span>
+        </button>
+      </div>
+
+      <!-- 历史打印页面 -->
+      <div v-show="activeTab === 'history'">
+        <div class="history-header">
+          <div class="section-title" style="margin-bottom:0">历史文件</div>
+          <button class="btn btn-small btn-danger btn-fixed" @click="clearHistory" :disabled="historyLoading || history.length === 0">
+            清空全部
+          </button>
+        </div>
+
+        <div class="log-list" v-if="history.length > 0">
+          <div v-for="item in history" :key="item.name" class="log-item" @click="reprintFile(item)">
+            <div class="list-item-content">
+              <div class="log-item-name truncate">{{ item.originalName }}</div>
+              <div class="log-item-size">{{ formatSize(item.size) }} · {{ formatTime(item.modified) }}</div>
+            </div>
+            <button class="btn btn-small btn-fixed" @click.stop="deleteHistoryFile(item.name)">删除</button>
+          </div>
+        </div>
+
+        <div v-else-if="historyLoading" class="log-empty">加载中...</div>
+        <div v-else class="log-empty">暂无历史文件</div>
+      </div>
+
+      <!-- 日志页面 -->
+      <div v-show="activeTab === 'logs'">
+        <div class="history-header">
+          <div class="section-title" style="margin-bottom:0">日志列表</div>
+          <button class="btn btn-small btn-danger btn-fixed" @click="clearAllLogs" :disabled="logsLoading">
+            清空全部
+          </button>
+        </div>
+
+        <div class="log-list" v-if="logFiles.length > 0">
+          <div v-for="log in logFiles" :key="log.date"
+               class="log-item"
+               :class="{ active: selectedLogDate === log.date }"
+               @click="selectLog(log.date)">
+            <div class="list-item-content">
+              <div class="log-item-name">{{ log.date }}</div>
+              <div class="log-item-size">{{ formatSize(log.size) }}</div>
+            </div>
+            <button class="btn btn-small btn-fixed" @click.stop="clearLog(log.date)">清空</button>
+          </div>
+        </div>
+
+        <div v-else-if="logsLoading" class="log-empty">加载中...</div>
+        <div v-else class="log-empty">暂无日志</div>
+
+        <div v-if="logContent.length > 0" class="log-content">
+          <pre><div v-for="(line, i) in logContent" :key="i"
+               class="log-line"
+               :class="{ error: line.includes('[ERROR]'), warn: line.includes('[WARN]') }">{{ line }}</div></pre>
+        </div>
+      </div>
+
+      <div v-if="message" :class="['message', messageType]">{{ message }}</div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp, ref, reactive, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const file = ref(null);
+        const fileName = ref('');
+        const loading = ref(false);
+        const message = ref('');
+        const messageType = ref('');
+        const showMore = ref(false);
+        const printers = ref([]);
+        const printersLoading = ref(true);
+        const activeTab = ref('print');
+
+        // 日志相关
+        const logFiles = ref([]);
+        const logContent = ref([]);
+        const selectedLogDate = ref('');
+        const logsLoading = ref(false);
+
+        // 打印历史相关
+        const history = ref([]);
+        const historyLoading = ref(false);
+
+        // 缓存相关
+        const clearingCache = ref(false);
+
+        // 纸张尺寸
+        const mediaOptions = ref(['A4', 'A5', 'B5', 'Letter', 'Legal', '4x6']);
+
+        const options = reactive({
+          printer: '',
+          copies: 1,
+          orientation: 'portrait',
+          pageSet: 'all',
+          nup: 1,
+          media: 'A4',
+          customWidth: 100,
+          customHeight: 150,
+          scalingType: 'fit',
+          scaling: 100,
+          noHeaderFooter: true
+        });
+
+        const API_BASE = '/api';
+
+        const showMessage = (text, type) => {
+          message.value = text;
+          messageType.value = type;
+          setTimeout(() => { message.value = ''; }, 5000);
+        };
+
+        const loadPrinters = async () => {
+          printersLoading.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/printers`);
+            const data = await res.json();
+            printers.value = data.printers || [];
+            if (printers.value.length > 0) {
+              options.printer = printers.value[0].id;
+              loadPrinterCapabilities(options.printer);
+            }
+          } catch (e) {
+            console.error('Failed to load printers:', e);
+          } finally {
+            printersLoading.value = false;
+          }
+        };
+
+        const loadPrinterCapabilities = async (printer) => {
+          if (!printer) return;
+          try {
+            const res = await fetch(`${API_BASE}/printers/capabilities?printer=${encodeURIComponent(printer)}`);
+            const data = await res.json();
+            if (data.mediaOptions && data.mediaOptions.length > 0) {
+              mediaOptions.value = data.mediaOptions;
+              // 如果当前纸张尺寸不在列表中，设置为第一个
+              if (!mediaOptions.value.includes(options.media)) {
+                options.media = mediaOptions.value[0];
+              }
+            }
+          } catch (e) {
+            console.error('Failed to load printer capabilities:', e);
+          }
+        };
+
+        const onPrinterChange = () => {
+          loadPrinterCapabilities(options.printer);
+        };
+
+        const loadLogs = async () => {
+          logsLoading.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/logs?content=true`);
+            const data = await res.json();
+            logFiles.value = data.files || [];
+            if (selectedLogDate.value && data.todayLogs && data.todayLogs.length > 0) {
+              logContent.value = data.todayLogs;
+            } else if (data.todayLogs && data.todayLogs.length > 0) {
+              logContent.value = data.todayLogs;
+              selectedLogDate.value = new Date().toISOString().split('T')[0];
+            } else {
+              logContent.value = [];
+            }
+          } catch (e) {
+            console.error('Failed to load logs:', e);
+          } finally {
+            logsLoading.value = false;
+          }
+        };
+
+        const selectLog = async (date) => {
+          selectedLogDate.value = date;
+          logsLoading.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/logs?date=${date}`);
+            const data = await res.json();
+            logContent.value = data.logs || [];
+          } catch (e) {
+            console.error('Failed to load log:', e);
+          } finally {
+            logsLoading.value = false;
+          }
+        };
+
+        const clearLog = async (date) => {
+          if (!confirm(`确定要清空 ${date} 的日志吗？`)) return;
+          try {
+            const res = await fetch(`${API_BASE}/logs?date=${date}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage(data.message, 'success');
+              loadLogs();
+              if (selectedLogDate.value === date) {
+                logContent.value = [];
+                selectedLogDate.value = '';
+              }
+            } else {
+              showMessage(data.message || '清空失败', 'error');
+            }
+          } catch (e) {
+            showMessage('清空失败', 'error');
+          }
+        };
+
+        const clearAllLogs = async () => {
+          if (!confirm('确定要清空所有日志吗？')) return;
+          try {
+            const res = await fetch(`${API_BASE}/logs`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage(data.message, 'success');
+              logFiles.value = [];
+              logContent.value = [];
+              selectedLogDate.value = '';
+            } else {
+              showMessage(data.message || '清空失败', 'error');
+            }
+          } catch (e) {
+            showMessage('清空失败', 'error');
+          }
+        };
+
+        const loadHistory = async () => {
+          historyLoading.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/history`);
+            const data = await res.json();
+            history.value = data.files || [];
+          } catch (e) {
+            console.error('Failed to load history:', e);
+          } finally {
+            historyLoading.value = false;
+          }
+        };
+
+        const clearHistory = async () => {
+          if (!confirm('确定要清空所有历史文件吗？')) return;
+          try {
+            const res = await fetch(`${API_BASE}/history`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage(data.message, 'success');
+              history.value = [];
+            } else {
+              showMessage(data.message || '清空失败', 'error');
+            }
+          } catch (e) {
+            showMessage('清空失败', 'error');
+          }
+        };
+
+        const deleteHistoryFile = async (filename) => {
+          if (!confirm('确定要删除这个文件吗？')) return;
+          try {
+            const res = await fetch(`${API_BASE}/history/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage('已删除', 'success');
+              loadHistory();
+            } else {
+              showMessage(data.error || '删除失败', 'error');
+            }
+          } catch (e) {
+            showMessage('删除失败', 'error');
+          }
+        };
+
+        const reprintFile = (item) => {
+          // 切换到打印标签页，并填充文件信息
+          activeTab.value = 'print';
+          fileName.value = item.originalName;
+          // 存储实际文件名（带时间戳）用于打印
+          file.value = { path: item.name, name: item.originalName, isHistoryFile: true };
+          showMessage('已选择文件：' + item.originalName, 'success');
+        };
+
+        const switchToHistory = () => {
+          activeTab.value = 'history';
+          loadHistory();
+        };
+
+        const formatTime = (isoString) => {
+          const d = new Date(isoString);
+          const date = d.toLocaleDateString('zh-CN');
+          const time = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+          return `${date} ${time}`;
+        };
+
+        const formatSize = (bytes) => {
+          if (bytes < 1024) return bytes + ' B';
+          if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+          return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+        };
+
+        const switchToLogs = () => {
+          activeTab.value = 'logs';
+          loadLogs();
+        };
+
+        const onFileChange = (e) => {
+          const f = e.target.files[0];
+          if (f) {
+            file.value = f;
+            fileName.value = f.name;
+          }
+        };
+
+        const removeFile = () => {
+          file.value = null;
+          fileName.value = '';
+        };
+
+        const getScalingValue = () => {
+          if (options.scalingType === 'fit') return 'fit';
+          if (options.scalingType === '100') return 100;
+          return options.scaling;
+        };
+
+        const clearCache = async () => {
+          if (!confirm('确定要清空缓存文件吗？')) return;
+          clearingCache.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/cache`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage(data.message, 'success');
+            } else {
+              showMessage(data.message || '清空失败', 'error');
+            }
+          } catch (e) {
+            showMessage('清空失败', 'error');
+          } finally {
+            clearingCache.value = false;
+          }
+        };
+
+        const printFile = async () => {
+          if (!file.value) {
+            showMessage('请先选择文件', 'error');
+            return;
+          }
+          if (!options.printer) {
+            showMessage('请选择打印机', 'error');
+            return;
+          }
+
+          loading.value = true;
+          message.value = '';
+
+          const formData = new FormData();
+          // 历史文件使用文件路径，新上传文件使用 File 对象
+          if (file.value.isHistoryFile) {
+            formData.append('filePath', file.value.path);
+            formData.append('originalName', file.value.name);
+          } else {
+            formData.append('file', file.value);
+          }
+          formData.append('printer', options.printer);
+          formData.append('copies', options.copies);
+          formData.append('orientation', options.orientation);
+          formData.append('pageSet', options.pageSet);
+          formData.append('nup', options.nup);
+          formData.append('media', options.media);
+          if (options.media === 'Custom') {
+            formData.append('mediaWidth', options.customWidth);
+            formData.append('mediaHeight', options.customHeight);
+          }
+          formData.append('scaling', getScalingValue());
+          formData.append('noHeaderFooter', options.noHeaderFooter);
+
+          try {
+            const res = await fetch(`${API_BASE}/print`, {
+              method: 'POST',
+              body: formData
+            });
+            const data = await res.json();
+
+            if (data.success) {
+              showMessage(`✅ 打印任务已提交 (Job ID: ${data.jobId})`, 'success');
+            } else {
+              showMessage(`❌ 打印失败: ${data.error || '未知错误'}`, 'error');
+            }
+          } catch (e) {
+            showMessage(`❌ 请求失败: ${e.message}`, 'error');
+          } finally {
+            loading.value = false;
+          }
+        };
+
+        onMounted(() => {
+          loadPrinters();
+        });
+
+        return {
+          fileName,
+          loading,
+          message,
+          messageType,
+          showMore,
+          printers,
+          printersLoading,
+          options,
+          activeTab,
+          logFiles,
+          logContent,
+          selectedLogDate,
+          logsLoading,
+          history,
+          historyLoading,
+          clearingCache,
+          mediaOptions,
+          onFileChange,
+          removeFile,
+          printFile,
+          switchToLogs,
+          switchToHistory,
+          selectLog,
+          clearLog,
+          clearAllLogs,
+          clearHistory,
+          deleteHistoryFile,
+          reprintFile,
+          formatSize,
+          formatTime,
+          onPrinterChange,
+          clearCache
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

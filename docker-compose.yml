@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  meow-printer:
+    build: .
+    container_name: meow-printer
+    ports:
+      - "3000:3000"
+    environment:
+      - CUPS_HOST=192.168.10.1
+      - CUPS_PORT=631
+    volumes:
+      - /var/run/cups.sock:/var/run/cups.sock:ro
+    restart: unless-stopped
+    network_mode: host
