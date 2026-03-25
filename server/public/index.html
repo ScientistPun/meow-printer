@@ -169,9 +169,16 @@
     }
     .btn-danger { background: #ff3b30; }
     .btn-danger:active { background: #d63020; }
-    .btn-fixed { width: 120px; }
+    .btn-fixed { width: 100px; }
     .list-item-content { flex: 1; min-width: 0; }
     .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .link-btn {
+      color: #86868b;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .link-btn:hover { color: #1d1d1f; }
+    .link-btn:disabled { color: #d2d2d7; cursor: not-allowed; }
     .message {
       margin-top: 12px;
       padding: 12px;
@@ -274,6 +281,32 @@
       color: #86868b;
       font-size: 14px;
     }
+
+    /* 通知消息 */
+    .toast {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+    .toast.show { transform: translateY(0); }
+    .toast.success { background: #d4edda; color: #155724; border-bottom: 1px solid #c3e6cb; }
+    .toast.error { background: #f8d7da; color: #721c24; border-bottom: 1px solid #f5c6cb; }
+    .toast-msg { display: inline-block; }
+    .toast-close {
+      margin-left: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0.8;
+    }
+    .toast-close:hover { opacity: 1; }
   </style>
 </head>
 <body>
@@ -287,12 +320,38 @@
         <div class="tab" :class="{ active: activeTab === 'print' }" @click="activeTab = 'print'">
           🖨️ 打印
         </div>
+        <div class="tab" :class="{ active: activeTab === 'jobs' }" @click="switchToJobs">
+          📑 任务
+        </div>
         <div class="tab" :class="{ active: activeTab === 'history' }" @click="switchToHistory">
           📁 历史
         </div>
         <div class="tab" :class="{ active: activeTab === 'logs' }" @click="switchToLogs">
           📋 日志
         </div>
+      </div>
+
+      <!-- 任务页面 -->
+      <div v-show="activeTab === 'jobs'">
+        <div class="history-header">
+          <div class="section-title" style="margin-bottom:0">打印任务</div>
+          <button class="btn btn-small btn-primary btn-fixed" @click="loadJobs" :disabled="jobsLoading">
+            刷新列表
+          </button>
+        </div>
+
+        <div class="log-list" v-if="jobs.length > 0">
+          <div v-for="job in jobs" :key="job.id" class="log-item">
+            <div class="list-item-content">
+              <div class="log-item-name truncate">{{ job.name }}</div>
+              <div class="log-item-size">{{ job.printer }} · {{ job.state }}</div>
+            </div>
+            <button class="btn btn-small btn-danger btn-fixed" @click="cancelJobItem(job.id)">取消</button>
+          </div>
+        </div>
+
+        <div v-else-if="jobsLoading" class="log-empty">加载中...</div>
+        <div v-else class="log-empty">暂无打印任务</div>
       </div>
 
       <!-- 打印页面 -->
@@ -431,12 +490,6 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <button class="btn btn-small" @click="clearCache" :disabled="clearingCache">
-                🗑️ 清除缓存
-              </button>
-            </div>
-
           </div>
         </div>
 
@@ -444,6 +497,10 @@
           <span v-if="loading" class="loading"><span class="spinner"></span>打印中...</span>
           <span v-else>🖨️ 开始打印</span>
         </button>
+
+        <div style="text-align:center;margin-top:12px;">
+          <span class="link-btn" @click="clearCache" :disabled="clearingCache">清除缓存</span>
+        </div>
       </div>
 
       <!-- 历史打印页面 -->
@@ -501,7 +558,11 @@
         </div>
       </div>
 
-      <div v-if="message" :class="['message', messageType]">{{ message }}</div>
+      <!-- 通知消息 -->
+      <div v-if="message" :class="['toast', messageType, { show: message }]">
+        <span class="toast-msg">{{ message }}</span>
+        <span v-if="messageType === 'error'" class="toast-close" @click="message = ''">✕</span>
+      </div>
     </div>
   </div>
 
@@ -531,6 +592,10 @@
         const history = ref([]);
         const historyLoading = ref(false);
 
+        // 打印任务相关
+        const jobs = ref([]);
+        const jobsLoading = ref(false);
+
         // 缓存相关
         const clearingCache = ref(false);
 
@@ -556,7 +621,10 @@
         const showMessage = (text, type) => {
           message.value = text;
           messageType.value = type;
-          setTimeout(() => { message.value = ''; }, 5000);
+          if (type === 'success') {
+            setTimeout(() => { message.value = ''; }, 3000);
+          }
+          // error 类型需要点击 x 关闭
         };
 
         const loadPrinters = async () => {
@@ -729,6 +797,40 @@
           loadHistory();
         };
 
+        const loadJobs = async () => {
+          jobsLoading.value = true;
+          try {
+            const res = await fetch(`${API_BASE}/jobs`);
+            const data = await res.json();
+            jobs.value = data.jobs || [];
+          } catch (e) {
+            console.error('Failed to load jobs:', e);
+          } finally {
+            jobsLoading.value = false;
+          }
+        };
+
+        const switchToJobs = () => {
+          activeTab.value = 'jobs';
+          loadJobs();
+        };
+
+        const cancelJobItem = async (jobId) => {
+          if (!confirm('确定要取消这个打印任务吗？')) return;
+          try {
+            const res = await fetch(`${API_BASE}/jobs/${jobId}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+              showMessage('已取消任务', 'success');
+              loadJobs();
+            } else {
+              showMessage(data.error || '取消失败', 'error');
+            }
+          } catch (e) {
+            showMessage('取消失败', 'error');
+          }
+        };
+
         const formatTime = (isoString) => {
           const d = new Date(isoString);
           const date = d.toLocaleDateString('zh-CN');
@@ -828,7 +930,7 @@
             if (data.success) {
               showMessage(`✅ 打印任务已提交 (Job ID: ${data.jobId})`, 'success');
             } else {
-              showMessage(`❌ 打印失败: ${data.error || '未知错误'}`, 'error');
+              showMessage(`❌ 打印失败${data.error ? ': ' + data.error : ''}`, 'error');
             }
           } catch (e) {
             showMessage(`❌ 请求失败: ${e.message}`, 'error');
@@ -857,12 +959,15 @@
           logsLoading,
           history,
           historyLoading,
+          jobs,
+          jobsLoading,
           clearingCache,
           mediaOptions,
           onFileChange,
           removeFile,
           printFile,
           switchToLogs,
+          switchToJobs,
           switchToHistory,
           selectLog,
           clearLog,
@@ -873,7 +978,8 @@
           formatSize,
           formatTime,
           onPrinterChange,
-          clearCache
+          clearCache,
+          cancelJobItem
         };
       }
     }).mount('#app');

@@ -266,10 +266,15 @@ export async function printFile(filePath, printer, options = {}) {
     const output = stdout + stderr;
     console.log('Print output:', output);
 
+    // 检查输出中是否有错误信息
+    if (output.toLowerCase().includes('error') || output.toLowerCase().includes('失败')) {
+      return { success: false, error: output || '打印失败' };
+    }
+
     return { success: true, jobId: extractJobId(output) };
   } catch (error) {
     console.error('Print failed:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error.message || '打印命令执行失败' };
   }
 }
 
