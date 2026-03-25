@@ -1,6 +1,8 @@
-FROM node:20-alpine
+FROM node:20
 
-RUN apk add --no-cache cups cups-client lp-solve libcups2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cups-client \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
