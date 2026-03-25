@@ -179,6 +179,7 @@
     }
     .link-btn:hover { color: #1d1d1f; }
     .link-btn:disabled { color: #d2d2d7; cursor: not-allowed; }
+    .item-actions { display: flex; gap: 4px; }
     .message {
       margin-top: 12px;
       padding: 12px;
@@ -251,6 +252,7 @@
       border-bottom: 1px solid #e8e8ed;
       cursor: pointer;
     }
+    .log-item a{text-decoration: none;}
     .log-item:last-child { border-bottom: none; }
     .log-item:active { background: #e8e8ed; }
     .log-item.active { background: #e8e8ed; }
@@ -513,12 +515,15 @@
         </div>
 
         <div class="log-list" v-if="history.length > 0">
-          <div v-for="item in history" :key="item.name" class="log-item" @click="reprintFile(item)">
-            <div class="list-item-content">
+          <div v-for="item in history" :key="item.name" class="log-item">
+            <a :href="`${API_BASE}/preview?filename=${encodeURIComponent(item.originalName)}`" target="_blank" class="list-item-content">
               <div class="log-item-name truncate">{{ item.originalName }}</div>
               <div class="log-item-size">{{ formatSize(item.size) }} · {{ formatTime(item.modified) }}</div>
+            </a>
+            <div class="item-actions">
+              <button class="btn btn-small" @click.stop="reprintFile(item)">打印</button>
+              <button class="btn btn-small btn-danger btn-fixed" @click.stop="deleteHistoryFile(item.name)">删除</button>
             </div>
-            <button class="btn btn-small btn-fixed" @click.stop="deleteHistoryFile(item.name)">删除</button>
           </div>
         </div>
 
@@ -783,11 +788,13 @@
           }
         };
 
+        const previewFile = (item) => {
+          window.open(`${API_BASE}/preview/${encodeURIComponent(item.name)}`, '_blank');
+        };
+
         const reprintFile = (item) => {
-          // 切换到打印标签页，并填充文件信息
           activeTab.value = 'print';
           fileName.value = item.originalName;
-          // 存储实际文件名（带时间戳）用于打印
           file.value = { path: item.name, name: item.originalName, isHistoryFile: true };
           showMessage('已选择文件：' + item.originalName, 'success');
         };
@@ -944,6 +951,7 @@
         });
 
         return {
+          API_BASE,
           fileName,
           loading,
           message,
@@ -974,6 +982,7 @@
           clearAllLogs,
           clearHistory,
           deleteHistoryFile,
+          previewFile,
           reprintFile,
           formatSize,
           formatTime,

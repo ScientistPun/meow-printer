@@ -95,7 +95,10 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+  filename: (req, file, cb) => {
+    // 保留原始文件名，添加时间戳前缀避免冲突
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
 });
 
 const upload = multer({
@@ -341,6 +344,46 @@ app.delete('/api/history/:filename', async (req, res) => {
     }
   } catch (error) {
     logger.error('删除历史文件失败', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 获取历史文件内容（用于预览）
+app.get('/api/preview', async (req, res) => {
+  try {
+    const filename = req.query.filename;
+    if (!filename) {
+      return res.status(400).json({ error: '缺少文件名参数' });
+    }
+
+    // 在 uploads 目录中查找匹配的文件
+    const files = fs.readdirSync(uploadDir);
+    const matchedFile = files.find(f => f.endsWith(filename) || f.includes(filename));
+
+    if (!matchedFile) {
+      return res.status(404).json({ error: '文件不存在' });
+    }
+
+    const filePath = path.join(uploadDir, matchedFile);
+    const ext = path.extname(matchedFile).toLowerCase();
+
+    const contentTypes = {
+      '.pdf': 'application/pdf',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp',
+      '.doc': 'application/msword',
+      '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    };
+
+    const contentType = contentTypes[ext] || 'application/octet-stream';
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', 'inline');
+    fs.createReadStream(filePath).pipe(res);
+  } catch (error) {
+    logger.error('预览文件失败', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });

@@ -1,6 +1,10 @@
 services:
   meow-printer:
-    build: .
+    build:
+      context: .
+      platform: 
+        - linux/amd64
+        - linux/arm64
     container_name: meow-printer
     ports:
       - "3000:3000"
