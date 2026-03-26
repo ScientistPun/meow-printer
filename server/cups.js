@@ -57,6 +57,11 @@ function buildLpOptions(options) {
   return opts;
 }
 
+// 毫米转点数 (1 inch = 72 points, 1 inch = 25.4mm)
+function mmToPoints(mm) {
+  return mm * 72 / 25.4;
+}
+
 // 从 lp 输出中提取 job ID
 function extractJobId(output) {
   const jobMatch = output.match(/id[是为\s:]+(.+?)(?:\s|$)/i);
@@ -64,24 +69,27 @@ function extractJobId(output) {
 }
 
 // 将图片转换为 PDF（竖排模式：不旋转，只交换宽高）
-async function imageToPdfPortrait(imagePath) {
+export async function imageToPdfPortrait(imagePath, options = {}) {
   const image = sharp(imagePath);
   const metadata = await image.metadata();
-  const width = metadata.width;
-  const height = metadata.height;
+  const imageWidth = metadata.width;
+  const imageHeight = metadata.height;
 
   const pdfDoc = await PDFDocument.create();
   const imageBuffer = await image.toBuffer();
 
   let pageWidth, pageHeight;
-  if (width <= height) {
-    // 已是竖向，使用原尺寸
-    pageWidth = width;
-    pageHeight = height;
+
+  // 如果指定了纸张尺寸，使用纸张尺寸；否则使用图片尺寸
+  if (options.mediaWidth && options.mediaHeight) {
+    pageWidth = mmToPoints(options.mediaWidth);
+    pageHeight = mmToPoints(options.mediaHeight);
+  } else if (imageWidth <= imageHeight) {
+    pageWidth = imageWidth;
+    pageHeight = imageHeight;
   } else {
-    // 横向图片，交换宽高（不旋转）
-    pageWidth = height;
-    pageHeight = width;
+    pageWidth = imageHeight;
+    pageHeight = imageWidth;
   }
 
   let pdfImage;
@@ -91,10 +99,24 @@ async function imageToPdfPortrait(imagePath) {
     pdfImage = await pdfDoc.embedJpg(imageBuffer);
   }
 
-  // 计算缩放比例使图片适应页面
-  const scale = Math.min(pageWidth / pdfImage.width, pageHeight / pdfImage.height);
-  const scaledWidth = pdfImage.width * scale;
-  const scaledHeight = pdfImage.height * scale;
+  // 计算缩放比例
+  let scaledWidth, scaledHeight;
+  if (options.scaling && options.scaling !== 100 && options.scaling !== 'fit') {
+    // 按指定缩放比例缩放
+    const scaleFactor = options.scaling / 100;
+    scaledWidth = pdfImage.width * scaleFactor;
+    scaledHeight = pdfImage.height * scaleFactor;
+  } else if (options.scaling === 'fit' || (!options.mediaWidth && !options.mediaHeight)) {
+    // 适应页面
+    const scale = Math.min(pageWidth / pdfImage.width, pageHeight / pdfImage.height);
+    scaledWidth = pdfImage.width * scale;
+    scaledHeight = pdfImage.height * scale;
+  } else {
+    // 无缩放，使用图片原始尺寸
+    scaledWidth = pdfImage.width;
+    scaledHeight = pdfImage.height;
+  }
+
   const x = (pageWidth - scaledWidth) / 2;
   const y = (pageHeight - scaledHeight) / 2;
 
@@ -110,24 +132,27 @@ async function imageToPdfPortrait(imagePath) {
 }
 
 // 将图片转换为 PDF（横排模式：不旋转，只交换宽高）
-async function imageToPdfLandscape(imagePath) {
+export async function imageToPdfLandscape(imagePath, options = {}) {
   const image = sharp(imagePath);
   const metadata = await image.metadata();
-  const width = metadata.width;
-  const height = metadata.height;
+  const imageWidth = metadata.width;
+  const imageHeight = metadata.height;
 
   const pdfDoc = await PDFDocument.create();
   const imageBuffer = await image.toBuffer();
 
   let pageWidth, pageHeight;
-  if (width >= height) {
-    // 已是横向，使用原尺寸
-    pageWidth = width;
-    pageHeight = height;
+
+  // 如果指定了纸张尺寸，使用纸张尺寸；否则使用图片尺寸
+  if (options.mediaWidth && options.mediaHeight) {
+    pageWidth = mmToPoints(options.mediaWidth);
+    pageHeight = mmToPoints(options.mediaHeight);
+  } else if (imageWidth >= imageHeight) {
+    pageWidth = imageWidth;
+    pageHeight = imageHeight;
   } else {
-    // 竖向图片，交换宽高（不旋转）
-    pageWidth = height;
-    pageHeight = width;
+    pageWidth = imageHeight;
+    pageHeight = imageWidth;
   }
 
   let pdfImage;
@@ -137,9 +162,21 @@ async function imageToPdfLandscape(imagePath) {
     pdfImage = await pdfDoc.embedJpg(imageBuffer);
   }
 
-  const scale = Math.min(pageWidth / pdfImage.width, pageHeight / pdfImage.height);
-  const scaledWidth = pdfImage.width * scale;
-  const scaledHeight = pdfImage.height * scale;
+  // 计算缩放比例
+  let scaledWidth, scaledHeight;
+  if (options.scaling && options.scaling !== 100 && options.scaling !== 'fit') {
+    const scaleFactor = options.scaling / 100;
+    scaledWidth = pdfImage.width * scaleFactor;
+    scaledHeight = pdfImage.height * scaleFactor;
+  } else if (options.scaling === 'fit' || (!options.mediaWidth && !options.mediaHeight)) {
+    const scale = Math.min(pageWidth / pdfImage.width, pageHeight / pdfImage.height);
+    scaledWidth = pdfImage.width * scale;
+    scaledHeight = pdfImage.height * scale;
+  } else {
+    scaledWidth = pdfImage.width;
+    scaledHeight = pdfImage.height;
+  }
+
   const x = (pageWidth - scaledWidth) / 2;
   const y = (pageHeight - scaledHeight) / 2;
 
@@ -155,15 +192,23 @@ async function imageToPdfLandscape(imagePath) {
 }
 
 // 设置 PDF 竖排方向（不旋转，只交换页面宽高）
-async function setPdfPortrait(filePath) {
+export async function setPdfPortrait(filePath, options = {}) {
   const pdfBytes = fs.readFileSync(filePath);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
 
+  // 如果指定了纸张尺寸，设置页面尺寸
+  let targetWidth, targetHeight;
+  if (options.mediaWidth && options.mediaHeight) {
+    targetWidth = mmToPoints(options.mediaWidth);
+    targetHeight = mmToPoints(options.mediaHeight);
+  }
+
   for (const page of pages) {
     const { width, height } = page.getSize();
-    if (width > height) {
-      // 横向页面，交换宽高（不旋转）
+    if (targetWidth && targetHeight) {
+      page.setSize(targetWidth, targetHeight);
+    } else if (width > height) {
       page.setSize(height, width);
     }
   }
@@ -177,15 +222,23 @@ async function setPdfPortrait(filePath) {
 }
 
 // 设置 PDF 横排方向（不旋转，只交换页面宽高）
-async function setPdfLandscape(filePath) {
+export async function setPdfLandscape(filePath, options = {}) {
   const pdfBytes = fs.readFileSync(filePath);
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const pages = pdfDoc.getPages();
 
+  // 如果指定了纸张尺寸，设置页面尺寸
+  let targetWidth, targetHeight;
+  if (options.mediaWidth && options.mediaHeight) {
+    targetWidth = mmToPoints(options.mediaWidth);
+    targetHeight = mmToPoints(options.mediaHeight);
+  }
+
   for (const page of pages) {
     const { width, height } = page.getSize();
-    if (width < height) {
-      // 竖向页面，交换宽高（不旋转）
+    if (targetWidth && targetHeight) {
+      page.setSize(targetWidth, targetHeight);
+    } else if (width < height) {
       page.setSize(height, width);
     }
   }
@@ -199,20 +252,25 @@ async function setPdfLandscape(filePath) {
 }
 
 // 处理文件方向打印
-async function processFileForOrientation(filePath, orientation) {
+async function processFileForOrientation(filePath, orientation, options = {}) {
   const ext = path.extname(filePath).toLowerCase();
+  const pdfOptions = {
+    mediaWidth: options.mediaWidth,
+    mediaHeight: options.mediaHeight,
+    scaling: options.scaling
+  };
 
   if (orientation === 'portrait') {
     if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      return await imageToPdfPortrait(filePath);
+      return await imageToPdfPortrait(filePath, pdfOptions);
     } else if (ext === '.pdf') {
-      return await setPdfPortrait(filePath);
+      return await setPdfPortrait(filePath, pdfOptions);
     }
   } else if (orientation === 'landscape') {
     if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      return await imageToPdfLandscape(filePath);
+      return await imageToPdfLandscape(filePath, pdfOptions);
     } else if (ext === '.pdf') {
-      return await setPdfLandscape(filePath);
+      return await setPdfLandscape(filePath, pdfOptions);
     }
   }
 
@@ -253,7 +311,11 @@ export async function printFile(filePath, printer, options = {}) {
   try {
     // 处理文件方向（竖排/横排），生成 PDF 保留用于调试
     if (options.orientation) {
-      filePath = await processFileForOrientation(filePath, options.orientation);
+      filePath = await processFileForOrientation(filePath, options.orientation, {
+        mediaWidth: options.mediaWidth,
+        mediaHeight: options.mediaHeight,
+        scaling: options.scaling
+      });
     }
 
     const baseCmd = USE_REMOTE ? `lp -h ${CUPS_HOST}:${CUPS_PORT}` : 'lp';
@@ -373,4 +435,47 @@ function normalizeMediaOptions(mediaOptions) {
 
 function getDefaultMediaOptions() {
   return ['A4', 'A5', 'B5', 'Letter', 'Legal', '4x6photo', '100x150mm'];
+}
+
+// 纸张尺寸名称转换为毫米尺寸
+export function getMediaSizeMM(media) {
+  const sizes = {
+    'A4': { width: 210, height: 297 },
+    'A5': { width: 148, height: 210 },
+    'A6': { width: 105, height: 148 },
+    'B5': { width: 176, height: 250 },
+    'Letter': { width: 215.9, height: 279.4 },
+    'Legal': { width: 215.9, height: 355.6 },
+    '4x6': { width: 101.6, height: 152.4 },
+    '4x6photo': { width: 101.6, height: 152.4 },
+    '100x150': { width: 100, height: 150 },
+    '100x150mm': { width: 100, height: 150 },
+    'L': { width: 89, height: 127 },
+    '2L': { width: 127, height: 178 }
+  };
+
+  if (!media) return null;
+
+  const upper = media.toUpperCase();
+
+  // 直接匹配
+  if (sizes[media]) return sizes[media];
+
+  // 大小写不敏感匹配
+  for (const key of Object.keys(sizes)) {
+    if (key.toUpperCase() === upper) return sizes[key];
+  }
+
+  // 解析自定义格式如 "Custom" 或 "210x297mm"
+  if (media.includes('x')) {
+    const match = media.match(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/i);
+    if (match) {
+      return {
+        width: parseFloat(match[1]),
+        height: parseFloat(match[2])
+      };
+    }
+  }
+
+  return null;
 }

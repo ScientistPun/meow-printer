@@ -10,12 +10,12 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #f5f5f7;
       min-height: 100vh;
-      padding: 12px;
+      padding: 8px;
     }
     .container {
       background: white;
       border-radius: 12px;
-      padding: 20px;
+      padding: 14px;
       width: 100%;
       max-width: 100%;
     }
@@ -164,12 +164,26 @@
     .btn:disabled { background: #d2d2d7; cursor: not-allowed; }
     .btn-small {
       padding: 8px 12px;
-      font-size: 13px;
+      font-size: 12px;
       margin-top: 0;
     }
     .btn-danger { background: #ff3b30; }
     .btn-danger:active { background: #d63020; }
-    .btn-fixed { width: 100px; }
+    .btn-fixed { width: 60px; line-height: 13px; }
+    .btn-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .btn-actions .btn {
+      padding: 10px;
+      flex: 1;
+      margin-top: 0;
+    }
+    .btn-preview { background: #34c759; }
+    .btn-preview:active { background: #2da94e; }
+    .text-btn {background: none; width: 80px; text-align: right; color: #666;}
+    .text-btn:active, .text-btn:hover {background: none; color: #333;}
     .list-item-content { flex: 1; min-width: 0; }
     .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .link-btn {
@@ -180,6 +194,21 @@
     .link-btn:hover { color: #1d1d1f; }
     .link-btn:disabled { color: #d2d2d7; cursor: not-allowed; }
     .item-actions { display: flex; gap: 4px; }
+    .history-item {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e8e8ed;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-info { margin-bottom: 8px; }
+    .history-name {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1d1d1f;
+      text-decoration: none;
+    }
+    .history-meta { font-size: 12px; color: #86868b; margin-top: 2px; }
+    .history-actions { display: flex; gap: 8px; }
     .message {
       margin-top: 12px;
       padding: 12px;
@@ -337,9 +366,7 @@
       <div v-show="activeTab === 'jobs'">
         <div class="history-header">
           <div class="section-title" style="margin-bottom:0">打印任务</div>
-          <button class="btn btn-small btn-primary btn-fixed" @click="loadJobs" :disabled="jobsLoading">
-            刷新列表
-          </button>
+          <a class="btn btn-small btn-primary text-btn" @click="loadJobs" :disabled="jobsLoading"> 刷新列表 </a>
         </div>
 
         <div class="log-list" v-if="jobs.length > 0">
@@ -495,34 +522,43 @@
           </div>
         </div>
 
-        <button class="btn" @click="printFile" :disabled="!fileName || !options.printer || loading">
-          <span v-if="loading" class="loading"><span class="spinner"></span>打印中...</span>
-          <span v-else>🖨️ 开始打印</span>
-        </button>
+
+        <div class="btn-actions">
+          <button class="btn btn-preview" @click="previewPrint" :disabled="!fileName || loading">
+            👁️ 预览效果
+          </button>
+          <button class="btn" @click="printFile" :disabled="!fileName || !options.printer || loading">
+            <span v-if="loading" class="loading"><span class="spinner"></span>打印中...</span>
+            <span v-else>🖨️ 开始打印</span>
+          </button>
+        </div>
 
         <div style="text-align:center;margin-top:12px;">
           <span class="link-btn" @click="clearCache" :disabled="clearingCache">清除缓存</span>
         </div>
+
       </div>
 
       <!-- 历史打印页面 -->
       <div v-show="activeTab === 'history'">
         <div class="history-header">
           <div class="section-title" style="margin-bottom:0">历史文件</div>
-          <button class="btn btn-small btn-danger btn-fixed" @click="clearHistory" :disabled="historyLoading || history.length === 0">
+          <a class="btn btn-danger btn-small text-btn" @click="clearHistory" :disabled="historyLoading || history.length === 0">
             清空全部
-          </button>
+          </a>
         </div>
 
         <div class="log-list" v-if="history.length > 0">
-          <div v-for="item in history" :key="item.name" class="log-item">
-            <a :href="`${API_BASE}/preview?filename=${encodeURIComponent(item.originalName)}`" target="_blank" class="list-item-content">
-              <div class="log-item-name truncate">{{ item.originalName }}</div>
-              <div class="log-item-size">{{ formatSize(item.size) }} · {{ formatTime(item.modified) }}</div>
-            </a>
-            <div class="item-actions">
-              <button class="btn btn-small" @click.stop="reprintFile(item)">打印</button>
-              <button class="btn btn-small btn-danger btn-fixed" @click.stop="deleteHistoryFile(item.name)">删除</button>
+          <div v-for="item in history" :key="item.name" class="history-item">
+            <div class="history-info">
+              <a :href="`${API_BASE}/preview?filename=${encodeURIComponent(item.originalName)}`" target="_blank" class="history-name truncate">
+                {{ item.originalName }}
+              </a>
+              <div class="history-meta">{{ formatSize(item.size) }} · {{ formatTime(item.modified) }}</div>
+            </div>
+            <div class="history-actions">
+              <button class="btn btn-small btn-fixed" @click="reprintFile(item)">选择</button>
+              <button class="btn btn-small btn-danger btn-fixed" @click="deleteHistoryFile(item.name)">删除</button>
             </div>
           </div>
         </div>
@@ -535,9 +571,9 @@
       <div v-show="activeTab === 'logs'">
         <div class="history-header">
           <div class="section-title" style="margin-bottom:0">日志列表</div>
-          <button class="btn btn-small btn-danger btn-fixed" @click="clearAllLogs" :disabled="logsLoading">
+          <a class="btn btn-small btn-danger text-btn" @click="clearAllLogs" :disabled="logsLoading">
             清空全部
-          </button>
+          </a>
         </div>
 
         <div class="log-list" v-if="logFiles.length > 0">
@@ -946,6 +982,90 @@
           }
         };
 
+        const previewPrint = async () => {
+          if (!file.value) {
+            showMessage('请先选择文件', 'error');
+            return;
+          }
+
+          loading.value = true;
+
+          // 使用 fetch 获取 PDF blob，然后通过 iframe 打开（兼容微信浏览器）
+          const formData = new FormData();
+          if (file.value.isHistoryFile) {
+            formData.append('filePath', file.value.path);
+            formData.append('originalName', file.value.name);
+          } else {
+            formData.append('file', file.value);
+          }
+          formData.append('printer', options.printer);
+          formData.append('copies', options.copies);
+          formData.append('orientation', options.orientation);
+          formData.append('pageSet', options.pageSet);
+          formData.append('nup', options.nup);
+          formData.append('media', options.media);
+          if (options.media === 'Custom') {
+            formData.append('mediaWidth', options.customWidth);
+            formData.append('mediaHeight', options.customHeight);
+          }
+          formData.append('scaling', getScalingValue());
+          formData.append('noHeaderFooter', options.noHeaderFooter);
+
+          try {
+            const res = await fetch(`${API_BASE}/preview`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!res.ok) {
+              const errData = await res.json();
+              showMessage(`❌ 预览失败${errData.error ? ': ' + errData.error : ''}`, 'error');
+              loading.value = false;
+              return;
+            }
+
+            const blob = await res.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            // 创建全屏预览容器
+            const container = document.createElement('div');
+            container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;';
+
+            // 创建关闭按钮
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕ 关闭';
+            closeBtn.style.cssText = 'position:absolute;bottom:20px;left:20px;z-index:10000;padding:10px 20px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;';
+
+            // 创建 iframe
+            const iframe = document.createElement('iframe');
+            iframe.src = blobUrl;
+            iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
+            iframe.setAttribute('allowfullscreen', 'true');
+
+            container.appendChild(iframe);
+            container.appendChild(closeBtn);
+            document.body.appendChild(container);
+
+            // 关闭预览
+            const closePreview = () => {
+              if (container.parentNode) {
+                document.body.removeChild(container);
+              }
+              URL.revokeObjectURL(blobUrl);
+            };
+
+            closeBtn.addEventListener('click', closePreview);
+            container.addEventListener('click', (e) => {
+              if (e.target === container) closePreview();
+            });
+
+            loading.value = false;
+          } catch (e) {
+            showMessage(`❌ 请求失败: ${e.message}`, 'error');
+            loading.value = false;
+          }
+        };
+
         onMounted(() => {
           loadPrinters();
         });
@@ -974,6 +1094,7 @@
           onFileChange,
           removeFile,
           printFile,
+          previewPrint,
           switchToLogs,
           switchToJobs,
           switchToHistory,

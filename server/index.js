@@ -283,23 +283,23 @@ app.delete('/api/logs', async (req, res) => {
     const date = req.query.date; // 可选，指定日期
 
     if (date) {
-      // 清空指定日期的日志
+      // 删除指定日期的日志
       const logFile = path.join(LOG_DIR, `${date}.log`);
       if (fs.existsSync(logFile)) {
-        fs.truncateSync(logFile, 0);
-        logger.info('清空日志', { date });
-        res.json({ success: true, message: `已清空 ${date} 的日志` });
+        fs.unlinkSync(logFile);
+        logger.info('删除日志', { date });
+        res.json({ success: true, message: `已删除 ${date} 的日志` });
       } else {
         res.json({ success: false, message: '日志文件不存在' });
       }
     } else {
-      // 清空所有日志
+      // 删除所有日志
       const files = fs.readdirSync(LOG_DIR).filter(f => f.endsWith('.log'));
       files.forEach(f => {
-        fs.truncateSync(path.join(LOG_DIR, f), 0);
+        fs.unlinkSync(path.join(LOG_DIR, f));
       });
-      logger.info('清空所有日志', { count: files.length });
-      res.json({ success: true, message: `已清空 ${files.length} 个日志文件` });
+      logger.info('删除所有日志', { count: files.length });
+      res.json({ success: true, message: `已删除 ${files.length} 个日志文件` });
     }
   } catch (error) {
     logger.error('清空日志失败', { error: error.message });
@@ -344,6 +344,73 @@ app.delete('/api/history/:filename', async (req, res) => {
     }
   } catch (error) {
     logger.error('删除历史文件失败', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 预览打印效果（生成预览PDF）
+app.post('/api/preview', upload.single('file'), async (req, res) => {
+  try {
+    let filePath;
+
+    if (req.file) {
+      filePath = req.file.path;
+    } else if (req.body.filePath) {
+      filePath = path.join(uploadDir, req.body.filePath);
+      if (!fs.existsSync(filePath)) {
+        return res.status(400).json({ error: '历史文件不存在' });
+      }
+    } else {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const options = {
+      copies: 1,
+      media: req.body.media || 'A4',
+      mediaWidth: req.body.mediaWidth ? parseInt(req.body.mediaWidth) : null,
+      mediaHeight: req.body.mediaHeight ? parseInt(req.body.mediaHeight) : null,
+      orientation: req.body.orientation || 'portrait',
+      scaling: req.body.scaling
+    };
+
+    // 如果没有指定自定义尺寸，从纸张名称获取尺寸
+    if (!options.mediaWidth || !options.mediaHeight) {
+      const { getMediaSizeMM } = await import('./cups.js');
+      const mediaSize = getMediaSizeMM(options.media);
+      if (mediaSize) {
+        options.mediaWidth = mediaSize.width;
+        options.mediaHeight = mediaSize.height;
+      }
+    }
+
+    // 处理文件方向和尺寸
+    const ext = path.extname(filePath).toLowerCase();
+    let previewFilePath;
+
+    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
+      const { imageToPdfPortrait, imageToPdfLandscape } = await import('./cups.js');
+      if (options.orientation === 'portrait') {
+        previewFilePath = await imageToPdfPortrait(filePath, options);
+      } else {
+        previewFilePath = await imageToPdfLandscape(filePath, options);
+      }
+    } else if (ext === '.pdf') {
+      const { setPdfPortrait, setPdfLandscape } = await import('./cups.js');
+      if (options.orientation === 'portrait') {
+        previewFilePath = await setPdfPortrait(filePath, options);
+      } else {
+        previewFilePath = await setPdfLandscape(filePath, options);
+      }
+    } else {
+      return res.status(400).json({ error: '不支持的文件类型' });
+    }
+
+    // 返回预览文件
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline');
+    fs.createReadStream(previewFilePath).pipe(res);
+  } catch (error) {
+    logger.error('预览生成失败', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
