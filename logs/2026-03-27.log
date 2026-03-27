@@ -1154,3 +1154,41 @@
 [2026-03-27T16:58:07.035Z] [INFO] POST /api/files {"requestId":"mn95agld","status":200,"duration":"1466ms","ip":"127.0.0.1"}
 [2026-03-27T16:58:07.045Z] [INFO] GET /api/history {"requestId":"mn95ahq9","status":200,"duration":"4ms","ip":"127.0.0.1"}
 [2026-03-27T16:58:08.853Z] [INFO] GET /api/preview {"requestId":"mn95aj30","status":200,"duration":"57ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:37.416Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T17:10:37.810Z] [INFO] GET / {"requestId":"mn95ql0n","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:37.846Z] [INFO] GET /index.js {"requestId":"mn95ql1t","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:38.390Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn95ql5l"}
+[2026-03-27T17:10:38.396Z] [INFO] GET /api/printers {"requestId":"mn95ql5l","status":304,"duration":"419ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:38.616Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn95qlhc"}
+[2026-03-27T17:10:38.619Z] [INFO] GET /api/printers/capabilities {"requestId":"mn95qlhc","status":304,"duration":"219ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:38.962Z] [INFO] GET /api/history {"requestId":"mn95qlwo","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:54.688Z] [INFO] POST /api/file/dimensions {"requestId":"mn95qxzy","status":200,"duration":"66ms","ip":"127.0.0.1"}
+[2026-03-27T17:10:57.853Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn95r03g"}
+[2026-03-27T17:10:57.855Z] [INFO] GET /api/printers/capabilities {"requestId":"mn95r03g","status":304,"duration":"515ms","ip":"127.0.0.1"}
+[2026-03-27T17:11:01.713Z] [INFO] Preview options {"body":{"printer":"HP_Laser_108","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T17:11:01.714Z] [INFO] Preview: Calling getMediaSizeMM with: A5
+[2026-03-27T17:11:01.714Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T17:11:01.715Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T17:11:01.715Z] [INFO] Calling with options: {"copies":1,"media":"A5","mediaWidth":148,"mediaHeight":210,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}
+[2026-03-27T17:11:01.716Z] [LOG] === imageToPdfPortrait ===
+[2026-03-27T17:11:02.095Z] [LOG] 使用 FIT 缩放模式, 缩放比例: 0.22546153919393694
+[2026-03-27T17:11:02.096Z] [LOG] 目标纸张尺寸 (mm): 148 x 210
+[2026-03-27T17:11:02.096Z] [LOG] 图片点尺寸: 1860.75 x 2631.75
+[2026-03-27T17:11:02.096Z] [LOG] 缩放后尺寸: 419.52755905511816 x 593.3584057736435
+[2026-03-27T17:11:02.636Z] [LOG] 生成竖排 PDF: /Users/koali/meow-printer/public/cache/1774631461689-2026.png_portrait.pdf
+[2026-03-27T17:11:02.636Z] [INFO] Preview file path: /Users/koali/meow-printer/public/cache/1774631461689-2026.png_portrait.pdf
+[2026-03-27T17:11:02.636Z] [INFO] File exists: true
+[2026-03-27T17:11:02.636Z] [INFO] File size: 1107682
+[2026-03-27T17:11:02.644Z] [INFO] POST /api/preview {"requestId":"mn95r3g1","status":200,"duration":"963ms","ip":"127.0.0.1"}
+[2026-03-27T17:11:10.942Z] [INFO] 收到打印请求 {"requestId":"mn95raks","file":"2026.png","printer":"HP_Laser_108","options":{"copies":1,"media":"A5","mediaWidth":148,"mediaHeight":210,"orientation":"portrait","pageSet":"all","customPages":"","nup":1,"scaling":"fit","noHeaderFooter":false}}
+[2026-03-27T17:11:10.943Z] [LOG] === imageToPdfPortrait ===
+[2026-03-27T17:11:11.271Z] [LOG] 使用 FIT 缩放模式, 缩放比例: 0.22546153919393694
+[2026-03-27T17:11:11.272Z] [LOG] 目标纸张尺寸 (mm): 148 x 210
+[2026-03-27T17:11:11.272Z] [LOG] 图片点尺寸: 1860.75 x 2631.75
+[2026-03-27T17:11:11.272Z] [LOG] 缩放后尺寸: 419.52755905511816 x 593.3584057736435
+[2026-03-27T17:11:11.781Z] [LOG] 生成竖排 PDF: /Users/koali/meow-printer/public/cache/1774631470927-2026.png_portrait.pdf
+[2026-03-27T17:11:11.781Z] [LOG] 打印命令: lp -h 192.168.10.1:631 -d "HP_Laser_108" -o media=A5 -o fitplot "/Users/koali/meow-printer/public/cache/1774631470927-2026.png_portrait.pdf"
+[2026-03-27T17:11:12.089Z] [LOG] 打印输出: 请求id是HP_Laser_108-63（1个文件）
+
+[2026-03-27T17:11:12.091Z] [INFO] 打印任务提交成功 {"requestId":"mn95raks","jobId":"HP_Laser_108-63（1个文件）","file":"2026.png"}
+[2026-03-27T17:11:12.092Z] [INFO] POST /api/print {"requestId":"mn95raks","status":200,"duration":"1168ms","ip":"127.0.0.1"}
