@@ -1,12 +1,9 @@
 FROM node:20
 
-# 安装运行时依赖
+# 只安装运行时必需的小工具（cups-client 很小）
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cups-client \
-    fonts-noto-cjk \
-    fontconfig \
-    && rm -rf /var/lib/apt/lists/* \
-    && fc-cache -f
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -14,9 +11,6 @@ COPY package*.json ./
 COPY src/ ./src/
 COPY public/ ./public/
 COPY entrypoint.sh /entrypoint.sh
-
-# 挂载目录（避免数据写入镜像，占用空间）
-VOLUME ["/app/logs"]
 
 RUN chmod +x /entrypoint.sh
 

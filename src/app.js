@@ -152,14 +152,12 @@ app.get('/api/printers/capabilities', async (req, res) => {
 app.post('/api/print', upload.single('file'), async (req, res) => {
   try {
     let filePath, originalName;
-    let shouldDeleteFile = false;
 
     // 判断是新上传文件还是历史文件
     if (req.file) {
-      // 新上传的文件
+      // 新上传的文件保留在 uploads 目录
       filePath = req.file.path;
       originalName = req.file.originalname;
-      shouldDeleteFile = true; // 标记新上传文件需要删除
     } else if (req.body.filePath) {
       // 历史文件（已存在于 uploads 目录）
       filePath = path.join(UPLOAD_DIR, req.body.filePath);
@@ -225,15 +223,6 @@ app.post('/api/print', upload.single('file'), async (req, res) => {
     });
 
     const result = await printFile(filePath, printer, options);
-
-    // 打印完成后删除上传的临时文件
-    if (shouldDeleteFile && fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (e) {
-        logger.warn('删除打印临时文件失败', { path: filePath, error: e.message });
-      }
-    }
 
     if (result.success) {
       logger.info('打印任务提交成功', {
@@ -408,11 +397,10 @@ app.delete('/api/history/:filename', async (req, res) => {
 app.post('/api/preview', upload.single('file'), async (req, res) => {
   try {
     let filePath;
-    let shouldDeleteFile = false;
 
     if (req.file) {
+      // 新上传的文件保留在 uploads 目录
       filePath = req.file.path;
-      shouldDeleteFile = true; // 标记新上传文件需要删除
     } else if (req.body.filePath) {
       filePath = path.join(UPLOAD_DIR, req.body.filePath);
       if (!fs.existsSync(filePath)) {
@@ -510,15 +498,6 @@ app.post('/api/preview', upload.single('file'), async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline');
     fs.createReadStream(previewFilePath).pipe(res);
-
-    // 预览完成后删除上传的临时文件
-    if (shouldDeleteFile && fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (e) {
-        logger.warn('删除预览临时文件失败', { path: filePath, error: e.message });
-      }
-    }
   } catch (error) {
     logger.error('预览生成失败', { error: error.message });
     res.status(500).json({ error: error.message });
