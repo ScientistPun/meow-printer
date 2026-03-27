@@ -139,3 +139,150 @@
 [2026-03-27T09:22:14.203Z] [INFO] GET /api/fonts {"requestId":"mn8p084w","status":200,"duration":"11ms","ip":"127.0.0.1"}
 [2026-03-27T09:28:34.416Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
 [2026-03-27T09:28:34.582Z] [INFO] GET /api/fonts {"requestId":"mn8p8dmy","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:41.845Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:10:46.745Z] [INFO] GET / {"requestId":"mn8qqngm","status":200,"duration":"18ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:46.760Z] [INFO] GET /index.js {"requestId":"mn8qqnh9","status":200,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:47.206Z] [INFO] GET /favicon.ico {"requestId":"mn8qqntp","status":404,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:47.230Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8qqnlw"}
+[2026-03-27T10:10:47.238Z] [INFO] GET /api/printers {"requestId":"mn8qqnlw","status":200,"duration":"322ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:47.459Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8qqnux"}
+[2026-03-27T10:10:47.461Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8qqnux","status":200,"duration":"220ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:47.920Z] [INFO] GET /api/history {"requestId":"mn8qqod9","status":200,"duration":"19ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:48.816Z] [INFO] GET /api/logs {"requestId":"mn8qqp2i","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:49.639Z] [INFO] GET /api/history {"requestId":"mn8qqppf","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:50.611Z] [INFO] GET /api/file/dimensions {"requestId":"mn8qqqdo","status":200,"duration":"103ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:51.619Z] [INFO] GET /api/history {"requestId":"mn8qqr8c","status":304,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-27T10:10:54.220Z] [INFO] GET /api/fonts {"requestId":"mn8qqt8j","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:42.593Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:15:44.887Z] [INFO] GET /api/logs {"requestId":"mn8qx1i7","status":200,"duration":"23ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:46.172Z] [INFO] GET / {"requestId":"mn8qx2id","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:46.198Z] [INFO] GET /index.js {"requestId":"mn8qx2j5","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:46.544Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8qx2m4"}
+[2026-03-27T10:15:46.546Z] [INFO] GET /api/printers {"requestId":"mn8qx2m4","status":304,"duration":"246ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:46.763Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8qx2t1"}
+[2026-03-27T10:15:46.765Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8qx2t1","status":304,"duration":"216ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:47.223Z] [INFO] GET /api/logs {"requestId":"mn8qx3bh","status":200,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:48.061Z] [INFO] GET /api/history {"requestId":"mn8qx3yn","status":304,"duration":"14ms","ip":"127.0.0.1"}
+[2026-03-27T10:15:51.032Z] [INFO] GET /api/fonts {"requestId":"mn8qx69e","status":304,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:25.580Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:18:27.803Z] [INFO] GET / {"requestId":"mn8r0j7s","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:27.826Z] [INFO] GET /index.js {"requestId":"mn8r0j8l","status":200,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:28.192Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8r0jfb"}
+[2026-03-27T10:18:28.197Z] [INFO] GET /api/printers {"requestId":"mn8r0jfb","status":304,"duration":"142ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:28.302Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8r0jje"}
+[2026-03-27T10:18:28.304Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8r0jje","status":304,"duration":"102ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:28.888Z] [INFO] GET /api/history {"requestId":"mn8r0k24","status":304,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:31.641Z] [INFO] GET /api/history {"requestId":"mn8r0m6i","status":304,"duration":"15ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:32.588Z] [INFO] GET /api/fonts {"requestId":"mn8r0mx0","status":304,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T10:18:59.157Z] [LOG] loadFont: 字体加载成功: SourceHanSans
+[2026-03-27T10:19:00.697Z] [INFO] 创建文件成功 {"filename":"test.pdf"}
+[2026-03-27T10:19:00.700Z] [INFO] POST /api/files {"requestId":"mn8r17e0","status":200,"duration":"1588ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:00.710Z] [INFO] GET /api/history {"requestId":"mn8r18m9","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:03.216Z] [INFO] GET /api/fonts {"requestId":"mn8r1ajt","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:08.056Z] [INFO] GET /api/history {"requestId":"mn8r1ea9","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:10.178Z] [INFO] GET /api/file/dimensions {"requestId":"mn8r1fui","status":200,"duration":"104ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:11.435Z] [INFO] GET /api/history {"requestId":"mn8r1gw6","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:12.209Z] [INFO] GET /api/preview {"requestId":"mn8r1hfc","status":200,"duration":"89ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:28.270Z] [INFO] GET /api/fonts {"requestId":"mn8r1tvw","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:36.175Z] [INFO] GET /api/history {"requestId":"mn8r1zzg","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:19:43.781Z] [INFO] GET /api/fonts {"requestId":"mn8r25ur","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:14.644Z] [INFO] GET /api/history {"requestId":"mn8r2to0","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:25.518Z] [LOG] loadFont: 字体加载成功: ZiTiGuanJiaFangSongTi
+[2026-03-27T10:20:26.446Z] [INFO] 创建文件成功 {"filename":"20260327_1820.pdf"}
+[2026-03-27T10:20:26.447Z] [INFO] POST /api/files {"requestId":"mn8r321e","status":200,"duration":"957ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:26.451Z] [INFO] GET /api/history {"requestId":"mn8r32s2","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:28.964Z] [INFO] GET /api/preview {"requestId":"mn8r34p4","status":200,"duration":"28ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:50.289Z] [INFO] 删除历史文件 {"filename":"test.pdf"}
+[2026-03-27T10:20:50.292Z] [INFO] DELETE /api/history/test.pdf {"requestId":"mn8r3l65","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:50.296Z] [INFO] GET /api/history {"requestId":"mn8r3l6e","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:51.362Z] [INFO] GET /api/file/dimensions {"requestId":"mn8r3lze","status":200,"duration":"24ms","ip":"127.0.0.1"}
+[2026-03-27T10:20:52.483Z] [INFO] Preview options {"body":{"filePath":"20260327_1820.pdf","originalName":"20260327_1820.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T10:20:52.484Z] [INFO] Preview: Calling getMediaSizeMM with: A5
+[2026-03-27T10:20:52.485Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T10:20:52.485Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T10:20:52.485Z] [INFO] Calling with options: {"copies":1,"media":"A5","mediaWidth":148,"mediaHeight":210,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}
+[2026-03-27T10:20:52.486Z] [INFO] Calling scalePdf for PDF, scaling: fit
+[2026-03-27T10:20:52.548Z] [INFO] scalePdf returned: /Users/koali/meow-printer/public/cache/20260327_1820.pdf_scaled.pdf
+[2026-03-27T10:20:52.549Z] [INFO] Preview file path: /Users/koali/meow-printer/public/cache/20260327_1820.pdf_scaled.pdf
+[2026-03-27T10:20:52.550Z] [INFO] File exists: true
+[2026-03-27T10:20:52.550Z] [INFO] File size: 5161744
+[2026-03-27T10:20:52.558Z] [INFO] POST /api/preview {"requestId":"mn8r3muz","status":200,"duration":"83ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:17.566Z] [INFO] GET /api/history {"requestId":"mn8r467w","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:18.925Z] [INFO] GET /api/preview {"requestId":"mn8r4785","status":200,"duration":"55ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:22.716Z] [INFO] 删除历史文件 {"filename":"20260327_1820.pdf"}
+[2026-03-27T10:21:22.720Z] [INFO] DELETE /api/history/20260327_1820.pdf {"requestId":"mn8r4a6v","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:22.730Z] [INFO] GET /api/history {"requestId":"mn8r4a79","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:29.487Z] [INFO] GET /api/fonts {"requestId":"mn8r4fez","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:43.044Z] [INFO] GET /api/history {"requestId":"mn8r4pvm","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:58.051Z] [LOG] loadFont: 字体加载成功: ZiTiGuanJiaFangSongTi
+[2026-03-27T10:21:58.869Z] [INFO] 创建文件成功 {"filename":"test.pdf"}
+[2026-03-27T10:21:58.870Z] [INFO] POST /api/files {"requestId":"mn8r51fx","status":200,"duration":"841ms","ip":"127.0.0.1"}
+[2026-03-27T10:21:58.875Z] [INFO] GET /api/history {"requestId":"mn8r523d","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:22:02.023Z] [INFO] GET /api/preview {"requestId":"mn8r54i6","status":200,"duration":"25ms","ip":"127.0.0.1"}
+[2026-03-27T10:22:12.880Z] [INFO] GET /api/history {"requestId":"mn8r5cw8","status":304,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T10:22:14.513Z] [INFO] GET /api/fonts {"requestId":"mn8r5e5m","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T10:22:19.651Z] [INFO] GET /api/history {"requestId":"mn8r5i4e","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T10:25:54.073Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:25:55.320Z] [INFO] GET / {"requestId":"mn8ra4iu","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-27T10:25:55.342Z] [INFO] GET /index.js {"requestId":"mn8ra4jl","status":200,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-27T10:25:55.741Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8ra4o6"}
+[2026-03-27T10:25:55.749Z] [INFO] GET /api/printers {"requestId":"mn8ra4o6","status":304,"duration":"255ms","ip":"127.0.0.1"}
+[2026-03-27T10:25:55.987Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8ra4vl"}
+[2026-03-27T10:25:55.989Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8ra4vl","status":304,"duration":"228ms","ip":"127.0.0.1"}
+[2026-03-27T10:25:57.162Z] [INFO] GET /api/fonts {"requestId":"mn8ra5ya","status":304,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T10:26:01.067Z] [INFO] GET /api/history {"requestId":"mn8ra8yk","status":304,"duration":"15ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:43.763Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:27:45.768Z] [INFO] GET / {"requestId":"mn8rchqs","status":200,"duration":"18ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:45.785Z] [INFO] GET /index.js {"requestId":"mn8rchrj","status":304,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:46.111Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8rchur"}
+[2026-03-27T10:27:46.115Z] [INFO] GET /api/printers {"requestId":"mn8rchur","status":304,"duration":"224ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:46.346Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8rci13"}
+[2026-03-27T10:27:46.348Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8rci13","status":304,"duration":"229ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:51.638Z] [INFO] GET /api/fonts {"requestId":"mn8rcma4","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T10:27:56.392Z] [INFO] GET /api/history {"requestId":"mn8rcpxz","status":304,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:13.731Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T10:29:14.942Z] [INFO] GET / {"requestId":"mn8reejx","status":200,"duration":"15ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:14.965Z] [INFO] GET /index.js {"requestId":"mn8reeko","status":304,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:15.191Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8reenu"}
+[2026-03-27T10:29:15.195Z] [INFO] GET /api/printers {"requestId":"mn8reenu","status":304,"duration":"129ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:15.298Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8reerj"}
+[2026-03-27T10:29:15.300Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8reerj","status":304,"duration":"101ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:16.252Z] [INFO] GET /api/fonts {"requestId":"mn8refki","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:18.758Z] [INFO] GET /api/history {"requestId":"mn8rehi2","status":304,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.556Z] [INFO] GET / {"requestId":"mn8renix","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.577Z] [INFO] GET /index.js {"requestId":"mn8renjf","status":304,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.729Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8renkf"}
+[2026-03-27T10:29:26.730Z] [INFO] GET /api/printers {"requestId":"mn8renkf","status":304,"duration":"123ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.834Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8renny"}
+[2026-03-27T10:29:26.837Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8renny","status":304,"duration":"102ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.955Z] [INFO] GET / {"requestId":"mn8renu2","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:26.968Z] [INFO] GET /index.js {"requestId":"mn8renue","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.125Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8renv6"}
+[2026-03-27T10:29:27.126Z] [INFO] GET /api/printers {"requestId":"mn8renv6","status":304,"duration":"132ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.236Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8renyw"}
+[2026-03-27T10:29:27.236Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8renyw","status":304,"duration":"108ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.407Z] [INFO] GET / {"requestId":"mn8reo6m","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.421Z] [INFO] GET /index.js {"requestId":"mn8reo6y","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.570Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8reo7q"}
+[2026-03-27T10:29:27.570Z] [INFO] GET /api/printers {"requestId":"mn8reo7q","status":304,"duration":"124ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.684Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8reob8"}
+[2026-03-27T10:29:27.685Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8reob8","status":304,"duration":"113ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:27.945Z] [INFO] GET /api/fonts {"requestId":"mn8reolj","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:29:43.704Z] [INFO] GET /api/fonts {"requestId":"mn8rf0r9","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:24.868Z] [INFO] GET /api/history {"requestId":"mn8rfwio","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:25.814Z] [INFO] GET /api/preview {"requestId":"mn8rfx70","status":200,"duration":"74ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:31.258Z] [INFO] 删除历史文件 {"filename":"test.pdf"}
+[2026-03-27T10:30:31.262Z] [INFO] DELETE /api/history/test.pdf {"requestId":"mn8rg1g5","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:31.269Z] [INFO] GET /api/history {"requestId":"mn8rg1gh","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:35.921Z] [LOG] loadFont: 字体加载成功: ZiTiGuanJiaFangSongTi
+[2026-03-27T10:30:36.877Z] [INFO] 创建文件成功 {"filename":"20260327_1830.pdf"}
+[2026-03-27T10:30:36.878Z] [INFO] POST /api/files {"requestId":"mn8rg50r","status":200,"duration":"995ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:36.884Z] [INFO] GET /api/history {"requestId":"mn8rg5si","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:30:38.097Z] [INFO] GET /api/preview {"requestId":"mn8rg6pj","status":200,"duration":"26ms","ip":"127.0.0.1"}
+[2026-03-27T10:31:22.268Z] [INFO] GET /api/fonts {"requestId":"mn8rh4t7","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-27T10:31:25.202Z] [INFO] GET /api/history {"requestId":"mn8rh72n","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-27T10:31:32.433Z] [LOG] loadFont: 字体加载成功: AaMingTianHuiYouHaoShiFaSheng
+[2026-03-27T10:31:33.790Z] [INFO] 创建文件成功 {"filename":"20260327_1831.pdf"}
+[2026-03-27T10:31:33.792Z] [INFO] POST /api/files {"requestId":"mn8rhcms","status":200,"duration":"1388ms","ip":"127.0.0.1"}
+[2026-03-27T10:31:33.809Z] [INFO] GET /api/history {"requestId":"mn8rhdpr","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T10:31:36.070Z] [INFO] GET /api/preview {"requestId":"mn8rhffk","status":200,"duration":"38ms","ip":"127.0.0.1"}

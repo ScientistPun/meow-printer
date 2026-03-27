@@ -38,7 +38,8 @@ createApp({
       marginRight: 20,
       marginBottom: 20,
       marginLeft: 20,
-      gridLines: false
+      gridLines: false,
+      addHeader: false
     });
 
     const showCreateFile = ref(false);
@@ -55,6 +56,7 @@ createApp({
       marginBottom: 20,
       marginLeft: 20,
       gridLines: false,
+      addHeader: false,
       showMore: false
     });
 
@@ -76,6 +78,7 @@ createApp({
           settings.marginBottom = parsed.marginBottom ?? 20;
           settings.marginLeft = parsed.marginLeft ?? 20;
           settings.gridLines = parsed.gridLines ?? false;
+          settings.addHeader = parsed.addHeader ?? false;
         } catch (e) {}
       }
     };
@@ -277,6 +280,7 @@ createApp({
       createFile.marginBottom = settings.marginBottom ?? 20;
       createFile.marginLeft = settings.marginLeft ?? 20;
       createFile.gridLines = settings.gridLines ?? false;
+      createFile.addHeader = settings.addHeader ?? false;
       createFile.showMore = false;
       createFile.content = '';
       // 加载字体列表
@@ -315,6 +319,7 @@ createApp({
         formData.append('marginBottom', createFile.marginBottom || 0);
         formData.append('marginLeft', createFile.marginLeft || 0);
         formData.append('gridLines', createFile.gridLines ? 'true' : 'false');
+        formData.append('addHeader', createFile.addHeader ? 'true' : 'false');
 
         const res = await fetch(`${API_BASE}/files`, {
           method: 'POST',
@@ -336,6 +341,7 @@ createApp({
           createFile.marginBottom = 20;
           createFile.marginLeft = 20;
           createFile.gridLines = false;
+          createFile.addHeader = false;
           createFile.showMore = false;
           loadHistory();
         } else {
@@ -560,7 +566,8 @@ createApp({
         marginRight: settings.marginRight,
         marginBottom: settings.marginBottom,
         marginLeft: settings.marginLeft,
-        gridLines: settings.gridLines
+        gridLines: settings.gridLines,
+        addHeader: settings.addHeader
       }));
       showSettings.value = false;
       showMessage('设置已保存', 'success');

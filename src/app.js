@@ -500,7 +500,7 @@ app.post('/api/preview', upload.single('file'), async (req, res) => {
 // 创建文本文件
 app.post('/api/files', upload.none(), async (req, res) => {
   try {
-    const { name, paperSize, fontFamily, fontSize, content, customWidth, customHeight, marginTop, marginRight, marginBottom, marginLeft, gridLines } = req.body;
+    const { name, paperSize, fontFamily, fontSize, content, customWidth, customHeight, marginTop, marginRight, marginBottom, marginLeft, gridLines, addHeader } = req.body;
 
     if (!name || !content) {
       return res.status(400).json({ success: false, error: '文件名和内容不能为空' });
@@ -529,7 +529,7 @@ app.post('/api/files', upload.none(), async (req, res) => {
       left: parseInt(marginLeft) || 0
     };
 
-    const pdfPath = await createTextPdf(content, parseInt(fontSize) || 12, fontFamily || 'SourceHanSans', mediaWidth, mediaHeight, margins, gridLines === 'true' || gridLines === true);
+    const pdfPath = await createTextPdf(content, parseInt(fontSize) || 12, fontFamily || 'SourceHanSans', mediaWidth, mediaHeight, margins, gridLines === 'true' || gridLines === true, addHeader === 'true' || addHeader === true);
 
     // 文件名直接使用前端传来的名称（前端已包含时间戳格式）
     const filename = `${name}.pdf`;

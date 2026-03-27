@@ -833,7 +833,7 @@ export async function processFileForOrientation(filePath, orientation, options =
 
 /**
  * 从文本内容创建 PDF
- * 支持中文自动换行、字体选择、边距设置、网格线
+ * 支持中文自动换行、字体选择、边距设置、网格线、页眉页脚
  * @param {string} text - 文本内容
  * @param {number} [fontSize=12] - 字体大小（磅）
  * @param {string} [fontFamily='SourceHanSans'] - 字体名称
@@ -845,9 +845,10 @@ export async function processFileForOrientation(filePath, orientation, options =
  * @param {number} [margins.bottom=20] - 下边距（点）
  * @param {number} [margins.left=20] - 左边距（点）
  * @param {boolean} [gridLines=false] - 是否绘制网格横线
+ * @param {boolean} [addHeader=false] - 是否在页眉添加 No. 和 Date
  * @returns {Promise<string>} 生成 PDF 的路径
  */
-export async function createTextPdf(text, fontSize = 12, fontFamily = 'SourceHanSans', mediaWidth = 210, mediaHeight = 297, margins = null, gridLines = false) {
+export async function createTextPdf(text, fontSize = 12, fontFamily = 'SourceHanSans', mediaWidth = 210, mediaHeight = 297, margins = null, gridLines = false, addHeader = false) {
   try {
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontkit);
@@ -949,6 +950,36 @@ export async function createTextPdf(text, fontSize = 12, fontFamily = 'SourceHan
     // 创建第一页
     let currentY = pageHeight - margin.top - fontSize;
     let page = pdfDoc.addPage([pageWidth, pageHeight]);
+
+    // 绘制页眉（可选）- No. 和 Date
+    if (addHeader) {
+      const today = new Date().toISOString().split('T')[0];
+      const headerFontSize = fontSize * 0.8;
+      const headerY = pageHeight - margin.top + headerFontSize * 0.3;
+
+      // No. 在左侧
+      page.drawText(`No.`, {
+        x: margin.left,
+        y: headerY,
+        size: headerFontSize,
+        font: font,
+        color: rgb(0.5, 0.5, 0.5)
+      });
+
+      // Date 在右侧
+      const dateText = `Date: ${today}`;
+      const dateWidth = font.widthOfTextAtSize(dateText, headerFontSize);
+      page.drawText(dateText, {
+        x: pageWidth - margin.right - dateWidth,
+        y: headerY,
+        size: headerFontSize,
+        font: font,
+        color: rgb(0.5, 0.5, 0.5)
+      });
+
+      // 标题和正文往下移
+      currentY -= lineHeight * 0.5;
+    }
 
     // 绘制网格横线（可选）
     if (gridLines) {
