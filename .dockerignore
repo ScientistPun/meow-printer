@@ -3,7 +3,6 @@ node_modules
 .gitignore
 *.md
 logs
-cache
 public/cache
 public/uploads
 .DS_Store

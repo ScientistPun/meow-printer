@@ -44,9 +44,7 @@ docker run -d \
 | Path | Description |
 |------|-------------|
 | `/var/run/cups.sock` | CUPS socket (read-only) |
-| `/app/public/uploads` | Uploaded files (persistent) |
-| `/app/public/cache` | Cache files (persistent) |
-| `/app/public/fonts` | Custom fonts directory (persistent) |
+| `/app/public` | Public files (persistent) |
 | `/app/logs` | Application logs (persistent) |
 
 ### Data Persistence
@@ -55,9 +53,7 @@ For production use, mount host directories to preserve data:
 
 ```yaml
 volumes:
-  - ./data/uploads:/app/public/uploads
-  - ./data/cache:/app/public/cache
-  - ./fonts:/app/public/fonts
+  - ./public:/app/public
   - ./logs:/app/logs
 ```
 

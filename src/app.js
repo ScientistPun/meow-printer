@@ -152,12 +152,14 @@ app.get('/api/printers/capabilities', async (req, res) => {
 app.post('/api/print', upload.single('file'), async (req, res) => {
   try {
     let filePath, originalName;
+    let shouldDeleteFile = false;
 
     // 判断是新上传文件还是历史文件
     if (req.file) {
       // 新上传的文件
       filePath = req.file.path;
       originalName = req.file.originalname;
+      shouldDeleteFile = true; // 标记新上传文件需要删除
     } else if (req.body.filePath) {
       // 历史文件（已存在于 uploads 目录）
       filePath = path.join(UPLOAD_DIR, req.body.filePath);
@@ -223,6 +225,15 @@ app.post('/api/print', upload.single('file'), async (req, res) => {
     });
 
     const result = await printFile(filePath, printer, options);
+
+    // 打印完成后删除上传的临时文件
+    if (shouldDeleteFile && fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (e) {
+        logger.warn('删除打印临时文件失败', { path: filePath, error: e.message });
+      }
+    }
 
     if (result.success) {
       logger.info('打印任务提交成功', {
@@ -397,9 +408,11 @@ app.delete('/api/history/:filename', async (req, res) => {
 app.post('/api/preview', upload.single('file'), async (req, res) => {
   try {
     let filePath;
+    let shouldDeleteFile = false;
 
     if (req.file) {
       filePath = req.file.path;
+      shouldDeleteFile = true; // 标记新上传文件需要删除
     } else if (req.body.filePath) {
       filePath = path.join(UPLOAD_DIR, req.body.filePath);
       if (!fs.existsSync(filePath)) {
@@ -464,17 +477,23 @@ app.post('/api/preview', upload.single('file'), async (req, res) => {
 
     logger.info('Calling with options:', JSON.stringify(options));
 
-    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      if (options.orientation === 'portrait') {
-        previewFilePath = await imageToPdfPortrait(filePath, options);
-      } else {
-        previewFilePath = await imageToPdfLandscape(filePath, options);
-      }
-    } else if (ext === '.pdf') {
-      // 所有缩放模式都走 scalePdf（支持 fit 和自定义缩放）
+    // PDF 文件：使用 scalePdf 处理（支持 fit、百分比缩放、n-up、pageSet）
+    if (ext === '.pdf') {
       logger.info('Calling scalePdf for PDF, scaling:', options.scaling);
       previewFilePath = await scalePdf(filePath, options);
       logger.info('scalePdf returned:', previewFilePath);
+    } else if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
+      // 图片：图片独立处理缩放（不走 scalePdf），仅 n-up/pageSet 需要额外处理
+      const tempPdfPath = await (options.orientation === 'landscape'
+        ? imageToPdfLandscape(filePath, options)
+        : imageToPdfPortrait(filePath, options));
+
+      if (options.nup > 1 || (options.pageSet && options.pageSet !== 'all')) {
+        previewFilePath = await scalePdf(tempPdfPath, options);
+        try { fs.unlinkSync(tempPdfPath); } catch (e) {}
+      } else {
+        previewFilePath = tempPdfPath;
+      }
     } else {
       return res.status(400).json({ error: '不支持的文件类型' });
     }
@@ -491,6 +510,15 @@ app.post('/api/preview', upload.single('file'), async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline');
     fs.createReadStream(previewFilePath).pipe(res);
+
+    // 预览完成后删除上传的临时文件
+    if (shouldDeleteFile && fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (e) {
+        logger.warn('删除预览临时文件失败', { path: filePath, error: e.message });
+      }
+    }
   } catch (error) {
     logger.error('预览生成失败', { error: error.message });
     res.status(500).json({ error: error.message });
@@ -588,6 +616,14 @@ app.post('/api/file/dimensions', upload.single('file'), async (req, res) => {
     const { getFileDimensions } = await import('./service/cups.js');
     const dims = await getFileDimensions(req.file.path);
     console.log('File dimensions:', dims);
+
+    // 上传后自动删除临时文件
+    try {
+      fs.unlinkSync(req.file.path);
+    } catch (e) {
+      logger.warn('删除临时文件失败', { path: req.file.path, error: e.message });
+    }
+
     if (dims) {
       res.json({ width: Math.round(dims.width), height: Math.round(dims.height) });
     } else {

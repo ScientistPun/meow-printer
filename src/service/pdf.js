@@ -7,20 +7,8 @@ import * as fontkit from 'fontkit';
 import path from 'path';
 import fs from 'fs';
 import sharp from 'sharp';
-import { CACHE_DIR, FONTS_DIR } from '../config.js';
+import { CACHE_DIR, FONTS_DIR, FONTS_MAP } from '../config.js';
 import logger from '../utils/logger.js';
-
-/**
- * 可用字体映射表
- * - id: 字体唯一标识符
- * - file: 字体文件名
- * - name: 显示名称
- */
-const FONTS_MAP = {
-  'SourceHanSans': { file: 'SourceHanSans.otf', name: '思源黑体' },
-  'ZiTiGuanJiaFangSongTi': { file: 'ZiTiGuanJiaFangSongTi-2.ttf', name: '仿宋体' },
-  'AaMingTianHuiYouHaoShiFaSheng': { file: 'AaMingTianHuiYouHaoShiFaSheng-2.ttf', name: '喵呜体' }
-};
 
 /** PDF 文件名计数器，确保并发生成时文件名唯一 */
 let pdfCounter = 0;
@@ -356,12 +344,12 @@ export async function imageToPdfPortrait(imagePath, options = {}) {
   const scalingVal = options.scaling;
 
   if (scalingVal === 'fit' || !scalingVal) {
-    // 自适应模式：内容填满纸张（可能裁剪）
+    // 自适应模式：图片完整显示在纸张内（不裁剪）
     const targetWidth = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
     const targetHeight = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
     const fitScaleX = targetWidth / imgPointsWidth;
     const fitScaleY = targetHeight / imgPointsHeight;
-    const fitScale = Math.max(fitScaleX, fitScaleY); // 取较大值确保填满
+    const fitScale = Math.min(fitScaleX, fitScaleY); // 取较小值确保完整显示
     scaledWidth = imgPointsWidth * fitScale;
     scaledHeight = imgPointsHeight * fitScale;
     logger.log('使用 FIT 缩放模式, 缩放比例:', fitScale);
@@ -377,9 +365,9 @@ export async function imageToPdfPortrait(imagePath, options = {}) {
   const finalPageWidth = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
   const finalPageHeight = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
 
-  // 图片放置位置（左上角）
-  const x = 0;
-  const y = 0;
+  // 图片居中放置
+  const x = (finalPageWidth - scaledWidth) / 2;
+  const y = (finalPageHeight - scaledHeight) / 2;
 
   logger.log('目标纸张尺寸 (mm):', options.mediaWidth, 'x', options.mediaHeight);
   logger.log('图片点尺寸:', imgPointsWidth, 'x', imgPointsHeight);
@@ -428,11 +416,13 @@ export async function imageToPdfLandscape(imagePath, options = {}) {
   const scalingVal = options.scaling;
 
   if (scalingVal === 'fit' || !scalingVal) {
-    const targetWidth = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
-    const targetHeight = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
+    // 自适应模式：图片完整显示在纸张内（不裁剪）
+    // 横排模式：交换纸张宽高
+    const targetWidth = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
+    const targetHeight = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
     const fitScaleX = targetWidth / imgPointsWidth;
     const fitScaleY = targetHeight / imgPointsHeight;
-    const fitScale = Math.max(fitScaleX, fitScaleY);
+    const fitScale = Math.min(fitScaleX, fitScaleY);
     scaledWidth = imgPointsWidth * fitScale;
     scaledHeight = imgPointsHeight * fitScale;
   } else {
@@ -441,11 +431,13 @@ export async function imageToPdfLandscape(imagePath, options = {}) {
     scaledHeight = imgPointsHeight * userScale;
   }
 
-  const finalPageWidth = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
-  const finalPageHeight = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
+  // 横排模式：交换页面宽高
+  const finalPageWidth = options.mediaHeight ? mmToPoints(options.mediaHeight) : imgPointsHeight;
+  const finalPageHeight = options.mediaWidth ? mmToPoints(options.mediaWidth) : imgPointsWidth;
 
-  const x = 0;
-  const y = 0;
+  // 图片居中放置
+  const x = (finalPageWidth - scaledWidth) / 2;
+  const y = (finalPageHeight - scaledHeight) / 2;
 
   const page = pdfDoc.addPage([finalPageWidth, finalPageHeight]);
   page.drawImage(pdfImage, { x, y, width: scaledWidth, height: scaledHeight });
@@ -786,44 +778,35 @@ export async function scalePdf(filePath, options = {}) {
 export async function processFileForOrientation(filePath, orientation, options = {}) {
   const ext = path.extname(filePath).toLowerCase();
   const pdfOptions = {
-    scaling: options.scaling
+    scaling: options.scaling,
+    orientation: orientation,
+    mediaWidth: options.mediaWidth,
+    mediaHeight: options.mediaHeight,
+    nup: options.nup,
+    pageSet: options.pageSet,
+    customPages: options.customPages
   };
 
-  // 传递纸张尺寸
-  if (options.mediaWidth && options.mediaHeight) {
-    pdfOptions.mediaWidth = options.mediaWidth;
-    pdfOptions.mediaHeight = options.mediaHeight;
-  }
-
-  // 传递 n-up 设置
-  if (options.nup && options.nup > 1) {
-    pdfOptions.nup = options.nup;
-  }
-
-  // 传递 pageSet 设置
-  if (options.pageSet && options.pageSet !== 'all') {
-    pdfOptions.pageSet = options.pageSet;
-    // 传递自定义页数
-    if (options.pageSet === 'custom' && options.customPages) {
-      pdfOptions.customPages = options.customPages;
-    }
-  }
-
-  // PDF 文件使用 scalePdf 处理
+  // PDF 文件：使用 scalePdf 处理（支持 fit、百分比缩放）
   if (ext === '.pdf') {
-    pdfOptions.orientation = orientation;
     return await scalePdf(filePath, pdfOptions);
   }
 
-  // 图片文件根据方向处理
-  if (orientation === 'portrait') {
-    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      return await imageToPdfPortrait(filePath, pdfOptions);
+  // 图片文件：图片独立处理缩放和方向，不走 scalePdf
+  if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
+    // 图片直接根据 orientation 和 scaling 生成 PDF
+    const tempPdfPath = await (orientation === 'landscape'
+      ? imageToPdfLandscape(filePath, pdfOptions)
+      : imageToPdfPortrait(filePath, pdfOptions));
+
+    // n-up 和 pageSet 需要额外处理
+    if (options.nup > 1 || (options.pageSet && options.pageSet !== 'all')) {
+      const finalPdfPath = await scalePdf(tempPdfPath, pdfOptions);
+      try { fs.unlinkSync(tempPdfPath); } catch (e) {}
+      return finalPdfPath;
     }
-  } else if (orientation === 'landscape') {
-    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      return await imageToPdfLandscape(filePath, pdfOptions);
-    }
+
+    return tempPdfPath;
   }
 
   return filePath;
@@ -963,7 +946,7 @@ export async function createTextPdf(text, fontSize = 12, fontFamily = 'SourceHan
         y: headerY,
         size: headerFontSize,
         font: font,
-        color: rgb(0.5, 0.5, 0.5)
+        color: rgb(0.8, 0.8, 0.8)
       });
 
       // Date 在右侧
@@ -974,17 +957,31 @@ export async function createTextPdf(text, fontSize = 12, fontFamily = 'SourceHan
         y: headerY,
         size: headerFontSize,
         font: font,
-        color: rgb(0.5, 0.5, 0.5)
+        color: rgb(0.8, 0.8, 0.8)
       });
 
-      // 标题和正文往下移
-      currentY -= lineHeight * 0.5;
+      // No. 和 Date 下方加一条横线（距底部 2mm）
+      const lineY = headerY - (2 * 72 / 25.4);
+      page.drawLine({
+        start: { x: margin.left, y: lineY },
+        end: { x: pageWidth - margin.right, y: lineY },
+        color: rgb(0.8, 0.8, 0.8),
+        thickness: 0.5
+      });
+
+      // 标题和正文贴近横线下方（距横线 2mm）
+      currentY = lineY - (fontSize + 2 * 72 / 25.4);
     }
 
     // 绘制网格横线（可选）
     if (gridLines) {
-      const gridColor = rgb(0.85, 0.85, 0.85);
+      const gridColor = rgb(0.8, 0.8, 0.8);
       let gridY = pageHeight - margin.top;
+
+      // 如果没有页眉，第一行文字距第一条横线 2mm
+      if (!addHeader) {
+        currentY = gridY - lineHeight - (2 * 72 / 25.4);
+      }
 
       while (gridY > margin.bottom) {
         page.drawLine({

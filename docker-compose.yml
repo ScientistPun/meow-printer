@@ -1,10 +1,6 @@
 services:
   meow-printer:
-    build:
-      context: .
-      platform: 
-        - linux/amd64
-        - linux/arm64
+    build: .
     container_name: meow-printer
     ports:
       - "3000:3000"
@@ -13,9 +9,7 @@ services:
       - CUPS_PORT=631
     volumes:
       - /var/run/cups.sock:/var/run/cups.sock:ro
-      - ./public/cache:/app/public/cache
-      - ./public/uploads:/app/public/uploads
-      - ./public/fonts:/app/public/fonts
+      - ./public:/app/public
       - ./logs:/app/logs
     restart: unless-stopped
     network_mode: host

@@ -21,11 +21,25 @@ const LOG_DIR = path.join(ROOT_DIR, 'logs');
 // 缓存目录
 const CACHE_DIR = path.join(PUBLIC_DIR, 'cache');
 
+// 上传目录
+const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
+
+// ==================== 字体配置 ====================
+
 // 字体目录
 const FONTS_DIR = path.join(PUBLIC_DIR, 'fonts');
 
-// 上传目录
-const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
+/**
+ * 可用字体映射表
+ * - id: 字体唯一标识符
+ * - file: 字体文件名
+ * - name: 显示名称
+ */
+const FONTS_MAP = {
+  'SourceHanSans': { file: 'SourceHanSans.otf', name: '思源黑体' },
+  'ZiTiGuanJiaFangSongTi': { file: 'ZiTiGuanJiaFangSongTi-2.ttf', name: '仿宋体' },
+  'AaMingTianHuiYouHaoShiFaSheng': { file: 'AaMingTianHuiYouHaoShiFaSheng-2.ttf', name: '喵呜体' }
+};
 
 // ==================== CUPS 打印服务器配置 ====================
 
@@ -49,6 +63,7 @@ export {
   LOG_DIR,
   CACHE_DIR,
   FONTS_DIR,
+  FONTS_MAP,
   UPLOAD_DIR,
   CUPS_HOST,
   CUPS_PORT,
