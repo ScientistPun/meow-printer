@@ -13,7 +13,9 @@ services:
       - CUPS_PORT=631
     volumes:
       - /var/run/cups.sock:/var/run/cups.sock:ro
-      - ./server/cache:/app/cache
-      - ./server/uploads:/app/uploads
+      - ./public/cache:/app/public/cache
+      - ./public/uploads:/app/public/uploads
+      - ./public/fonts:/app/public/fonts
+      - ./logs:/app/logs
     restart: unless-stopped
     network_mode: host

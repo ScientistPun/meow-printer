@@ -1,0 +1,141 @@
+[2026-03-27T08:24:21.894Z] [INFO] 删除日志 {"date":"2026-03-27"}
+[2026-03-27T08:24:21.896Z] [INFO] DELETE /api/logs {"requestId":"mn8mxsw0","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:21.900Z] [INFO] GET /api/logs {"requestId":"mn8mxswa","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:27.373Z] [INFO] 清空缓存文件 {"count":5}
+[2026-03-27T08:24:27.376Z] [INFO] DELETE /api/cache {"requestId":"mn8mxx3z","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:28.226Z] [INFO] GET /api/fonts {"requestId":"mn8mxxrp","status":200,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:43.194Z] [INFO] GET /api/logs {"requestId":"mn8my9bp","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:43.682Z] [INFO] GET /api/history {"requestId":"mn8my9p9","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T08:24:46.670Z] [INFO] GET /api/fonts {"requestId":"mn8myc09","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T08:55:53.310Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T08:55:53.499Z] [INFO] GET / {"requestId":"mn8o2cgf","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-27T08:55:53.510Z] [INFO] GET /index.js {"requestId":"mn8o2cgy","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:05.352Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T09:00:20.380Z] [INFO] GET / {"requestId":"mn8o82dp","status":200,"duration":"14ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:20.491Z] [INFO] GET /.well-known/appspecific/com.chrome.devtools.json {"requestId":"mn8o82g8","status":404,"duration":"35ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:20.498Z] [INFO] GET /index.js {"requestId":"mn8o82fk","status":200,"duration":"66ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:22.205Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8o83cl"}
+[2026-03-27T09:00:22.211Z] [INFO] GET /api/printers {"requestId":"mn8o83cl","status":200,"duration":"590ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:22.523Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8o83t6"}
+[2026-03-27T09:00:22.526Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8o83t6","status":200,"duration":"308ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:22.915Z] [INFO] GET /api/history {"requestId":"mn8o84c7","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:23.602Z] [INFO] GET /api/logs {"requestId":"mn8o84va","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:24.076Z] [INFO] GET /api/history {"requestId":"mn8o858l","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:24.966Z] [INFO] GET /api/file/dimensions {"requestId":"mn8o85wi","status":200,"duration":"36ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:26.721Z] [INFO] Preview options {"body":{"filePath":"多页测试.pdf","originalName":"多页测试.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A6"},"options":{"copies":1,"media":"A6","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:00:26.723Z] [INFO] Preview: Calling getMediaSizeMM with: "A6"
+[2026-03-27T09:00:26.723Z] [INFO] Preview: getMediaSizeMM result: {"width":105,"height":148}
+[2026-03-27T09:00:26.723Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":105,"mediaHeight":148}
+[2026-03-27T09:00:26.724Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A6\",\"mediaWidth\":105,\"mediaHeight\":148,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:00:26.724Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:00:26.804Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/多页测试.pdf_scaled.pdf"
+[2026-03-27T09:00:26.804Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/多页测试.pdf_scaled.pdf"
+[2026-03-27T09:00:26.805Z] [INFO] File exists: true
+[2026-03-27T09:00:26.805Z] [INFO] File size: 81543
+[2026-03-27T09:00:26.808Z] [INFO] POST /api/preview {"requestId":"mn8o879o","status":200,"duration":"107ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:32.978Z] [INFO] Preview options {"body":{"filePath":"多页测试.pdf","originalName":"多页测试.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"landscape","pageSet":"all","nup":"1","scaling":"fit","media":"A6"},"options":{"copies":1,"media":"A6","mediaWidth":null,"mediaHeight":null,"orientation":"landscape","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:00:32.978Z] [INFO] Preview: Calling getMediaSizeMM with: "A6"
+[2026-03-27T09:00:32.979Z] [INFO] Preview: getMediaSizeMM result: {"width":105,"height":148}
+[2026-03-27T09:00:32.979Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":105,"mediaHeight":148}
+[2026-03-27T09:00:32.980Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A6\",\"mediaWidth\":105,\"mediaHeight\":148,\"orientation\":\"landscape\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:00:32.980Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:00:33.030Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/多页测试.pdf_scaled.pdf"
+[2026-03-27T09:00:33.030Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/多页测试.pdf_scaled.pdf"
+[2026-03-27T09:00:33.030Z] [INFO] File exists: true
+[2026-03-27T09:00:33.031Z] [INFO] File size: 81560
+[2026-03-27T09:00:33.033Z] [INFO] POST /api/preview {"requestId":"mn8o8c3w","status":200,"duration":"61ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:38.995Z] [INFO] GET /api/history {"requestId":"mn8o8gr2","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:40.488Z] [INFO] GET /api/file/dimensions {"requestId":"mn8o8hu7","status":200,"duration":"89ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:41.657Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"landscape","pageSet":"all","nup":"1","scaling":"fit","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"landscape","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:00:41.657Z] [INFO] Preview: Calling getMediaSizeMM with: "A5"
+[2026-03-27T09:00:41.657Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T09:00:41.658Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T09:00:41.658Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A5\",\"mediaWidth\":148,\"mediaHeight\":210,\"orientation\":\"landscape\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:00:41.661Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:00:41.768Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:00:41.768Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:00:41.769Z] [INFO] File exists: true
+[2026-03-27T09:00:41.769Z] [INFO] File size: 8476243
+[2026-03-27T09:00:41.807Z] [INFO] POST /api/preview {"requestId":"mn8o8isz","status":200,"duration":"156ms","ip":"127.0.0.1"}
+[2026-03-27T09:00:47.099Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:00:47.099Z] [INFO] Preview: Calling getMediaSizeMM with: "A5"
+[2026-03-27T09:00:47.100Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T09:00:47.100Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T09:00:47.100Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A5\",\"mediaWidth\":148,\"mediaHeight\":210,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:00:47.102Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:00:47.177Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:00:47.177Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:00:47.178Z] [INFO] File exists: true
+[2026-03-27T09:00:47.178Z] [INFO] File size: 8476227
+[2026-03-27T09:00:47.203Z] [INFO] POST /api/preview {"requestId":"mn8o8n05","status":200,"duration":"110ms","ip":"127.0.0.1"}
+[2026-03-27T09:07:49.558Z] [INFO] GET /api/history {"requestId":"mn8ohoyk","status":200,"duration":"26ms","ip":"127.0.0.1"}
+[2026-03-27T09:07:51.071Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:07:51.072Z] [INFO] Preview: Calling getMediaSizeMM with: "A5"
+[2026-03-27T09:07:51.072Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T09:07:51.072Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T09:07:51.073Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A5\",\"mediaWidth\":148,\"mediaHeight\":210,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:07:51.077Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:07:51.260Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:07:51.261Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:07:51.261Z] [INFO] File exists: true
+[2026-03-27T09:07:51.261Z] [INFO] File size: 8476227
+[2026-03-27T09:07:51.289Z] [INFO] POST /api/preview {"requestId":"mn8ohq4v","status":200,"duration":"234ms","ip":"127.0.0.1"}
+[2026-03-27T09:07:58.063Z] [INFO] GET /api/history {"requestId":"mn8ohvjb","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:07:58.982Z] [INFO] GET /api/file/dimensions {"requestId":"mn8ohw6o","status":200,"duration":"86ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:12.518Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"80","media":"A5"},"options":{"copies":1,"media":"A5","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"80","nup":1}}
+[2026-03-27T09:08:12.520Z] [INFO] Preview: Calling getMediaSizeMM with: "A5"
+[2026-03-27T09:08:12.520Z] [INFO] Preview: getMediaSizeMM result: {"width":148,"height":210}
+[2026-03-27T09:08:12.521Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":148,"mediaHeight":210}
+[2026-03-27T09:08:12.521Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A5\",\"mediaWidth\":148,\"mediaHeight\":210,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"80\",\"nup\":1}"
+[2026-03-27T09:08:12.523Z] [INFO] Calling scalePdf for PDF, scaling: "80"
+[2026-03-27T09:08:12.622Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:12.623Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:12.624Z] [INFO] File exists: true
+[2026-03-27T09:08:12.624Z] [INFO] File size: 8476263
+[2026-03-27T09:08:12.651Z] [INFO] POST /api/preview {"requestId":"mn8oi6ou","status":200,"duration":"141ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:23.913Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"100","media":"A4"},"options":{"copies":1,"media":"A4","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"100","nup":1}}
+[2026-03-27T09:08:23.914Z] [INFO] Preview: Calling getMediaSizeMM with: "A4"
+[2026-03-27T09:08:23.914Z] [INFO] Preview: getMediaSizeMM result: {"width":210,"height":297}
+[2026-03-27T09:08:23.914Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":210,"mediaHeight":297}
+[2026-03-27T09:08:23.914Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A4\",\"mediaWidth\":210,\"mediaHeight\":297,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"100\",\"nup\":1}"
+[2026-03-27T09:08:23.916Z] [INFO] Calling scalePdf for PDF, scaling: "100"
+[2026-03-27T09:08:24.011Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:24.012Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:24.012Z] [INFO] File exists: true
+[2026-03-27T09:08:24.012Z] [INFO] File size: 8476252
+[2026-03-27T09:08:24.029Z] [INFO] POST /api/preview {"requestId":"mn8oifhg","status":200,"duration":"121ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:30.751Z] [INFO] Preview options {"body":{"filePath":"20260326_新.pdf","originalName":"20260326_新.pdf","printer":"Gprinter_GP-1324D","copies":"1","orientation":"portrait","pageSet":"all","nup":"1","scaling":"fit","media":"A4"},"options":{"copies":1,"media":"A4","mediaWidth":null,"mediaHeight":null,"orientation":"portrait","pageSet":"all","customPages":"","scaling":"fit","nup":1}}
+[2026-03-27T09:08:30.753Z] [INFO] Preview: Calling getMediaSizeMM with: "A4"
+[2026-03-27T09:08:30.754Z] [INFO] Preview: getMediaSizeMM result: {"width":210,"height":297}
+[2026-03-27T09:08:30.754Z] [INFO] After getMediaSizeMM, options: {"mediaWidth":210,"mediaHeight":297}
+[2026-03-27T09:08:30.755Z] [INFO] Calling with options: "{\"copies\":1,\"media\":\"A4\",\"mediaWidth\":210,\"mediaHeight\":297,\"orientation\":\"portrait\",\"pageSet\":\"all\",\"customPages\":\"\",\"scaling\":\"fit\",\"nup\":1}"
+[2026-03-27T09:08:30.756Z] [INFO] Calling scalePdf for PDF, scaling: "fit"
+[2026-03-27T09:08:30.843Z] [INFO] scalePdf returned: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:30.845Z] [INFO] Preview file path: "/Users/koali/meow-printer/public/cache/20260326_新.pdf_scaled.pdf"
+[2026-03-27T09:08:30.845Z] [INFO] File exists: true
+[2026-03-27T09:08:30.845Z] [INFO] File size: 8476245
+[2026-03-27T09:08:30.871Z] [INFO] POST /api/preview {"requestId":"mn8oikrc","status":200,"duration":"127ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:37.919Z] [INFO] GET /api/logs {"requestId":"mn8oiqag","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:38.421Z] [INFO] GET /api/history {"requestId":"mn8oiqoe","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:08:49.604Z] [INFO] GET / {"requestId":"mn8oizb3","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-27T09:09:14.783Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T09:20:24.138Z] [INFO] 自动加载字体 {"fontId":"AaMingTianHuiYouHaoShiFaSheng-2","file":"AaMingTianHuiYouHaoShiFaSheng-2.ttf"}
+[2026-03-27T09:20:24.141Z] [INFO] 自动加载字体 {"fontId":"ZiTiGuanJiaFangSongTi-2","file":"ZiTiGuanJiaFangSongTi-2.ttf"}
+[2026-03-27T09:20:24.154Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T09:20:24.322Z] [INFO] GET /api/fonts {"requestId":"mn8oxvcp","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:42.823Z] [INFO] GET / {"requestId":"mn8oy9mo","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:42.876Z] [INFO] GET /index.js {"requestId":"mn8oy9o5","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:43.634Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mn8oy9uz"}
+[2026-03-27T09:20:43.636Z] [INFO] GET /api/printers {"requestId":"mn8oy9uz","status":304,"duration":"521ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:44.086Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6photo","100x150mm"],"requestId":"mn8oyafj"}
+[2026-03-27T09:20:44.087Z] [INFO] GET /api/printers/capabilities {"requestId":"mn8oyafj","status":304,"duration":"232ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:47.707Z] [INFO] GET /api/history {"requestId":"mn8oydea","status":304,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:48.636Z] [INFO] GET /api/logs {"requestId":"mn8oye44","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:49.361Z] [INFO] GET /api/history {"requestId":"mn8oyeo6","status":304,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-27T09:20:57.686Z] [INFO] GET /api/fonts {"requestId":"mn8oyl3l","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T09:21:13.979Z] [INFO] GET /api/fonts {"requestId":"mn8oyxo6","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-27T09:21:56.004Z] [INFO] GET /api/fonts {"requestId":"mn8ozu3m","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-27T09:22:12.442Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T09:22:14.203Z] [INFO] GET /api/fonts {"requestId":"mn8p084w","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-27T09:28:34.416Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-27T09:28:34.582Z] [INFO] GET /api/fonts {"requestId":"mn8p8dmy","status":200,"duration":"12ms","ip":"127.0.0.1"}

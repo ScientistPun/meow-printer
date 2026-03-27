@@ -7,7 +7,6 @@
 ### 开发模式
 
 ```bash
-cd server
 npm install
 npm start
 ```
@@ -24,17 +23,36 @@ docker-compose up -d
 
 ```
 meow-printer/
-├── server/
-│   ├── index.js       # Express 服务入口
-│   ├── cups.js        # CUPS 打印功能
-│   ├── public/        # 前端静态文件
-│   │   └── index.html
-│   ├── uploads/        # 上传临时文件
-│   └── package.json
+├── src/
+│   ├── app.js           # Express 服务入口
+│   ├── config.js        # 配置常量
+│   ├── controller/      # 前端控制器
+│   ├── service/         # 服务层 (cups.js, pdf.js)
+│   ├── utils/           # 工具函数 (logger.js)
+│   └── view/            # 前端视图
+├── public/
+│   ├── cache/           # 缓存目录
+│   ├── fonts/           # 字体目录
+│   └── uploads/         # 上传目录
+├── logs/                # 日志目录
 ├── docker-compose.yml
 ├── Dockerfile
 └── README.md
 ```
+
+## 配置说明
+
+### 环境变量
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| CUPS_HOST | 192.168.10.1 | CUPS 服务器地址 |
+| CUPS_PORT | 631 | CUPS 服务器端口 |
+
+### 目录说明
+
+- `public/` - 静态资源目录（缓存、字体、上传文件）
+- `logs/` - 日志文件目录
 
 ## API 接口
 
