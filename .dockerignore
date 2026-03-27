@@ -2,6 +2,9 @@ node_modules
 .git
 .gitignore
 *.md
-server/logs
-server/cache
-server/uploads
+logs
+cache
+public/cache
+public/uploads
+.DS_Store
+*.log
