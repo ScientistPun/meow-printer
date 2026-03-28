@@ -2,6 +2,7 @@ FROM node:20-bullseye
 
 # 只安装运行时必需的小工具
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    cups-client \
     locales \
     && rm -rf /var/lib/apt/lists/*
 

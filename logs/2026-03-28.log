@@ -8,3 +8,34 @@
 [2026-03-28T13:20:43.759Z] [INFO] DELETE /api/cache {"requestId":"mnacys4s","status":200,"duration":"3ms","ip":"127.0.0.1"}
 [2026-03-28T13:20:47.525Z] [INFO] GET /api/history {"requestId":"mnacyv1d","status":200,"duration":"4ms","ip":"127.0.0.1"}
 [2026-03-28T13:20:48.687Z] [INFO] GET /api/logs {"requestId":"mnacyvxp","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:33.825Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T16:12:47.515Z] [INFO] GET / {"requestId":"mnaj41z4","status":200,"duration":"25ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:47.733Z] [INFO] GET /index.js {"requestId":"mnaj424x","status":200,"duration":"36ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:47.932Z] [INFO] GET /global.js {"requestId":"mnaj42b9","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:47.935Z] [INFO] GET /common.js {"requestId":"mnaj42b8","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:48.250Z] [INFO] GET /public/favicon.ico {"requestId":"mnaj42k2","status":404,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:48.301Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnaj42c6"}
+[2026-03-28T16:12:48.309Z] [INFO] GET /api/printers {"requestId":"mnaj42c6","status":200,"duration":"351ms","ip":"127.0.0.1"}
+[2026-03-28T16:12:48.536Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnaj42lz"}
+[2026-03-28T16:12:48.538Z] [INFO] GET /api/printers/capabilities {"requestId":"mnaj42lz","status":200,"duration":"227ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:13.438Z] [INFO] GET / {"requestId":"mnajir8z","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:13.459Z] [INFO] GET /index.js {"requestId":"mnajir9s","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:18.524Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T16:24:21.828Z] [INFO] GET / {"requestId":"mnajixq1","status":304,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:21.856Z] [INFO] GET /index.js {"requestId":"mnajixqv","status":304,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:21.864Z] [INFO] GET /common.js {"requestId":"mnajixr8","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:21.866Z] [INFO] GET /global.js {"requestId":"mnajixr9","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:22.126Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnajixs1"}
+[2026-03-28T16:24:22.132Z] [INFO] GET /api/printers {"requestId":"mnajixs1","status":200,"duration":"243ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:22.347Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajixyw"}
+[2026-03-28T16:24:22.349Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajixyw","status":200,"duration":"213ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:24.214Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajizh1"}
+[2026-03-28T16:24:24.216Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajizh1","status":304,"duration":"131ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:29.288Z] [INFO] GET / {"requestId":"mnajj3hd","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:29.333Z] [INFO] GET /index.js {"requestId":"mnajj3in","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:29.621Z] [INFO] GET /global.js {"requestId":"mnajj3qn","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:29.622Z] [INFO] GET /common.js {"requestId":"mnajj3qo","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:29.785Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnajj3rh"}
+[2026-03-28T16:24:29.786Z] [INFO] GET /api/printers {"requestId":"mnajj3rh","status":200,"duration":"141ms","ip":"127.0.0.1"}
+[2026-03-28T16:24:30.134Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajj41f"}
+[2026-03-28T16:24:30.135Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajj41f","status":200,"duration":"132ms","ip":"127.0.0.1"}
