@@ -1,33 +1,51 @@
 const { createApp, ref, reactive, onMounted } = Vue;
+import { formatTime, formatSize, matchFileToMedia } from '/utils/common.js';
+import { DEFAULT_MEDIA_OPTIONS } from '/config/global.js';
 
 createApp({
   setup() {
-    const file = ref(null);
-    const fileName = ref('');
-    const loading = ref(false);
-    const previewLoading = ref(false); // 预览专用 loading
-    const message = ref('');
-    const messageType = ref('');
-    const showMore = ref(false);
-    const mediaSelected = ref(false); // 标记用户是否主动选择了纸张尺寸
-    const printers = ref([]);
-    const printersLoading = ref(true);
-    const activeTab = ref('print');
+    // ==================== 文件相关状态 ====================
+    const file = ref(null);           // 当前选择的文件（File对象或历史文件信息）
+    const fileName = ref('');         // 显示的文件名
+    const loading = ref(false);       // 打印按钮 loading
+    const previewLoading = ref(false); // 预览按钮 loading
+    const message = ref('');          // 提示消息
+    const messageType = ref('');       // 提示消息类型（success/error）
+    const showMore = ref(false);       // 是否显示更多选项
+    const mediaSelected = ref(false);  // 用户是否手动选择了纸张尺寸
 
-    const logFiles = ref([]);
-    const logContent = ref([]);
-    const selectedLogDate = ref('');
-    const logsLoading = ref(false);
+    // ==================== 打印机相关状态 ====================
+    const printers = ref([]);          // 打印机列表
+    const printersLoading = ref(true); // 打印机加载状态
+    const activeTab = ref('print');    // 当前活动标签页
 
-    const history = ref([]);
-    const historyLoading = ref(false);
+    // ==================== 日志相关状态 ====================
+    const logFiles = ref([]);          // 日志文件列表
+    const logContent = ref([]);        // 日志内容
+    const selectedLogDate = ref('');   // 选择的日志日期
+    const logsLoading = ref(false);    // 日志加载状态
 
+    // ==================== 历史文件相关状态 ====================
+    const history = ref([]);           // 历史文件列表
+    const historyLoading = ref(false); // 历史文件加载状态
 
-    const clearingCache = ref(false);
-    const creatingFile = ref(false);
+    // ==================== 其他状态 ====================
+    const clearingCache = ref(false);  // 清空缓存按钮状态
+    const creatingFile = ref(false);    // 创建文本文件按钮状态
 
-    const showSettings = ref(false);
-    const availableFonts = ref([]);
+    // ==================== 设置相关状态 ====================
+    const showSettings = ref(false);    // 是否显示设置弹窗
+    const availableFonts = ref([]);     // 可用字体列表
+
+    /**
+     * 用户设置（持久化到 localStorage）
+     * - defaultMedia: 默认纸张尺寸
+     * - customWidth/customHeight: 自定义纸张尺寸
+     * - fontFamily/fontSize: 字体设置
+     * - marginTop/Right/Bottom/Left: 边距设置
+     * - gridLines: 是否显示网格线
+     * - addHeader: 是否添加页眉（No.、Date）
+     */
     const settings = reactive({
       defaultMedia: 'A4',
       customWidth: 100,
@@ -42,48 +60,42 @@ createApp({
       addHeader: false
     });
 
-    const showCreateFile = ref(false);
+    // ==================== 文本文件创建相关状态 ====================
+    const showCreateFile = ref(false);  // 是否显示创建文件弹窗
     const createFile = reactive({
-      name: '',
-      paperSize: 'A4',
-      fontSize: 12,
-      fontFamily: 'SourceHanSans',
-      customWidth: 100,
-      customHeight: 150,
-      content: '',
-      marginTop: 20,
-      marginRight: 20,
-      marginBottom: 20,
-      marginLeft: 20,
-      gridLines: false,
-      addHeader: false,
-      showMore: false
+      name: '',             // 文件名
+      paperSize: 'A4',      // 纸张尺寸
+      fontSize: 12,         // 字体大小
+      fontFamily: 'SourceHanSans', // 字体
+      customWidth: 100,     // 自定义宽度
+      customHeight: 150,    // 自定义高度
+      content: '',          // 文件内容
+      marginTop: 20,        // 上边距
+      marginRight: 20,      // 右边距
+      marginBottom: 20,     // 下边距
+      marginLeft: 20,       // 左边距
+      gridLines: false,     // 网格线
+      addHeader: false,     // 页眉
+      showMore: false       // 显示更多选项
     });
 
-    const mediaOptions = ref(['A4', 'A5', 'A6', 'B5', 'Letter', 'Legal', '4x6']);
+    // 支持的纸张尺寸选项
+    const mediaOptions = ref([...DEFAULT_MEDIA_OPTIONS]);
 
-    // 从 localStorage 加载设置
-    const loadSettings = () => {
-      const saved = localStorage.getItem('printerSettings');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          settings.defaultMedia = parsed.defaultMedia || 'A4';
-          settings.customWidth = parsed.customWidth || 100;
-          settings.customHeight = parsed.customHeight || 150;
-          settings.fontFamily = parsed.fontFamily || 'SourceHanSans';
-          settings.fontSize = parsed.fontSize || 12;
-          settings.marginTop = parsed.marginTop ?? 20;
-          settings.marginRight = parsed.marginRight ?? 20;
-          settings.marginBottom = parsed.marginBottom ?? 20;
-          settings.marginLeft = parsed.marginLeft ?? 20;
-          settings.gridLines = parsed.gridLines ?? false;
-          settings.addHeader = parsed.addHeader ?? false;
-        } catch (e) {}
-      }
-    };
-    loadSettings();
-
+    // ==================== 打印选项状态 ====================
+    /**
+     * 打印选项
+     * - printer: 选择的打印机
+     * - copies: 打印份数
+     * - orientation: 方向（portrait/landscape）
+     * - pageSet: 页面设置（all/custom/even/odd）
+     * - customPages: 自定义页面范围
+     * - nup: 每张纸打印的页数
+     * - scaling: 缩放模式（fit/percentage）
+     * - scalingPercent: 缩放百分比
+     * - media: 纸张尺寸
+     * - customWidth/customHeight: 自定义尺寸
+     */
     const options = reactive({
       printer: '',
       copies: 1,
@@ -92,6 +104,7 @@ createApp({
       customPages: '',
       nup: 1,
       scaling: 'fit',
+      scalingPercent: 100,
       media: settings.defaultMedia || 'A4',
       customWidth: 100,
       customHeight: 150,
@@ -99,6 +112,7 @@ createApp({
 
     const API_BASE = '/api';
 
+    // ==================== 消息提示 ====================
     const showMessage = (text, type) => {
       message.value = text;
       messageType.value = type;
@@ -107,6 +121,12 @@ createApp({
       }
     };
 
+    // ==================== 打印机相关函数 ====================
+
+    /**
+     * 加载打印机列表
+     * 从 /api/printers 获取可用打印机，并自动选择第一个
+     */
     const loadPrinters = async () => {
       printersLoading.value = true;
       try {
@@ -124,6 +144,10 @@ createApp({
       }
     };
 
+    /**
+     * 加载指定打印机的能力（如支持的纸张尺寸）
+     * @param {string} printer - 打印机名称
+     */
     const loadPrinterCapabilities = async (printer) => {
       if (!printer) return;
       try {
@@ -140,10 +164,17 @@ createApp({
       }
     };
 
+    // 打印机变更时重新加载能力
     const onPrinterChange = () => {
       loadPrinterCapabilities(options.printer);
     };
 
+    // ==================== 日志相关函数 ====================
+
+    /**
+     * 加载日志文件列表
+     * @see loadLogs 获取今天日志内容
+     */
     const loadLogs = async () => {
       logsLoading.value = true;
       try {
@@ -165,6 +196,10 @@ createApp({
       }
     };
 
+    /**
+     * 选择日志日期，加载该日期的日志内容
+     * @param {string} date - 日期字符串 (YYYY-MM-DD)
+     */
     const selectLog = async (date) => {
       selectedLogDate.value = date;
       logsLoading.value = true;
@@ -179,6 +214,10 @@ createApp({
       }
     };
 
+    /**
+     * 清空指定日期的日志
+     * @param {string} date - 日期字符串
+     */
     const clearLog = async (date) => {
       if (!confirm(`确定要清空 ${date} 的日志吗？`)) return;
       try {
@@ -199,6 +238,9 @@ createApp({
       }
     };
 
+    /**
+     * 清空所有日志文件
+     */
     const clearAllLogs = async () => {
       if (!confirm('确定要清空所有日志吗？')) return;
       try {
@@ -217,6 +259,11 @@ createApp({
       }
     };
 
+    // ==================== 历史文件相关函数 ====================
+
+    /**
+     * 加载历史文件列表（从 uploads 目录）
+     */
     const loadHistory = async () => {
       historyLoading.value = true;
       try {
@@ -230,6 +277,9 @@ createApp({
       }
     };
 
+    /**
+     * 清空所有历史文件
+     */
     const clearHistory = async () => {
       if (!confirm('确定要清空所有历史文件吗？')) return;
       try {
@@ -246,6 +296,10 @@ createApp({
       }
     };
 
+    /**
+     * 删除单个历史文件
+     * @param {string} filename - 文件名
+     */
     const deleteHistoryFile = async (filename) => {
       if (!confirm('确定要删除这个文件吗？')) return;
       try {
@@ -262,6 +316,12 @@ createApp({
       }
     };
 
+    // ==================== 文本文件创建相关函数 ====================
+
+    /**
+     * 打开发创建文件弹窗
+     * 初始化文件名（当前日期时间）和默认设置
+     */
     const openCreateFile = () => {
       const now = new Date();
       const yyyy = now.getFullYear();
@@ -290,6 +350,10 @@ createApp({
       showCreateFile.value = true;
     };
 
+    /**
+     * 创建文本文件
+     * 发送内容到后端生成 PDF，保存到 uploads 目录
+     */
     const createTextFile = async () => {
       const name = String(createFile.name || '').trim();
       const content = String(createFile.content || '').trim();
@@ -354,6 +418,10 @@ createApp({
       }
     };
 
+    /**
+     * 预览历史文件
+     * @param {Object} item - 历史文件项 { name, originalName, ... }
+     */
     const viewHistoryFile = async (item) => {
       loading.value = true;
       try {
@@ -406,6 +474,11 @@ createApp({
       }
     };
 
+    /**
+     * 重新打印历史文件
+     * 切换到打印标签页，并选中该历史文件
+     * @param {Object} item - 历史文件项
+     */
     const reprintFile = (item) => {
       activeTab.value = 'print';
       fileName.value = item.originalName;
@@ -420,6 +493,15 @@ createApp({
       loadHistory();
     };
 
+    const switchToLogs = () => {
+      activeTab.value = 'logs';
+      loadLogs();
+    };
+
+    /**
+     * 取消指定的打印任务
+     * @param {string} jobId - 打印任务 ID
+     */
     const cancelJobItem = async (jobId) => {
       if (!confirm('确定要取消这个打印任务吗？')) return;
       try {
@@ -436,53 +518,16 @@ createApp({
       }
     };
 
-    const formatTime = (isoString) => {
-      const d = new Date(isoString);
-      const date = d.toLocaleDateString('zh-CN');
-      const time = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-      return `${date} ${time}`;
-    };
+    // ==================== 文件上传与处理 ====================
 
-    const formatSize = (bytes) => {
-      if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-    };
-
-    const switchToLogs = () => {
-      activeTab.value = 'logs';
-      loadLogs();
-    };
-
-    // 匹配文件尺寸到标准纸张尺寸
-    const matchFileToMedia = (width, height) => {
-      const tolerance = 10; // 容差 10mm
-      const mediaSizes = {
-        'A4': { width: 210, height: 297 },
-        'A5': { width: 148, height: 210 },
-        'A6': { width: 105, height: 148 },
-        'B5': { width: 176, height: 250 },
-        'Letter': { width: 215.9, height: 279.4 },
-        'Legal': { width: 215.9, height: 355.6 },
-        '4x6': { width: 101.6, height: 152.4 }
-      };
-
-      for (const media of Object.keys(mediaSizes)) {
-        const size = mediaSizes[media];
-
-        const matchNormal = Math.abs(width - size.width) <= tolerance &&
-                            Math.abs(height - size.height) <= tolerance;
-        const matchRotated = Math.abs(width - size.height) <= tolerance &&
-                             Math.abs(height - size.width) <= tolerance;
-
-        if (matchNormal || matchRotated) {
-          return media;
-        }
-      }
-      return settings.defaultMedia || 'A4'; // 无匹配使用设置的默认值
-    };
-
-    // 选择文件后自动检测尺寸并匹配纸张
+    /**
+     * 自动检测文件尺寸并匹配纸张
+     * 调用 /api/file/dimensions 接口获取文件尺寸
+     * @param {Object} fileData - 文件数据（File对象或历史文件路径）
+     * @param {boolean} fileData.isHistoryFile - 是否为历史文件
+     * @param {File} fileData - 文件对象（isHistoryFile=false时）
+     * @param {string} fileData.path - 文件路径（isHistoryFile=true时）
+     */
     const autoSelectMedia = async (fileData) => {
       try {
         const formData = new FormData();
@@ -507,7 +552,7 @@ createApp({
           console.log('Detected dimensions:', dims);
           const matched = matchFileToMedia(dims.width, dims.height);
           console.log('Matched media:', matched);
-          options.media = matched;
+          options.media = matched || settings.defaultMedia || 'A4';
         } else {
           console.error('Failed to get dimensions, status:', res.status);
           options.media = settings.defaultMedia || 'A4';
@@ -518,24 +563,76 @@ createApp({
       }
     };
 
-    const onFileChange = (e) => {
+    /**
+     * 文件选择变更处理
+     * @param {Event} e - input change 事件
+     *
+     * 上传逻辑：
+     * 1. 用户通过 <input type="file"> 选择文件
+     * 2. 文件立即上传到后端，保存到 uploads 目录
+     * 3. 后端返回保存的文件名，前端设置为已上传文件
+     * 4. 自动检测文件尺寸并匹配纸张（仅当用户未手动选择时）
+     * 5. 后续预览/打印操作使用已保存的文件
+     */
+
+    /**
+     * 上传文件到服务器
+     * @param {File} f - File 对象
+     * @returns {Promise<{path: string, name: string}>} 上传后的文件信息
+     */
+    const uploadFile = async (f) => {
+      const formData = new FormData();
+      formData.append('file', f);
+      const res = await fetch(`${API_BASE}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.error || '上传失败');
+      }
+      return { path: data.filename, name: data.originalName };
+    };
+
+    /**
+     * 选择文件后上传并选中
+     */
+    const onFileChange = async (e) => {
       const f = e.target.files[0];
       if (f) {
-        file.value = f;
-        fileName.value = f.name;
-        // 只有在用户没有手动选择纸张尺寸时才自动检测
-        if (!mediaSelected.value) {
-          autoSelectMedia(f);
+        try {
+          // 上传文件到服务器
+          const uploaded = await uploadFile(f);
+          // 选中已上传的文件（作为历史文件处理）
+          file.value = { path: uploaded.path, name: uploaded.name, isHistoryFile: true };
+          fileName.value = uploaded.name;
+          // 自动检测文件尺寸并匹配纸张
+          if (!mediaSelected.value) {
+            autoSelectMedia(file.value);
+          }
+          showMessage('文件已上传', 'success');
+        } catch (err) {
+          showMessage('上传失败: ' + err.message, 'error');
+          file.value = null;
+          fileName.value = '';
         }
       }
     };
 
+    /**
+     * 移除当前选择的文件
+     */
     const removeFile = () => {
       file.value = null;
       fileName.value = '';
       mediaSelected.value = false;
     };
 
+    // ==================== 字体相关函数 ====================
+
+    /**
+     * 加载可用的字体列表
+     */
     const loadAvailableFonts = async () => {
       try {
         const res = await fetch(`${API_BASE}/fonts`);
@@ -550,11 +647,17 @@ createApp({
       }
     };
 
+    /**
+     * 打开发设置弹窗
+     */
     const openSettings = () => {
       loadAvailableFonts();
       showSettings.value = true;
     };
 
+    /**
+     * 保存设置到 localStorage
+     */
     const saveSettings = () => {
       localStorage.setItem('printerSettings', JSON.stringify({
         defaultMedia: settings.defaultMedia,
@@ -573,6 +676,10 @@ createApp({
       showMessage('设置已保存', 'success');
     };
 
+    /**
+     * 清空缓存目录（/app/public/cache/）
+     * 缓存目录存放预览和打印处理后的临时 PDF 文件
+     */
     const clearCache = async () => {
       if (!confirm('确定要清空缓存文件吗？')) return;
       clearingCache.value = true;
@@ -591,6 +698,13 @@ createApp({
       }
     };
 
+    // ==================== 打印相关函数 ====================
+
+    /**
+     * 打印文件
+     *
+     * 打印文件（文件已通过上传 API 保存到 uploads 目录）
+     */
     const printFile = async () => {
       if (!file.value) {
         showMessage('请先选择文件', 'error');
@@ -605,12 +719,9 @@ createApp({
       message.value = '';
 
       const formData = new FormData();
-      if (file.value.isHistoryFile) {
-        formData.append('filePath', file.value.path);
-        formData.append('originalName', file.value.name);
-      } else {
-        formData.append('file', file.value);
-      }
+      // 文件已上传，传递文件路径
+      formData.append('filePath', file.value.path);
+      formData.append('originalName', file.value.name);
       formData.append('printer', options.printer);
       formData.append('copies', options.copies);
       formData.append('orientation', options.orientation);
@@ -619,7 +730,9 @@ createApp({
         formData.append('customPages', options.customPages);
       }
       formData.append('nup', options.nup);
-      formData.append('scaling', options.scaling);
+      // 当选择"自定义"时，使用滑块的百分比值作为 scaling
+      const scalingValue = options.scaling === 'custom' ? options.scalingPercent : options.scaling;
+      formData.append('scaling', scalingValue);
       // 传递纸张尺寸参数
       formData.append('media', options.media);
       if (options.media === 'Custom') {
@@ -646,6 +759,17 @@ createApp({
       }
     };
 
+    /**
+     * 预览打印效果
+     *
+     * 预览逻辑：
+     * 1. 新上传文件：通过 FormData 上传到 /api/preview
+     * 2. 后端处理文件，生成预览 PDF 保存在 cache 目录
+     * 3. 返回预览 PDF 流，前端通过 iframe 显示
+     * 4. 上传的原始文件保留在 uploads 目录
+     *
+     * 预览完成后不自动清理 cache 文件，由用户手动清空
+     */
     const previewPrint = async () => {
       if (!file.value) {
         showMessage('请先选择文件', 'error');
@@ -655,12 +779,9 @@ createApp({
       previewLoading.value = true;
 
       const formData = new FormData();
-      if (file.value.isHistoryFile) {
-        formData.append('filePath', file.value.path);
-        formData.append('originalName', file.value.name);
-      } else {
-        formData.append('file', file.value);
-      }
+      // 文件已上传，传递文件路径
+      formData.append('filePath', file.value.path);
+      formData.append('originalName', file.value.name);
       formData.append('printer', options.printer);
       formData.append('copies', options.copies);
       formData.append('orientation', options.orientation);
@@ -669,7 +790,9 @@ createApp({
         formData.append('customPages', options.customPages);
       }
       formData.append('nup', options.nup);
-      formData.append('scaling', options.scaling);
+      // 当选择"自定义"时，使用滑块的百分比值作为 scaling
+      const scalingValue = options.scaling === 'custom' ? options.scalingPercent : options.scaling;
+      formData.append('scaling', scalingValue);
       // 传递纸张尺寸参数
       formData.append('media', options.media);
       if (options.media === 'Custom') {
@@ -728,7 +851,18 @@ createApp({
       }
     };
 
+    // 页面加载时获取打印机列表
     onMounted(() => {
+      // 从 localStorage 加载保存的设置
+      const saved = localStorage.getItem('printerSettings');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          Object.assign(settings, parsed);
+        } catch (e) {
+          console.error('Failed to load settings:', e);
+        }
+      }
       loadPrinters();
     });
 

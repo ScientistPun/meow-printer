@@ -9,8 +9,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ==================== 服务器配置 ====================
+
+/** 服务器端口 */
+const PORT = process.env.PORT || 3000;
+
+// ==================== 目录配置 ====================
+
 // 项目根目录 (src 的上级)
-const ROOT_DIR = path.join(__dirname, '..');
+const ROOT_DIR = path.join(__dirname, '../..');
 
 // 公开目录
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
@@ -21,8 +28,18 @@ const LOG_DIR = path.join(ROOT_DIR, 'logs');
 // 缓存目录
 const CACHE_DIR = path.join(PUBLIC_DIR, 'cache');
 
+
+// ==================== 上传配置 ====================
+
 // 上传目录
 const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
+
+/** 支持的文件类型 */
+const SUPPORTED_FILE_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'];
+
+/** 最大文件大小（字节），默认 50MB */
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+
 
 // ==================== 字体配置 ====================
 
@@ -58,6 +75,9 @@ const USE_REMOTE = CUPS_HOST && CUPS_HOST !== 'localhost';
 });
 
 export {
+  PORT,
+  SUPPORTED_FILE_EXTENSIONS,
+  MAX_FILE_SIZE,
   ROOT_DIR,
   PUBLIC_DIR,
   LOG_DIR,

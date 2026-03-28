@@ -1,0 +1,10 @@
+[2026-03-28T13:20:26.659Z] [INFO] 删除日志 {"date":"2026-03-28"}
+[2026-03-28T13:20:26.663Z] [INFO] DELETE /api/logs {"requestId":"mnacyexo","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:26.671Z] [INFO] GET /api/logs {"requestId":"mnacyey6","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:28.184Z] [INFO] GET /api/history {"requestId":"mnacyg41","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:29.749Z] [INFO] GET /api/logs {"requestId":"mnacyhbl","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:30.510Z] [INFO] GET /api/history {"requestId":"mnacyhwq","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:43.757Z] [INFO] 清空缓存文件 {"count":0}
+[2026-03-28T13:20:43.759Z] [INFO] DELETE /api/cache {"requestId":"mnacys4s","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:47.525Z] [INFO] GET /api/history {"requestId":"mnacyv1d","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T13:20:48.687Z] [INFO] GET /api/logs {"requestId":"mnacyvxp","status":200,"duration":"2ms","ip":"127.0.0.1"}

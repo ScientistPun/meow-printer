@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { LOG_DIR } from '../config.js';
+import { LOG_DIR } from '../config/config.js';
 
 // 获取日志文件名
 function getLogFilename() {
