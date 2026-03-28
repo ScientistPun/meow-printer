@@ -5,7 +5,8 @@ import fs from 'fs';
 import path from 'path';
 import { UPLOAD_DIR } from '../config/config.js';
 import logger from '../utils/logger.js';
-import { processPrintOptions, buildPrintOptions, sendError } from '../utils/common.js';
+import { processPrintOptions, buildPrintOptions } from '../utils/common.js';
+import pdfService from '../service/pdf.js';
 
 let cupsService;
 
@@ -41,7 +42,7 @@ export async function printFile(req, res) {
     const options = buildPrintOptions(req.body);
 
     // 处理纸张尺寸
-    await processPrintOptions(options, cupsService.getFileDimensions.bind(cupsService), filePath);
+    await processPrintOptions(options, pdfService.getFileDimensions.bind(pdfService), filePath);
 
     logger.info('收到打印请求', {
       requestId: req.requestId,

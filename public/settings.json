@@ -1,0 +1,13 @@
+{
+  "defaultMedia": "A4",
+  "customWidth": 100,
+  "customHeight": 150,
+  "fontFamily": "SourceHanSans",
+  "fontSize": 12,
+  "marginTop": 20,
+  "marginRight": 20,
+  "marginBottom": 20,
+  "marginLeft": 20,
+  "gridLines": false,
+  "addHeader": false
+}

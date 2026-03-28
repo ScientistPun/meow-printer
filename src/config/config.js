@@ -22,6 +22,9 @@ const ROOT_DIR = path.join(__dirname, '../..');
 // 公开目录
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 
+// 设置文件
+const SETTINGS_FILE = path.join(PUBLIC_DIR, 'settings.json');
+
 // 日志目录
 const LOG_DIR = path.join(ROOT_DIR, 'logs');
 
@@ -87,5 +90,6 @@ export {
   UPLOAD_DIR,
   CUPS_HOST,
   CUPS_PORT,
-  USE_REMOTE
+  USE_REMOTE,
+  SETTINGS_FILE
 };

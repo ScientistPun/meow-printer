@@ -118,7 +118,7 @@ export class Cups {
 
       return printers.length > 0 ? printers : [{ id: 'default', name: '默认打印机' }];
     } catch (error) {
-      console.error('获取打印机列表失败:', error);
+      logger.error('获取打印机列表失败:', error);
       return [{ id: 'default', name: '默认打印机' }];
     }
   }
@@ -292,114 +292,6 @@ export class Cups {
       console.error('打印失败:', error);
       return { success: false, error: error.message || '打印命令执行失败' };
     }
-  }
-
-  // ==================== 导出 PDF 服务的方法 ====================
-
-  /**
-   * 获取文件尺寸
-   * @param {string} filePath - 文件路径
-   * @returns {Promise<{width: number, height: number}|null>} 宽度和高度（毫米）
-   */
-  getFileDimensions(filePath) {
-    return pdfService.getFileDimensions(filePath);
-  }
-
-  /**
-   * 获取可用的字体列表
-   * @returns {Array<{id: string, name: string, file: string}>} 字体列表
-   */
-  getAvailableFonts() {
-    return pdfService.getAvailableFonts();
-  }
-
-  /**
-   * 将图片转换为 PDF（竖排模式）
-   * @param {string} imagePath - 图片文件路径
-   * @param {Object} [options] - 选项
-   * @returns {Promise<string>} 生成 PDF 的路径
-   */
-  imageToPdfPortrait(imagePath, options) {
-    return pdfService.imageToPdfPortrait(imagePath, options);
-  }
-
-  /**
-   * 将图片转换为 PDF（横排模式）
-   * @param {string} imagePath - 图片文件路径
-   * @param {Object} [options] - 选项
-   * @returns {Promise<string>} 生成 PDF 的路径
-   */
-  imageToPdfLandscape(imagePath, options) {
-    return pdfService.imageToPdfLandscape(imagePath, options);
-  }
-
-  /**
-   * 设置 PDF 为竖排方向
-   * @param {string} filePath - PDF 文件路径
-   * @param {Object} [options] - 选项
-   * @returns {Promise<string>} 生成 PDF 的路径
-   */
-  setPdfPortrait(filePath, options) {
-    return pdfService.setPdfPortrait(filePath, options);
-  }
-
-  /**
-   * 设置 PDF 为横排方向
-   * @param {string} filePath - PDF 文件路径
-   * @param {Object} [options] - 选项
-   * @returns {Promise<string>} 生成 PDF 的路径
-   */
-  setPdfLandscape(filePath, options) {
-    return pdfService.setPdfLandscape(filePath, options);
-  }
-
-  /**
-   * 处理 PDF 缩放、方向、n-up
-   * @param {string} filePath - PDF 文件路径
-   * @param {Object} options - 选项
-   * @returns {Promise<string>} 处理后 PDF 的路径
-   */
-  scalePdf(filePath, options) {
-    return pdfService.scalePdf(filePath, options);
-  }
-
-  /**
-   * 创建文本 PDF
-   * @param {string} text - 文本内容
-   * @param {number} [fontSize] - 字体大小
-   * @param {string} [fontFamily] - 字体名称
-   * @param {number} [mediaWidth] - 纸张宽度
-   * @param {number} [mediaHeight] - 纸张高度
-   * @param {Object} [margins] - 边距设置
-   * @param {boolean} [gridLines] - 是否绘制网格线
-   * @param {boolean} [addHeader] - 是否添加页眉
-   * @returns {Promise<string>} 生成 PDF 的路径
-   */
-  createTextPdf(text, fontSize, fontFamily, mediaWidth, mediaHeight, margins, gridLines, addHeader) {
-    return pdfService.createTextPdf(text, fontSize, fontFamily, mediaWidth, mediaHeight, margins, gridLines, addHeader);
-  }
-
-  /**
-   * 注册字体
-   * @param {string} fontId - 字体 ID
-   * @param {string} fontName - 字体名称
-   * @param {string} filename - 字体文件名
-   * @returns {{success: boolean, message: string}}
-   */
-  registerFont(fontId, fontName, filename) {
-    return pdfService.registerFont(fontId, fontName, filename);
-  }
-
-  /**
-   * 添加字体文件
-   * @param {string} fontId - 字体 ID
-   * @param {string} fontName - 字体名称
-   * @param {Buffer} fileBuffer - 文件内容
-   * @param {string} originalName - 原始文件名
-   * @returns {{success: boolean, message: string, filename?: string}}
-   */
-  addFontFile(fontId, fontName, fileBuffer, originalName) {
-    return pdfService.addFontFile(fontId, fontName, fileBuffer, originalName);
   }
 }
 

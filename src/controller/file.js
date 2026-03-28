@@ -4,17 +4,9 @@
 import fs from 'fs';
 import path from 'path';
 import { UPLOAD_DIR, CACHE_DIR, SUPPORTED_FILE_EXTENSIONS } from '../config/config.js';
-import { CONTENT_TYPES } from '../utils/common.js';
+import { CONTENT_TYPES, getMediaSizeMM } from '../utils/common.js';
 import logger from '../utils/logger.js';
-
-let cupsService;
-
-/**
- * 初始化控制器（注入依赖）
- */
-export function initFileController(cupsInstance) {
-  cupsService = cupsInstance;
-}
+import pdfService from '../service/pdf.js';
 
 // 上传文件（仅保存，不处理）
 export async function uploadFile(req, res) {
@@ -75,7 +67,7 @@ export async function deleteHistoryFile(req, res) {
     }
   } catch (error) {
     logger.error('删除历史文件失败', { error: error.message });
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 }
 
@@ -109,7 +101,7 @@ export async function getFileDimensions(req, res) {
       return res.status(404).json({ error: '文件不存在' });
     }
 
-    const dims = await cupsService.getFileDimensions(fullPath);
+    const dims = await pdfService.getFileDimensions(fullPath);
     if (dims) {
       res.json({ width: Math.round(dims.width), height: Math.round(dims.height) });
     } else {
@@ -128,7 +120,7 @@ export async function getUploadedFileDimensions(req, res) {
       return res.status(400).json({ error: '没有上传文件' });
     }
 
-    const dims = await cupsService.getFileDimensions(req.file.path);
+    const dims = await pdfService.getFileDimensions(req.file.path);
 
     // 上传后自动删除临时文件
     try {
@@ -187,5 +179,70 @@ export async function clearCache(req, res) {
   } catch (error) {
     logger.error('清空缓存文件失败', { error: error.message });
     res.status(500).json({ error: error.message });
+  }
+}
+
+// 创建文本文件
+export async function createTextFile(req, res) {
+  try {
+    const { name, paperSize, fontFamily, fontSize, content, customWidth, customHeight, marginTop, marginRight, marginBottom, marginLeft, gridLines, addHeader } = req.body;
+
+    if (!name || !content) {
+      return res.status(400).json({ success: false, error: '文件名和内容不能为空' });
+    }
+
+    let mediaWidth, mediaHeight;
+
+    if (paperSize === 'Custom' && customWidth && customHeight) {
+      mediaWidth = parseInt(customWidth);
+      mediaHeight = parseInt(customHeight);
+    } else {
+      const size = getMediaSizeMM(paperSize);
+      if (size) {
+        mediaWidth = size.width;
+        mediaHeight = size.height;
+      } else {
+        mediaWidth = 210;
+        mediaHeight = 297;
+      }
+    }
+
+    const margins = {
+      top: parseInt(marginTop) || 0,
+      right: parseInt(marginRight) || 0,
+      bottom: parseInt(marginBottom) || 0,
+      left: parseInt(marginLeft) || 0
+    };
+
+    const pdfPath = await pdfService.createTextPdf(
+      content,
+      parseInt(fontSize) || 12,
+      fontFamily || 'SourceHanSans',
+      mediaWidth,
+      mediaHeight,
+      margins,
+      gridLines === 'true' || gridLines === true,
+      addHeader === 'true' || addHeader === true
+    );
+
+    const filename = `${name}.pdf`;
+    const destPath = path.join(UPLOAD_DIR, filename);
+
+    // 如果目标文件已存在，先删除旧文件
+    if (fs.existsSync(destPath)) {
+      try {
+        fs.unlinkSync(destPath);
+      } catch (e) {
+        // 忽略删除失败（文件可能被其他进程占用）
+      }
+    }
+
+    fs.renameSync(pdfPath, destPath);
+
+    logger.info('创建文件成功', { filename });
+    res.json({ success: true, filename });
+  } catch (error) {
+    console.error('创建文件失败:', error);
+    res.status(500).json({ success: false, error: '创建失败: ' + error.message });
   }
 }

@@ -283,7 +283,7 @@ export class Pdf {
     let scaledWidth, scaledHeight;
     const scalingVal = options.scaling;
 
-    if (scalingVal === PRINTER.PRINT_PRINT_SCALING.FIT || !scalingVal) {
+    if (scalingVal === PRINT_SCALING.FIT || !scalingVal) {
       // 自适应模式：图片完整显示在纸张内（不裁剪）
       const targetW = targetWidth ? this._mmToPoints(targetWidth) : imgPointsWidth;
       const targetH = targetHeight ? this._mmToPoints(targetHeight) : imgPointsHeight;

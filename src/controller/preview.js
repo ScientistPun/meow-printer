@@ -6,15 +6,7 @@ import path from 'path';
 import { UPLOAD_DIR } from '../config/config.js';
 import logger from '../utils/logger.js';
 import { processPrintOptions, buildPrintOptions } from '../utils/common.js';
-
-let cupsService;
-
-/**
- * 初始化控制器（注入依赖）
- */
-export function initPreviewController(cupsInstance) {
-  cupsService = cupsInstance;
-}
+import pdfService from '../service/pdf.js';
 
 // 预览打印效果（生成预览PDF）
 export async function previewPrint(req, res) {
@@ -37,7 +29,7 @@ export async function previewPrint(req, res) {
     logger.info('Preview options', { body: req.body, options });
 
     // 处理纸张尺寸
-    await processPrintOptions(options, cupsService.getFileDimensions.bind(cupsService), filePath);
+    await processPrintOptions(options, pdfService.getFileDimensions.bind(pdfService), filePath);
 
     // 处理文件方向和尺寸
     const ext = path.extname(filePath).toLowerCase();
@@ -45,15 +37,15 @@ export async function previewPrint(req, res) {
 
     // PDF 文件：使用 scalePdf 处理
     if (ext === '.pdf') {
-      previewFilePath = await cupsService.scalePdf(filePath, options);
+      previewFilePath = await pdfService.scalePdf(filePath, options);
     } else if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
       // 图片：图片独立处理缩放，仅 n-up/pageSet 需要额外处理
       const tempPdfPath = await (options.orientation === 'landscape'
-        ? cupsService.imageToPdfLandscape(filePath, options)
-        : cupsService.imageToPdfPortrait(filePath, options));
+        ? pdfService.imageToPdfLandscape(filePath, options)
+        : pdfService.imageToPdfPortrait(filePath, options));
 
       if (options.nup > 1 || (options.pageSet && options.pageSet !== 'all')) {
-        previewFilePath = await cupsService.scalePdf(tempPdfPath, options);
+        previewFilePath = await pdfService.scalePdf(tempPdfPath, options);
         try { fs.unlinkSync(tempPdfPath); } catch (e) {}
       } else {
         previewFilePath = tempPdfPath;

@@ -13,8 +13,8 @@ import * as printerController from './controller/printer.js';
 import * as fileController from './controller/file.js';
 import * as printController from './controller/print.js';
 import * as previewController from './controller/preview.js';
-import * as textFileController from './controller/textFile.js';
 import * as logController from './controller/log.js';
+import * as settingsController from './controller/settings.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,26 +62,14 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 // 初始化控制器
 fontController.initFontController(cupsService);
 printerController.initPrinterController(cupsService);
-fileController.initFileController(cupsService);
 printController.initPrintController(cupsService);
-previewController.initPreviewController(cupsService);
-textFileController.initTextFileController(cupsService);
 
 // 文件上传中间件
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
-    // 处理中文文件名：在 Docker Debian 环境下进行编码转换
-    // 将非 ASCII 字符进行 URL 编码
-    let filename = file.originalname;
-    if (/[^\x00-\x7F]/.test(filename)) {
-      // 使用 encodeURIComponent 编码非 ASCII 字符
-      const ext = path.extname(filename);
-      const nameWithoutExt = filename.slice(0, -ext.length);
-      const encodedName = encodeURIComponent(nameWithoutExt).replace(/%/g, '_');
-      filename = encodedName + ext;
-    }
-    cb(null, `${Date.now()}-${filename}`);
+    // 保留原始文件名（UTF-8 locale 已支持中文）
+    cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
 
@@ -124,12 +112,17 @@ app.post('/api/preview', upload.single('file'), previewController.previewPrint);
 
 // ==================== 文本文件相关 ====================
 
-app.post('/api/files', upload.none(), textFileController.createTextFile);
+app.post('/api/files', upload.none(), fileController.createTextFile);
 
 // ==================== 日志相关 ====================
 
 app.get('/api/logs', logController.getLogs);
 app.delete('/api/logs', logController.clearLogs);
+
+// ==================== 设置相关 ====================
+
+app.get('/api/settings', settingsController.getSettings);
+app.post('/api/settings', settingsController.saveSettings);
 
 // ==================== 启动服务器 ====================
 

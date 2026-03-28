@@ -6,6 +6,21 @@
 /** 默认纸张尺寸列表 */
 export const DEFAULT_MEDIA_OPTIONS = ['A4', 'A5', 'A6', 'B5', 'Letter', 'Legal', '4x6'];
 
+/** 默认设置 */
+export const DEFAULT_SETTINGS = {
+  defaultMedia: 'A4',
+  customWidth: 100,
+  customHeight: 150,
+  fontFamily: 'SourceHanSans',
+  fontSize: 12,
+  marginTop: 20,
+  marginRight: 20,
+  marginBottom: 20,
+  marginLeft: 20,
+  gridLines: false,
+  addHeader: false
+};
+
 /** 页面方向 */
 export const PRINT_ORIENTATION = {
   PORTRAIT: 'portrait',

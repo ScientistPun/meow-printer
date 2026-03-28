@@ -39,3 +39,145 @@
 [2026-03-28T16:24:29.786Z] [INFO] GET /api/printers {"requestId":"mnajj3rh","status":200,"duration":"141ms","ip":"127.0.0.1"}
 [2026-03-28T16:24:30.134Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajj41f"}
 [2026-03-28T16:24:30.135Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajj41f","status":200,"duration":"132ms","ip":"127.0.0.1"}
+[2026-03-28T17:06:10.275Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:06:16.592Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnal0trr"}
+[2026-03-28T17:06:16.602Z] [INFO] GET /api/printers {"requestId":"mnal0trr","status":200,"duration":"482ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:00.584Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:25:01.219Z] [INFO] GET / {"requestId":"mnaloxw1","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:01.245Z] [INFO] GET /index.js {"requestId":"mnaloxwu","status":200,"duration":"15ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:02.932Z] [INFO] GET / {"requestId":"mnaloz7z","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:02.969Z] [INFO] GET /index.js {"requestId":"mnaloz91","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:05.146Z] [INFO] GET / {"requestId":"mnalp0xj","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:05.190Z] [INFO] GET /index.js {"requestId":"mnalp0ym","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:07.451Z] [INFO] GET / {"requestId":"mnalp2pk","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:07.503Z] [INFO] GET /index.js {"requestId":"mnalp2r2","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:18.339Z] [INFO] GET / {"requestId":"mnalpb3y","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:18.382Z] [INFO] GET /index.js {"requestId":"mnalpb4z","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:31.250Z] [INFO] GET /global.js {"requestId":"mnalpl24","status":200,"duration":"22ms","ip":"127.0.0.1"}
+[2026-03-28T17:25:31.252Z] [INFO] GET /common.js {"requestId":"mnalpl27","status":200,"duration":"21ms","ip":"127.0.0.1"}
+[2026-03-28T17:27:31.940Z] [INFO] GET / {"requestId":"mnals673","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:27:31.969Z] [INFO] GET /index.js {"requestId":"mnals67y","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:27:50.555Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:27:53.091Z] [INFO] GET / {"requestId":"mnalsmid","status":200,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-28T17:27:53.123Z] [INFO] GET /index.js {"requestId":"mnalsmjb","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T17:28:02.025Z] [INFO] GET /common.js {"requestId":"mnalsteh","status":200,"duration":"15ms","ip":"127.0.0.1"}
+[2026-03-28T17:28:02.041Z] [INFO] GET /global.js {"requestId":"mnalsten","status":200,"duration":"26ms","ip":"127.0.0.1"}
+[2026-03-28T17:28:51.155Z] [INFO] GET / {"requestId":"mnaltvbe","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:28:51.204Z] [INFO] GET /index.js {"requestId":"mnaltvcr","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:29:21.218Z] [INFO] GET /common.js {"requestId":"mnaluiih","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-28T17:29:21.221Z] [INFO] GET /global.js {"requestId":"mnaluiik","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-28T17:42:51.270Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:42:57.335Z] [INFO] GET / {"requestId":"mnamc085","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-28T17:42:57.364Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamc094","status":404,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T17:42:57.372Z] [INFO] GET /index.js {"requestId":"mnamc09a","status":200,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-28T17:42:57.429Z] [INFO] GET /common.js {"requestId":"mnamc0b5","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:42:57.431Z] [INFO] GET /global.js {"requestId":"mnamc0b6","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:00.722Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamc2uh","status":404,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:28.860Z] [INFO] GET / {"requestId":"mnamcok6","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:28.900Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcol8","status":404,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:28.903Z] [INFO] GET /index.js {"requestId":"mnamcolb","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:28.971Z] [INFO] GET /global.js {"requestId":"mnamcon9","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:28.971Z] [INFO] GET /common.js {"requestId":"mnamcona","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:30.480Z] [INFO] GET / {"requestId":"mnamcpt6","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:30.541Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcpuo","status":404,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:30.546Z] [INFO] GET /index.js {"requestId":"mnamcpup","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:30.585Z] [INFO] GET /common.js {"requestId":"mnamcpw8","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:30.586Z] [INFO] GET /global.js {"requestId":"mnamcpw8","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.195Z] [INFO] GET / {"requestId":"mnamcqd6","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.236Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcqe8","status":404,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.241Z] [INFO] GET /index.js {"requestId":"mnamcqea","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.302Z] [INFO] GET /global.js {"requestId":"mnamcqg3","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.302Z] [INFO] GET /common.js {"requestId":"mnamcqg3","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.678Z] [INFO] GET / {"requestId":"mnamcqqj","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.711Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcqri","status":404,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.714Z] [INFO] GET /index.js {"requestId":"mnamcqri","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.797Z] [INFO] GET /common.js {"requestId":"mnamcqtu","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:31.799Z] [INFO] GET /global.js {"requestId":"mnamcqtv","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:36.088Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:43:38.515Z] [INFO] GET / {"requestId":"mnamcw01","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:38.547Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcw12","status":404,"duration":"13ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:38.552Z] [INFO] GET /index.js {"requestId":"mnamcw19","status":200,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:38.617Z] [INFO] GET /common.js {"requestId":"mnamcw35","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:38.627Z] [INFO] GET /global.js {"requestId":"mnamcw36","status":200,"duration":"17ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:39.400Z] [INFO] GET / {"requestId":"mnamcwp0","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:39.459Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcwq4","status":404,"duration":"23ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:39.463Z] [INFO] GET /index.js {"requestId":"mnamcwq7","status":200,"duration":"24ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:39.521Z] [INFO] GET /global.js {"requestId":"mnamcws9","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:43:39.524Z] [INFO] GET /common.js {"requestId":"mnamcwsc","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.218Z] [INFO] GET / {"requestId":"mnamdf2l","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.260Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdf3m","status":404,"duration":"10ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.267Z] [INFO] GET /index.js {"requestId":"mnamdf3x","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.336Z] [INFO] GET /common.js {"requestId":"mnamdf5x","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.337Z] [INFO] GET /global.js {"requestId":"mnamdf5x","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.864Z] [INFO] GET / {"requestId":"mnamdfkm","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.905Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdflr","status":404,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.906Z] [INFO] GET /index.js {"requestId":"mnamdfls","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.966Z] [INFO] GET /common.js {"requestId":"mnamdfnh","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:03.968Z] [INFO] GET /global.js {"requestId":"mnamdfnh","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:04.320Z] [INFO] GET / {"requestId":"mnamdfxb","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:04.354Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdfy8","status":404,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:04.357Z] [INFO] GET /index.js {"requestId":"mnamdfy9","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:04.428Z] [INFO] GET /common.js {"requestId":"mnamdg0a","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:04.429Z] [INFO] GET /global.js {"requestId":"mnamdg0b","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.021Z] [INFO] GET / {"requestId":"mnamdmmz","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.060Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdmo1","status":404,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.063Z] [INFO] GET /index.js {"requestId":"mnamdmo3","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.140Z] [INFO] GET /common.js {"requestId":"mnamdmqa","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.142Z] [INFO] GET /global.js {"requestId":"mnamdmqb","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.495Z] [INFO] GET / {"requestId":"mnamdn05","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.537Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdn18","status":404,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.547Z] [INFO] GET /index.js {"requestId":"mnamdn19","status":200,"duration":"14ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.612Z] [INFO] GET /common.js {"requestId":"mnamdn3e","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.612Z] [INFO] GET /global.js {"requestId":"mnamdn3e","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:13.659Z] [INFO] GET / {"requestId":"mnamdn4q","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:14.161Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdnin","status":404,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:14.163Z] [INFO] GET /index.js {"requestId":"mnamdnio","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:14.240Z] [INFO] GET /global.js {"requestId":"mnamdnku","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:14.241Z] [INFO] GET /common.js {"requestId":"mnamdnku","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:26.006Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T17:44:28.472Z] [INFO] GET / {"requestId":"mnamdyjo","status":200,"duration":"20ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:28.505Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdyku","status":404,"duration":"11ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:28.508Z] [INFO] GET /index.js {"requestId":"mnamdyl0","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:28.575Z] [INFO] GET /common.js {"requestId":"mnamdyn0","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:28.577Z] [INFO] GET /global.js {"requestId":"mnamdyn1","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:56.674Z] [INFO] GET / {"requestId":"mnamekbj","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:56.720Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamekck","status":404,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:56.722Z] [INFO] GET /index.js {"requestId":"mnamekcp","status":200,"duration":"9ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:56.789Z] [INFO] GET /global.js {"requestId":"mnamekeq","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:56.793Z] [INFO] GET /common.js {"requestId":"mnamekeo","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.614Z] [INFO] GET / {"requestId":"mnamel1m","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.654Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamel2o","status":404,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.658Z] [INFO] GET /index.js {"requestId":"mnamel2r","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.726Z] [INFO] GET /global.js {"requestId":"mnamel4s","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.727Z] [INFO] GET /common.js {"requestId":"mnamel4s","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:57.834Z] [INFO] GET / {"requestId":"mnamel7r","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:58.278Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamelk1","status":404,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:58.282Z] [INFO] GET /index.js {"requestId":"mnamelk3","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:58.354Z] [INFO] GET /common.js {"requestId":"mnamelm7","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:44:58.357Z] [INFO] GET /global.js {"requestId":"mnamelm8","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.247Z] [INFO] GET / {"requestId":"mnamgqok","status":200,"duration":"18ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.270Z] [INFO] GET /index.js {"requestId":"mnamgqpk","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.278Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamgqpi","status":200,"duration":"16ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.377Z] [INFO] GET /global.js {"requestId":"mnamgqsm","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.378Z] [INFO] GET /common.js {"requestId":"mnamgqsm","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.417Z] [INFO] GET /api/settings {"requestId":"mnamgqtn","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:38.670Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnamgqtn"}
+[2026-03-28T17:46:38.672Z] [INFO] GET /api/printers {"requestId":"mnamgqtn","status":200,"duration":"261ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:39.003Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnamgr3u"}
+[2026-03-28T17:46:39.004Z] [INFO] GET /api/printers/capabilities {"requestId":"mnamgr3u","status":200,"duration":"226ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:39.477Z] [INFO] GET /api/history {"requestId":"mnamgrn6","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:40.151Z] [INFO] GET /api/logs {"requestId":"mnamgs5s","status":200,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:40.537Z] [INFO] GET /api/history {"requestId":"mnamgsgk","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:42.396Z] [INFO] GET /api/history {"requestId":"mnamgtw7","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T17:46:42.985Z] [INFO] GET /api/logs {"requestId":"mnamguck","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.840Z] [INFO] GET / {"requestId":"mnane5b6","status":200,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.874Z] [INFO] GET /index.js {"requestId":"mnane5by","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.878Z] [INFO] GET /lib/vue.min.js {"requestId":"mnane5bx","status":200,"duration":"16ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.953Z] [INFO] GET /global.js {"requestId":"mnane5ef","status":200,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.956Z] [INFO] GET /common.js {"requestId":"mnane5ef","status":200,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:36.978Z] [INFO] GET /api/settings {"requestId":"mnane5f2","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:37.512Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
+[2026-03-28T18:12:37.512Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnane5f2"}
+[2026-03-28T18:12:37.514Z] [INFO] GET /api/printers {"requestId":"mnane5f2","status":200,"duration":"540ms","ip":"127.0.0.1"}
+[2026-03-28T18:12:37.693Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnane5u6"}
+[2026-03-28T18:12:37.693Z] [INFO] GET /api/printers/capabilities {"requestId":"mnane5u6","status":200,"duration":"175ms","ip":"127.0.0.1"}

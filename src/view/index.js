@@ -1,6 +1,6 @@
 const { createApp, ref, reactive, onMounted } = Vue;
 import { formatTime, formatSize, matchFileToMedia } from '/utils/common.js';
-import { DEFAULT_MEDIA_OPTIONS } from '/config/global.js';
+import { DEFAULT_MEDIA_OPTIONS, DEFAULT_SETTINGS } from '/config/global.js';
 
 createApp({
   setup() {
@@ -38,7 +38,7 @@ createApp({
     const availableFonts = ref([]);     // 可用字体列表
 
     /**
-     * 用户设置（持久化到 localStorage）
+     * 用户设置（持久化到服务器）
      * - defaultMedia: 默认纸张尺寸
      * - customWidth/customHeight: 自定义纸张尺寸
      * - fontFamily/fontSize: 字体设置
@@ -46,36 +46,24 @@ createApp({
      * - gridLines: 是否显示网格线
      * - addHeader: 是否添加页眉（No.、Date）
      */
-    const settings = reactive({
-      defaultMedia: 'A4',
-      customWidth: 100,
-      customHeight: 150,
-      fontFamily: 'SourceHanSans',
-      fontSize: 12,
-      marginTop: 20,
-      marginRight: 20,
-      marginBottom: 20,
-      marginLeft: 20,
-      gridLines: false,
-      addHeader: false
-    });
+    const settings = reactive({ ...DEFAULT_SETTINGS });
 
     // ==================== 文本文件创建相关状态 ====================
     const showCreateFile = ref(false);  // 是否显示创建文件弹窗
     const createFile = reactive({
       name: '',             // 文件名
-      paperSize: 'A4',      // 纸张尺寸
-      fontSize: 12,         // 字体大小
-      fontFamily: 'SourceHanSans', // 字体
-      customWidth: 100,     // 自定义宽度
-      customHeight: 150,    // 自定义高度
+      paperSize: settings.defaultMedia,
+      fontSize: settings.fontSize,
+      fontFamily: settings.fontFamily,
+      customWidth: settings.customWidth,
+      customHeight: settings.customHeight,
       content: '',          // 文件内容
-      marginTop: 20,        // 上边距
-      marginRight: 20,      // 右边距
-      marginBottom: 20,     // 下边距
-      marginLeft: 20,       // 左边距
-      gridLines: false,     // 网格线
-      addHeader: false,     // 页眉
+      marginTop: settings.marginTop,
+      marginRight: settings.marginRight,
+      marginBottom: settings.marginBottom,
+      marginLeft: settings.marginLeft,
+      gridLines: settings.gridLines,
+      addHeader: settings.addHeader,
       showMore: false       // 显示更多选项
     });
 
@@ -330,17 +318,17 @@ createApp({
       const HH = String(now.getHours()).padStart(2, '0');
       const mm = String(now.getMinutes()).padStart(2, '0');
       createFile.name = `${yyyy}${MM}${dd}_${HH}${mm}`;
-      createFile.paperSize = settings.defaultMedia || 'A4';
-      createFile.fontSize = settings.fontSize || 12;
-      createFile.fontFamily = settings.fontFamily || 'SourceHanSans';
-      createFile.customWidth = settings.customWidth || 100;
-      createFile.customHeight = settings.customHeight || 150;
-      createFile.marginTop = settings.marginTop ?? 20;
-      createFile.marginRight = settings.marginRight ?? 20;
-      createFile.marginBottom = settings.marginBottom ?? 20;
-      createFile.marginLeft = settings.marginLeft ?? 20;
-      createFile.gridLines = settings.gridLines ?? false;
-      createFile.addHeader = settings.addHeader ?? false;
+      createFile.paperSize = settings.defaultMedia;
+      createFile.fontSize = settings.fontSize;
+      createFile.fontFamily = settings.fontFamily;
+      createFile.customWidth = settings.customWidth;
+      createFile.customHeight = settings.customHeight;
+      createFile.marginTop = settings.marginTop;
+      createFile.marginRight = settings.marginRight;
+      createFile.marginBottom = settings.marginBottom;
+      createFile.marginLeft = settings.marginLeft;
+      createFile.gridLines = settings.gridLines;
+      createFile.addHeader = settings.addHeader;
       createFile.showMore = false;
       createFile.content = '';
       // 加载字体列表
@@ -395,17 +383,17 @@ createApp({
           showMessage('文件创建成功', 'success');
           showCreateFile.value = false;
           createFile.name = '';
-          createFile.paperSize = 'A4';
-          createFile.fontSize = 12;
-          createFile.customWidth = 100;
-          createFile.customHeight = 150;
+          createFile.paperSize = settings.defaultMedia;
+          createFile.fontSize = settings.fontSize;
+          createFile.customWidth = settings.customWidth;
+          createFile.customHeight = settings.customHeight;
           createFile.content = '';
-          createFile.marginTop = 20;
-          createFile.marginRight = 20;
-          createFile.marginBottom = 20;
-          createFile.marginLeft = 20;
-          createFile.gridLines = false;
-          createFile.addHeader = false;
+          createFile.marginTop = settings.marginTop;
+          createFile.marginRight = settings.marginRight;
+          createFile.marginBottom = settings.marginBottom;
+          createFile.marginLeft = settings.marginLeft;
+          createFile.gridLines = settings.gridLines;
+          createFile.addHeader = settings.addHeader;
           createFile.showMore = false;
           loadHistory();
         } else {
@@ -656,24 +644,37 @@ createApp({
     };
 
     /**
-     * 保存设置到 localStorage
+     * 保存设置到服务器
      */
-    const saveSettings = () => {
-      localStorage.setItem('printerSettings', JSON.stringify({
-        defaultMedia: settings.defaultMedia,
-        customWidth: settings.customWidth,
-        customHeight: settings.customHeight,
-        fontFamily: settings.fontFamily,
-        fontSize: settings.fontSize,
-        marginTop: settings.marginTop,
-        marginRight: settings.marginRight,
-        marginBottom: settings.marginBottom,
-        marginLeft: settings.marginLeft,
-        gridLines: settings.gridLines,
-        addHeader: settings.addHeader
-      }));
-      showSettings.value = false;
-      showMessage('设置已保存', 'success');
+    const saveSettings = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/settings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            defaultMedia: settings.defaultMedia,
+            customWidth: settings.customWidth,
+            customHeight: settings.customHeight,
+            fontFamily: settings.fontFamily,
+            fontSize: settings.fontSize,
+            marginTop: settings.marginTop,
+            marginRight: settings.marginRight,
+            marginBottom: settings.marginBottom,
+            marginLeft: settings.marginLeft,
+            gridLines: settings.gridLines,
+            addHeader: settings.addHeader
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showSettings.value = false;
+          showMessage('设置已保存', 'success');
+        } else {
+          showMessage('保存失败', 'error');
+        }
+      } catch (e) {
+        showMessage('保存失败', 'error');
+      }
     };
 
     /**
@@ -853,16 +854,12 @@ createApp({
 
     // 页面加载时获取打印机列表
     onMounted(() => {
-      // 从 localStorage 加载保存的设置
-      const saved = localStorage.getItem('printerSettings');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          Object.assign(settings, parsed);
-        } catch (e) {
-          console.error('Failed to load settings:', e);
-        }
-      }
+      // 从服务器加载设置
+      fetch(`${API_BASE}/settings`)
+        .then(res => res.json())
+        .then(data => Object.assign(settings, data))
+        .catch(e => console.error('Failed to load settings:', e));
+      // 并行加载打印机列表
       loadPrinters();
     });
 
