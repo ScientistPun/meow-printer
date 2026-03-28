@@ -2,10 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
-import cupsService from './service/cups.js';
-import { PORT, MAX_FILE_SIZE, UPLOAD_DIR } from './config/config.js';
+import { PORT, MAX_FILE_SIZE, UPLOAD_DIR, LOG_DIR } from './config/config.js';
 import logger from './utils/logger.js';
+
+// 确保必要的目录存在
+[UPLOAD_DIR, LOG_DIR].forEach(dir => {
+  fs.mkdirSync(dir, { recursive: true });
+});
 
 // 导入控制器
 import * as fontController from './controller/font.js';
@@ -56,13 +61,13 @@ app.use('/utils', express.static(path.join(__dirname, 'utils')));
 // Serve config files (for ES modules)
 app.use('/config', express.static(path.join(__dirname, 'config')));
 
+// Serve fonts files
+app.use('/fonts', express.static(path.join(__dirname, '../public/fonts')));
+
 // Serve uploaded files
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 // 初始化控制器
-fontController.initFontController(cupsService);
-printerController.initPrinterController(cupsService);
-printController.initPrintController(cupsService);
 
 // 文件上传中间件
 const storage = multer.diskStorage({

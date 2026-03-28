@@ -1,16 +1,8 @@
 /**
  * 打印机控制器
  */
+import cupsService from '../service/cups.js';
 import logger from '../utils/logger.js';
-
-let cupsService;
-
-/**
- * 初始化控制器（注入依赖）
- */
-export function initPrinterController(cupsInstance) {
-  cupsService = cupsInstance;
-}
 
 // 获取打印机列表
 export async function getPrinters(req, res) {

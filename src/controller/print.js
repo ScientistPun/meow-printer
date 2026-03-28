@@ -7,15 +7,7 @@ import { UPLOAD_DIR } from '../config/config.js';
 import logger from '../utils/logger.js';
 import { processPrintOptions, buildPrintOptions } from '../utils/common.js';
 import pdfService from '../service/pdf.js';
-
-let cupsService;
-
-/**
- * 初始化控制器（注入依赖）
- */
-export function initPrintController(cupsInstance) {
-  cupsService = cupsInstance;
-}
+import cupsService from '../service/cups.js';
 
 // 提交打印任务
 export async function printFile(req, res) {

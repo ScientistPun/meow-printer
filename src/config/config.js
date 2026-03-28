@@ -3,7 +3,6 @@
  * 所有路径常量集中管理
  */
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -71,11 +70,6 @@ const CUPS_PORT = process.env.CUPS_PORT || '631';
 
 /** 是否启用远程 CUPS */
 const USE_REMOTE = CUPS_HOST && CUPS_HOST !== 'localhost';
-
-// 确保必要的目录存在
-[CACHE_DIR, FONTS_DIR, UPLOAD_DIR, LOG_DIR].forEach(dir => {
-  fs.mkdirSync(dir, { recursive: true });
-});
 
 export {
   PORT,

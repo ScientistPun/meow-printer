@@ -2,20 +2,12 @@
  * 字体控制器
  */
 import logger from '../utils/logger.js';
-
-let cupsService;
-
-/**
- * 初始化控制器（注入依赖）
- */
-export function initFontController(cupsInstance) {
-  cupsService = cupsInstance;
-}
+import pdfService from '../service/pdf.js';
 
 // 获取可用字体列表
 export async function getFonts(req, res) {
   try {
-    const fonts = cupsService.getAvailableFonts();
+    const fonts = pdfService.getAvailableFonts();
     res.json({ fonts });
   } catch (error) {
     logger.error('获取字体列表失败', { error: error.message });
@@ -35,7 +27,7 @@ export async function addFont(req, res) {
       return res.status(400).json({ success: false, error: '缺少 fontId 或 fontName 参数' });
     }
 
-    const result = cupsService.addFontFile(fontId, fontName, req.file.buffer, req.file.originalname);
+    const result = pdfService.addFontFile(fontId, fontName, req.file.buffer, req.file.originalname);
     if (!result.success) {
       return res.status(400).json(result);
     }
@@ -55,7 +47,7 @@ export async function registerFont(req, res) {
       return res.status(400).json({ success: false, error: '缺少必要参数' });
     }
 
-    const result = cupsService.registerFont(fontId, fontName, filename);
+    const result = pdfService.registerFont(fontId, fontName, filename);
     if (!result.success) {
       return res.status(400).json(result);
     }
