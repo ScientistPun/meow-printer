@@ -25,7 +25,7 @@ docker-compose up -d
 meow-printer/
 ├── src/
 │   ├── app.js           # Express 服务入口
-│   ├── config.js        # 配置常量
+│   ├── config/          # 配置
 │   ├── controller/      # 前端控制器
 │   ├── service/         # 服务层 (cups.js, pdf.js)
 │   ├── utils/           # 工具函数 (logger.js)

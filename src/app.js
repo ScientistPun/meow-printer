@@ -71,7 +71,17 @@ textFileController.initTextFileController(cupsService);
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    // 处理中文文件名：在 Docker Debian 环境下进行编码转换
+    // 将非 ASCII 字符进行 URL 编码
+    let filename = file.originalname;
+    if (/[^\x00-\x7F]/.test(filename)) {
+      // 使用 encodeURIComponent 编码非 ASCII 字符
+      const ext = path.extname(filename);
+      const nameWithoutExt = filename.slice(0, -ext.length);
+      const encodedName = encodeURIComponent(nameWithoutExt).replace(/%/g, '_');
+      filename = encodedName + ext;
+    }
+    cb(null, `${Date.now()}-${filename}`);
   }
 });
 
