@@ -101,8 +101,9 @@ export class Cups {
       const printers = stdout
         .split('\n')
         .filter(line => line.trim())
-        .map(line => {
+        .map((line, idx) => {
           let printerName = line.trim();
+          logger.info(`打印机(${idx}): `, printerName);
           // 处理中文 "正在接受请求" 提示
           if (printerName.includes('正在接受请求')) {
             printerName = printerName.split('正在接受请求')[0].trim();

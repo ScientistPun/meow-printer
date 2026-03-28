@@ -16,7 +16,6 @@ import logger from './utils/logger.js';
 import * as fontController from './controller/font.js';
 import * as printerController from './controller/printer.js';
 import * as fileController from './controller/file.js';
-import * as printController from './controller/print.js';
 import * as previewController from './controller/preview.js';
 import * as logController from './controller/log.js';
 import * as settingsController from './controller/settings.js';
@@ -109,7 +108,7 @@ app.delete('/api/cache', fileController.clearCache);
 
 // ==================== 打印相关 ====================
 
-app.post('/api/print', upload.single('file'), printController.printFile);
+app.post('/api/print', upload.single('file'), printerController.printFile);
 
 // ==================== 预览相关 ====================
 

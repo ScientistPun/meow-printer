@@ -1,279 +1,43 @@
-[2026-03-28T13:20:26.659Z] [INFO] 删除日志 {"date":"2026-03-28"}
-[2026-03-28T13:20:26.663Z] [INFO] DELETE /api/logs {"requestId":"mnacyexo","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:26.671Z] [INFO] GET /api/logs {"requestId":"mnacyey6","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:28.184Z] [INFO] GET /api/history {"requestId":"mnacyg41","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:29.749Z] [INFO] GET /api/logs {"requestId":"mnacyhbl","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:30.510Z] [INFO] GET /api/history {"requestId":"mnacyhwq","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:43.757Z] [INFO] 清空缓存文件 {"count":0}
-[2026-03-28T13:20:43.759Z] [INFO] DELETE /api/cache {"requestId":"mnacys4s","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:47.525Z] [INFO] GET /api/history {"requestId":"mnacyv1d","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T13:20:48.687Z] [INFO] GET /api/logs {"requestId":"mnacyvxp","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:33.825Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T16:12:47.515Z] [INFO] GET / {"requestId":"mnaj41z4","status":200,"duration":"25ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:47.733Z] [INFO] GET /index.js {"requestId":"mnaj424x","status":200,"duration":"36ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:47.932Z] [INFO] GET /global.js {"requestId":"mnaj42b9","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:47.935Z] [INFO] GET /common.js {"requestId":"mnaj42b8","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:48.250Z] [INFO] GET /public/favicon.ico {"requestId":"mnaj42k2","status":404,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:48.301Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnaj42c6"}
-[2026-03-28T16:12:48.309Z] [INFO] GET /api/printers {"requestId":"mnaj42c6","status":200,"duration":"351ms","ip":"127.0.0.1"}
-[2026-03-28T16:12:48.536Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnaj42lz"}
-[2026-03-28T16:12:48.538Z] [INFO] GET /api/printers/capabilities {"requestId":"mnaj42lz","status":200,"duration":"227ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:13.438Z] [INFO] GET / {"requestId":"mnajir8z","status":304,"duration":"10ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:13.459Z] [INFO] GET /index.js {"requestId":"mnajir9s","status":304,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:18.524Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T16:24:21.828Z] [INFO] GET / {"requestId":"mnajixq1","status":304,"duration":"10ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:21.856Z] [INFO] GET /index.js {"requestId":"mnajixqv","status":304,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:21.864Z] [INFO] GET /common.js {"requestId":"mnajixr8","status":304,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:21.866Z] [INFO] GET /global.js {"requestId":"mnajixr9","status":304,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:22.126Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnajixs1"}
-[2026-03-28T16:24:22.132Z] [INFO] GET /api/printers {"requestId":"mnajixs1","status":200,"duration":"243ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:22.347Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajixyw"}
-[2026-03-28T16:24:22.349Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajixyw","status":200,"duration":"213ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:24.214Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajizh1"}
-[2026-03-28T16:24:24.216Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajizh1","status":304,"duration":"131ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:29.288Z] [INFO] GET / {"requestId":"mnajj3hd","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:29.333Z] [INFO] GET /index.js {"requestId":"mnajj3in","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:29.621Z] [INFO] GET /global.js {"requestId":"mnajj3qn","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:29.622Z] [INFO] GET /common.js {"requestId":"mnajj3qo","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:29.785Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnajj3rh"}
-[2026-03-28T16:24:29.786Z] [INFO] GET /api/printers {"requestId":"mnajj3rh","status":200,"duration":"141ms","ip":"127.0.0.1"}
-[2026-03-28T16:24:30.134Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnajj41f"}
-[2026-03-28T16:24:30.135Z] [INFO] GET /api/printers/capabilities {"requestId":"mnajj41f","status":200,"duration":"132ms","ip":"127.0.0.1"}
-[2026-03-28T17:06:10.275Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:06:16.592Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnal0trr"}
-[2026-03-28T17:06:16.602Z] [INFO] GET /api/printers {"requestId":"mnal0trr","status":200,"duration":"482ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:00.584Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:25:01.219Z] [INFO] GET / {"requestId":"mnaloxw1","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:01.245Z] [INFO] GET /index.js {"requestId":"mnaloxwu","status":200,"duration":"15ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:02.932Z] [INFO] GET / {"requestId":"mnaloz7z","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:02.969Z] [INFO] GET /index.js {"requestId":"mnaloz91","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:05.146Z] [INFO] GET / {"requestId":"mnalp0xj","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:05.190Z] [INFO] GET /index.js {"requestId":"mnalp0ym","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:07.451Z] [INFO] GET / {"requestId":"mnalp2pk","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:07.503Z] [INFO] GET /index.js {"requestId":"mnalp2r2","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:18.339Z] [INFO] GET / {"requestId":"mnalpb3y","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:18.382Z] [INFO] GET /index.js {"requestId":"mnalpb4z","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:31.250Z] [INFO] GET /global.js {"requestId":"mnalpl24","status":200,"duration":"22ms","ip":"127.0.0.1"}
-[2026-03-28T17:25:31.252Z] [INFO] GET /common.js {"requestId":"mnalpl27","status":200,"duration":"21ms","ip":"127.0.0.1"}
-[2026-03-28T17:27:31.940Z] [INFO] GET / {"requestId":"mnals673","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:27:31.969Z] [INFO] GET /index.js {"requestId":"mnals67y","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:27:50.555Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:27:53.091Z] [INFO] GET / {"requestId":"mnalsmid","status":200,"duration":"13ms","ip":"127.0.0.1"}
-[2026-03-28T17:27:53.123Z] [INFO] GET /index.js {"requestId":"mnalsmjb","status":200,"duration":"12ms","ip":"127.0.0.1"}
-[2026-03-28T17:28:02.025Z] [INFO] GET /common.js {"requestId":"mnalsteh","status":200,"duration":"15ms","ip":"127.0.0.1"}
-[2026-03-28T17:28:02.041Z] [INFO] GET /global.js {"requestId":"mnalsten","status":200,"duration":"26ms","ip":"127.0.0.1"}
-[2026-03-28T17:28:51.155Z] [INFO] GET / {"requestId":"mnaltvbe","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:28:51.204Z] [INFO] GET /index.js {"requestId":"mnaltvcr","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:29:21.218Z] [INFO] GET /common.js {"requestId":"mnaluiih","status":200,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T17:29:21.221Z] [INFO] GET /global.js {"requestId":"mnaluiik","status":200,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T17:42:51.270Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:42:57.335Z] [INFO] GET / {"requestId":"mnamc085","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T17:42:57.364Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamc094","status":404,"duration":"12ms","ip":"127.0.0.1"}
-[2026-03-28T17:42:57.372Z] [INFO] GET /index.js {"requestId":"mnamc09a","status":200,"duration":"13ms","ip":"127.0.0.1"}
-[2026-03-28T17:42:57.429Z] [INFO] GET /common.js {"requestId":"mnamc0b5","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:42:57.431Z] [INFO] GET /global.js {"requestId":"mnamc0b6","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:00.722Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamc2uh","status":404,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:28.860Z] [INFO] GET / {"requestId":"mnamcok6","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:28.900Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcol8","status":404,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:28.903Z] [INFO] GET /index.js {"requestId":"mnamcolb","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:28.971Z] [INFO] GET /global.js {"requestId":"mnamcon9","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:28.971Z] [INFO] GET /common.js {"requestId":"mnamcona","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:30.480Z] [INFO] GET / {"requestId":"mnamcpt6","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:30.541Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcpuo","status":404,"duration":"12ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:30.546Z] [INFO] GET /index.js {"requestId":"mnamcpup","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:30.585Z] [INFO] GET /common.js {"requestId":"mnamcpw8","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:30.586Z] [INFO] GET /global.js {"requestId":"mnamcpw8","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.195Z] [INFO] GET / {"requestId":"mnamcqd6","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.236Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcqe8","status":404,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.241Z] [INFO] GET /index.js {"requestId":"mnamcqea","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.302Z] [INFO] GET /global.js {"requestId":"mnamcqg3","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.302Z] [INFO] GET /common.js {"requestId":"mnamcqg3","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.678Z] [INFO] GET / {"requestId":"mnamcqqj","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.711Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcqri","status":404,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.714Z] [INFO] GET /index.js {"requestId":"mnamcqri","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.797Z] [INFO] GET /common.js {"requestId":"mnamcqtu","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:31.799Z] [INFO] GET /global.js {"requestId":"mnamcqtv","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:36.088Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:43:38.515Z] [INFO] GET / {"requestId":"mnamcw01","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:38.547Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcw12","status":404,"duration":"13ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:38.552Z] [INFO] GET /index.js {"requestId":"mnamcw19","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:38.617Z] [INFO] GET /common.js {"requestId":"mnamcw35","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:38.627Z] [INFO] GET /global.js {"requestId":"mnamcw36","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:39.400Z] [INFO] GET / {"requestId":"mnamcwp0","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:39.459Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamcwq4","status":404,"duration":"23ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:39.463Z] [INFO] GET /index.js {"requestId":"mnamcwq7","status":200,"duration":"24ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:39.521Z] [INFO] GET /global.js {"requestId":"mnamcws9","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:43:39.524Z] [INFO] GET /common.js {"requestId":"mnamcwsc","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.218Z] [INFO] GET / {"requestId":"mnamdf2l","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.260Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdf3m","status":404,"duration":"10ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.267Z] [INFO] GET /index.js {"requestId":"mnamdf3x","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.336Z] [INFO] GET /common.js {"requestId":"mnamdf5x","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.337Z] [INFO] GET /global.js {"requestId":"mnamdf5x","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.864Z] [INFO] GET / {"requestId":"mnamdfkm","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.905Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdflr","status":404,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.906Z] [INFO] GET /index.js {"requestId":"mnamdfls","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.966Z] [INFO] GET /common.js {"requestId":"mnamdfnh","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:03.968Z] [INFO] GET /global.js {"requestId":"mnamdfnh","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:04.320Z] [INFO] GET / {"requestId":"mnamdfxb","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:04.354Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdfy8","status":404,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:04.357Z] [INFO] GET /index.js {"requestId":"mnamdfy9","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:04.428Z] [INFO] GET /common.js {"requestId":"mnamdg0a","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:04.429Z] [INFO] GET /global.js {"requestId":"mnamdg0b","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.021Z] [INFO] GET / {"requestId":"mnamdmmz","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.060Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdmo1","status":404,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.063Z] [INFO] GET /index.js {"requestId":"mnamdmo3","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.140Z] [INFO] GET /common.js {"requestId":"mnamdmqa","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.142Z] [INFO] GET /global.js {"requestId":"mnamdmqb","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.495Z] [INFO] GET / {"requestId":"mnamdn05","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.537Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdn18","status":404,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.547Z] [INFO] GET /index.js {"requestId":"mnamdn19","status":200,"duration":"14ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.612Z] [INFO] GET /common.js {"requestId":"mnamdn3e","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.612Z] [INFO] GET /global.js {"requestId":"mnamdn3e","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:13.659Z] [INFO] GET / {"requestId":"mnamdn4q","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:14.161Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdnin","status":404,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:14.163Z] [INFO] GET /index.js {"requestId":"mnamdnio","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:14.240Z] [INFO] GET /global.js {"requestId":"mnamdnku","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:14.241Z] [INFO] GET /common.js {"requestId":"mnamdnku","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:26.006Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T17:44:28.472Z] [INFO] GET / {"requestId":"mnamdyjo","status":200,"duration":"20ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:28.505Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamdyku","status":404,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:28.508Z] [INFO] GET /index.js {"requestId":"mnamdyl0","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:28.575Z] [INFO] GET /common.js {"requestId":"mnamdyn0","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:28.577Z] [INFO] GET /global.js {"requestId":"mnamdyn1","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:56.674Z] [INFO] GET / {"requestId":"mnamekbj","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:56.720Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamekck","status":404,"duration":"12ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:56.722Z] [INFO] GET /index.js {"requestId":"mnamekcp","status":200,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:56.789Z] [INFO] GET /global.js {"requestId":"mnamekeq","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:56.793Z] [INFO] GET /common.js {"requestId":"mnamekeo","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.614Z] [INFO] GET / {"requestId":"mnamel1m","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.654Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamel2o","status":404,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.658Z] [INFO] GET /index.js {"requestId":"mnamel2r","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.726Z] [INFO] GET /global.js {"requestId":"mnamel4s","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.727Z] [INFO] GET /common.js {"requestId":"mnamel4s","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:57.834Z] [INFO] GET / {"requestId":"mnamel7r","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:58.278Z] [INFO] GET /public/lib/vue.min.js {"requestId":"mnamelk1","status":404,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:58.282Z] [INFO] GET /index.js {"requestId":"mnamelk3","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:58.354Z] [INFO] GET /common.js {"requestId":"mnamelm7","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:44:58.357Z] [INFO] GET /global.js {"requestId":"mnamelm8","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.247Z] [INFO] GET / {"requestId":"mnamgqok","status":200,"duration":"18ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.270Z] [INFO] GET /index.js {"requestId":"mnamgqpk","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.278Z] [INFO] GET /lib/vue.min.js {"requestId":"mnamgqpi","status":200,"duration":"16ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.377Z] [INFO] GET /global.js {"requestId":"mnamgqsm","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.378Z] [INFO] GET /common.js {"requestId":"mnamgqsm","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.417Z] [INFO] GET /api/settings {"requestId":"mnamgqtn","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:38.670Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnamgqtn"}
-[2026-03-28T17:46:38.672Z] [INFO] GET /api/printers {"requestId":"mnamgqtn","status":200,"duration":"261ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:39.003Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnamgr3u"}
-[2026-03-28T17:46:39.004Z] [INFO] GET /api/printers/capabilities {"requestId":"mnamgr3u","status":200,"duration":"226ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:39.477Z] [INFO] GET /api/history {"requestId":"mnamgrn6","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:40.151Z] [INFO] GET /api/logs {"requestId":"mnamgs5s","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:40.537Z] [INFO] GET /api/history {"requestId":"mnamgsgk","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:42.396Z] [INFO] GET /api/history {"requestId":"mnamgtw7","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T17:46:42.985Z] [INFO] GET /api/logs {"requestId":"mnamguck","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.840Z] [INFO] GET / {"requestId":"mnane5b6","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.874Z] [INFO] GET /index.js {"requestId":"mnane5by","status":200,"duration":"12ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.878Z] [INFO] GET /lib/vue.min.js {"requestId":"mnane5bx","status":200,"duration":"16ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.953Z] [INFO] GET /global.js {"requestId":"mnane5ef","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.956Z] [INFO] GET /common.js {"requestId":"mnane5ef","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:36.978Z] [INFO] GET /api/settings {"requestId":"mnane5f2","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:37.512Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
-[2026-03-28T18:12:37.512Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnane5f2"}
-[2026-03-28T18:12:37.514Z] [INFO] GET /api/printers {"requestId":"mnane5f2","status":200,"duration":"540ms","ip":"127.0.0.1"}
-[2026-03-28T18:12:37.693Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnane5u6"}
-[2026-03-28T18:12:37.693Z] [INFO] GET /api/printers/capabilities {"requestId":"mnane5u6","status":200,"duration":"175ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:35.098Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T18:14:36.642Z] [INFO] GET / {"requestId":"mnangpqm","status":200,"duration":"16ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.665Z] [INFO] GET /index.js {"requestId":"mnangprl","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.668Z] [INFO] GET /lib/vue.min.js {"requestId":"mnangpre","status":200,"duration":"18ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.765Z] [INFO] GET /common.js {"requestId":"mnangpu8","status":200,"duration":"13ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.767Z] [INFO] GET /global.js {"requestId":"mnangpuc","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.815Z] [INFO] GET /api/settings {"requestId":"mnangpvj","status":200,"duration":"16ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:36.911Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
-[2026-03-28T18:14:36.912Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnangpvj"}
-[2026-03-28T18:14:36.917Z] [INFO] GET /api/printers {"requestId":"mnangpvj","status":200,"duration":"117ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:37.415Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnangq6a"}
-[2026-03-28T18:14:37.417Z] [INFO] GET /api/printers/capabilities {"requestId":"mnangq6a","status":200,"duration":"231ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:37.580Z] [INFO] GET /api/history {"requestId":"mnangqh4","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:38.022Z] [INFO] GET /api/logs {"requestId":"mnangqt9","status":200,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:39.743Z] [ERROR] 获取字体列表失败 {"error":"cupsService.getAvailableFonts is not a function"}
-[2026-03-28T18:14:39.747Z] [INFO] GET /api/fonts {"requestId":"mnangs55","status":500,"duration":"10ms","ip":"127.0.0.1"}
-[2026-03-28T18:14:59.355Z] [INFO] POST /api/settings {"requestId":"mnanh79c","status":200,"duration":"27ms","ip":"127.0.0.1"}
-[2026-03-28T18:15:00.814Z] [INFO] GET /api/history {"requestId":"mnanh8ej","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T18:15:02.191Z] [INFO] GET /api/history {"requestId":"mnanh9gr","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T18:15:13.700Z] [ERROR] 获取字体列表失败 {"error":"cupsService.getAvailableFonts is not a function"}
-[2026-03-28T18:15:13.704Z] [INFO] GET /api/fonts {"requestId":"mnanhicg","status":500,"duration":"8ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:37.849Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T18:16:39.708Z] [INFO] GET / {"requestId":"mnanjcp7","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.746Z] [INFO] GET /index.js {"requestId":"mnanjcqk","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.766Z] [INFO] GET /lib/vue.min.js {"requestId":"mnanjcqe","status":200,"duration":"32ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.822Z] [INFO] GET /global.js {"requestId":"mnanjcsf","status":200,"duration":"15ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.826Z] [INFO] GET /common.js {"requestId":"mnanjcsh","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.885Z] [INFO] GET /api/settings {"requestId":"mnanjctk","status":200,"duration":"37ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:39.969Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
-[2026-03-28T18:16:39.970Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnanjcti"}
-[2026-03-28T18:16:39.973Z] [INFO] GET /api/printers {"requestId":"mnanjcti","status":200,"duration":"126ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:40.309Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnanjd3s"}
-[2026-03-28T18:16:40.311Z] [INFO] GET /api/printers/capabilities {"requestId":"mnanjd3s","status":200,"duration":"95ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:41.885Z] [ERROR] 获取字体列表失败 {"error":"cupsService.getAvailableFonts is not a function"}
-[2026-03-28T18:16:41.887Z] [INFO] GET /api/fonts {"requestId":"mnanjee2","status":500,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:16:46.397Z] [INFO] POST /api/settings {"requestId":"mnanjhum","status":200,"duration":"31ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:26.549Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T18:18:28.921Z] [INFO] GET / {"requestId":"mnanloyw","status":200,"duration":"17ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:28.958Z] [INFO] GET /index.js {"requestId":"mnanlp08","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:28.972Z] [INFO] GET /lib/vue.min.js {"requestId":"mnanlp01","status":200,"duration":"26ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:29.030Z] [INFO] GET /common.js {"requestId":"mnanlp28","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:29.032Z] [INFO] GET /global.js {"requestId":"mnanlp29","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:29.082Z] [INFO] GET /api/settings {"requestId":"mnanlp3j","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:29.293Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
-[2026-03-28T18:18:29.295Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnanlp3l"}
-[2026-03-28T18:18:29.298Z] [INFO] GET /api/printers {"requestId":"mnanlp3l","status":200,"duration":"225ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:29.671Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnanlpdg"}
-[2026-03-28T18:18:29.672Z] [INFO] GET /api/printers/capabilities {"requestId":"mnanlpdg","status":200,"duration":"244ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:30.352Z] [INFO] GET /api/fonts {"requestId":"mnanlq2v","status":200,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:32.651Z] [INFO] POST /api/settings {"requestId":"mnanlru6","status":200,"duration":"29ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:33.529Z] [INFO] GET /api/history {"requestId":"mnanlsj8","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:37.350Z] [LOG] createTextPdf: 字体族: AaMingTianHuiYouHaoShiFaSheng
-[2026-03-28T18:18:37.351Z] [LOG] createTextPdf: 检测到非ASCII字符，需要中文字体
-[2026-03-28T18:18:37.359Z] [LOG] loadFont: 字体文件大小: 11638616 AaMingTianHuiYouHaoShiFaSheng
-[2026-03-28T18:18:37.369Z] [LOG] loadFont: 字体加载成功: AaMingTianHuiYouHaoShiFaSheng hasLayout: undefined
-[2026-03-28T18:18:37.369Z] [LOG] createTextPdf: 字体验证通过
-[2026-03-28T18:18:38.846Z] [INFO] 创建文件成功 {"filename":"20260329_0218.pdf"}
-[2026-03-28T18:18:38.847Z] [INFO] POST /api/files {"requestId":"mnanlvgs","status":200,"duration":"1523ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:38.856Z] [INFO] GET /api/history {"requestId":"mnanlwn9","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:40.244Z] [INFO] GET /api/preview {"requestId":"mnanlxok","status":200,"duration":"48ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:49.809Z] [INFO] GET /api/fonts {"requestId":"mnanm53g","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:53.676Z] [INFO] POST /api/settings {"requestId":"mnanm82u","status":200,"duration":"6ms","ip":"127.0.0.1"}
-[2026-03-28T18:18:54.499Z] [INFO] GET /api/history {"requestId":"mnanm8po","status":200,"duration":"7ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:02.680Z] [LOG] createTextPdf: 字体族: AaMingTianHuiYouHaoShiFaSheng
-[2026-03-28T18:19:02.681Z] [LOG] createTextPdf: 检测到非ASCII字符，需要中文字体
-[2026-03-28T18:19:02.689Z] [LOG] loadFont: 字体文件大小: 11638616 AaMingTianHuiYouHaoShiFaSheng
-[2026-03-28T18:19:02.698Z] [LOG] loadFont: 字体加载成功: AaMingTianHuiYouHaoShiFaSheng hasLayout: undefined
-[2026-03-28T18:19:02.698Z] [LOG] createTextPdf: 字体验证通过
-[2026-03-28T18:19:04.019Z] [INFO] 创建文件成功 {"filename":"test.pdf"}
-[2026-03-28T18:19:04.021Z] [INFO] POST /api/files {"requestId":"mnanmf0w","status":200,"duration":"1349ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:04.033Z] [INFO] GET /api/history {"requestId":"mnanmg2m","status":200,"duration":"2ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:06.330Z] [INFO] 删除历史文件 {"filename":"20260329_0218.pdf"}
-[2026-03-28T18:19:06.333Z] [INFO] DELETE /api/history/20260329_0218.pdf {"requestId":"mnanmhub","status":200,"duration":"10ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:06.341Z] [INFO] GET /api/history {"requestId":"mnanmhup","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:07.660Z] [INFO] GET /api/preview {"requestId":"mnanmiud","status":200,"duration":"39ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:17.339Z] [INFO] GET /api/fonts {"requestId":"mnanmqc8","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:20.769Z] [INFO] POST /api/settings {"requestId":"mnanmszi","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:21.891Z] [INFO] GET /api/history {"requestId":"mnanmtum","status":200,"duration":"5ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:26.756Z] [LOG] createTextPdf: 字体族: AaMingTianHuiYouHaoShiFaSheng
-[2026-03-28T18:19:26.794Z] [INFO] 创建文件成功 {"filename":"20260329_0219.pdf"}
-[2026-03-28T18:19:26.795Z] [INFO] POST /api/files {"requestId":"mnanmxlm","status":200,"duration":"49ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:26.800Z] [INFO] GET /api/history {"requestId":"mnanmxn3","status":200,"duration":"1ms","ip":"127.0.0.1"}
-[2026-03-28T18:19:27.782Z] [INFO] GET /api/preview {"requestId":"mnanmyeb","status":200,"duration":"3ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:07.008Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
-[2026-03-28T18:21:10.503Z] [INFO] GET / {"requestId":"mnanp5na","status":200,"duration":"16ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.542Z] [INFO] GET /index.js {"requestId":"mnanp5og","status":200,"duration":"14ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.558Z] [INFO] GET /lib/vue.min.js {"requestId":"mnanp5on","status":200,"duration":"23ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.616Z] [INFO] GET /global.js {"requestId":"mnanp5qs","status":200,"duration":"4ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.623Z] [INFO] GET /common.js {"requestId":"mnanp5qs","status":200,"duration":"11ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.750Z] [INFO] GET /api/settings {"requestId":"mnanp5ud","status":200,"duration":"9ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:10.861Z] [ERROR] 获取打印机列表失败: {"code":1,"killed":false,"signal":null,"cmd":"lpstat -h 192.168.10.1:631 -a","stdout":"","stderr":"lpstat: Bad file descriptor\n"}
-[2026-03-28T18:21:10.862Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnanp5ue"}
-[2026-03-28T18:21:10.864Z] [INFO] GET /api/printers {"requestId":"mnanp5ue","status":200,"duration":"122ms","ip":"127.0.0.1"}
-[2026-03-28T18:21:11.156Z] [INFO] 获取打印机纸张尺寸 {"printer":"default","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnanp62c"}
-[2026-03-28T18:21:11.157Z] [INFO] GET /api/printers/capabilities {"requestId":"mnanp62c","status":200,"duration":"129ms","ip":"127.0.0.1"}
-[2026-03-28T18:24:54.294Z] [INFO] Meow Printer server started on http://0.0.0.0:3000
+[2026-03-28T22:33:56.488Z] [INFO] 删除日志 {"date":"2026-03-28"}
+[2026-03-28T22:33:56.494Z] [INFO] DELETE /api/logs {"requestId":"mnawq7sy","status":200,"duration":"12ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:56.501Z] [INFO] GET /api/logs {"requestId":"mnawq7te","status":200,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.800Z] [INFO] GET / {"requestId":"mnawqad1","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.815Z] [INFO] GET /lib/vue.min.js {"requestId":"mnawqadi","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.818Z] [INFO] GET /index.js {"requestId":"mnawqadi","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.854Z] [INFO] GET /common.js {"requestId":"mnawqael","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.855Z] [INFO] GET /global.js {"requestId":"mnawqaem","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T22:33:59.874Z] [INFO] GET /api/settings {"requestId":"mnawqaf4","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T22:34:00.459Z] [INFO] 打印机(0):  Gprinter_GP-1324D正在接受请求，时间始于Sun Mar 29 05:49:18 2026
+[2026-03-28T22:34:00.460Z] [INFO] 获取打印机列表 {"count":1,"requestId":"mnawqaf4"}
+[2026-03-28T22:34:00.460Z] [INFO] GET /api/printers {"requestId":"mnawqaf4","status":304,"duration":"588ms","ip":"127.0.0.1"}
+[2026-03-28T22:34:01.016Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnawqavj"}
+[2026-03-28T22:34:01.017Z] [INFO] GET /api/printers/capabilities {"requestId":"mnawqavj","status":304,"duration":"554ms","ip":"127.0.0.1"}
+[2026-03-28T22:34:01.145Z] [INFO] GET /api/logs {"requestId":"mnawqbe9","status":200,"duration":"8ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.059Z] [INFO] GET / {"requestId":"mnawwg0d","status":304,"duration":"6ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.075Z] [INFO] GET /lib/vue.min.js {"requestId":"mnawwg0v","status":304,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.079Z] [INFO] GET /index.js {"requestId":"mnawwg0y","status":304,"duration":"5ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.119Z] [INFO] GET /global.js {"requestId":"mnawwg26","status":304,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.121Z] [INFO] GET /common.js {"requestId":"mnawwg26","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.140Z] [INFO] GET /api/settings {"requestId":"mnawwg2l","status":304,"duration":"7ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.661Z] [INFO] 打印机(0):  Gprinter_GP-1324D正在接受请求，时间始于Sun Mar 29 05:49:18 2026
+[2026-03-28T22:38:47.661Z] [INFO] 打印机(1):  HP_Laser_108w正在接受请求，时间始于Sun Mar 29 06:04:58 2026
+[2026-03-28T22:38:47.661Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnawwg2l"}
+[2026-03-28T22:38:47.663Z] [INFO] GET /api/printers {"requestId":"mnawwg2l","status":200,"duration":"530ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:47.875Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnawwghd"}
+[2026-03-28T22:38:47.876Z] [INFO] GET /api/printers/capabilities {"requestId":"mnawwghd","status":304,"duration":"211ms","ip":"127.0.0.1"}
+[2026-03-28T22:38:54.661Z] [INFO] GET /api/logs {"requestId":"mnawwlvl","status":200,"duration":"4ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.580Z] [INFO] GET / {"requestId":"mnawx20r","status":304,"duration":"0ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.590Z] [INFO] GET /lib/vue.min.js {"requestId":"mnawx210","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.592Z] [INFO] GET /index.js {"requestId":"mnawx211","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.603Z] [INFO] GET /common.js {"requestId":"mnawx21d","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.604Z] [INFO] GET /global.js {"requestId":"mnawx21e","status":304,"duration":"2ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.617Z] [INFO] GET /api/settings {"requestId":"mnawx21q","status":304,"duration":"3ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.801Z] [INFO] 打印机(0):  Gprinter_GP-1324D正在接受请求，时间始于Sun Mar 29 05:49:18 2026
+[2026-03-28T22:39:15.801Z] [INFO] 打印机(1):  HP_Laser_108w正在接受请求，时间始于Sun Mar 29 06:04:58 2026
+[2026-03-28T22:39:15.801Z] [INFO] 获取打印机列表 {"count":2,"requestId":"mnawx21r"}
+[2026-03-28T22:39:15.802Z] [INFO] GET /api/printers {"requestId":"mnawx21r","status":304,"duration":"187ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:15.915Z] [INFO] 获取打印机纸张尺寸 {"printer":"Gprinter_GP-1324D","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnawx270"}
+[2026-03-28T22:39:15.915Z] [INFO] GET /api/printers/capabilities {"requestId":"mnawx270","status":304,"duration":"111ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:16.768Z] [INFO] GET /api/logs {"requestId":"mnawx2xr","status":200,"duration":"1ms","ip":"127.0.0.1"}
+[2026-03-28T22:39:27.341Z] [INFO] 获取打印机纸张尺寸 {"printer":"HP_Laser_108w","mediaOptions":["A4","A5","A6","B5","Letter","Legal","4x6"],"requestId":"mnawxana"}
+[2026-03-28T22:39:27.343Z] [INFO] GET /api/printers/capabilities {"requestId":"mnawxana","status":200,"duration":"584ms","ip":"127.0.0.1"}
