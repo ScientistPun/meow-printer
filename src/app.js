@@ -72,8 +72,20 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
-    // 保留原始文件名（UTF-8 locale 已支持中文）
-    cb(null, `${Date.now()}-${file.originalname}`);
+    let filename = file.originalname;
+    // 检测文件名是否是 Latin-1 编码（被错误解读为 UTF-8）
+    // 特征：包含非 ASCII 字符，且转换后包含有效的中文字符
+    if (/[^\x00-\x7F]/.test(filename)) {
+      const latin1Converted = Buffer.from(filename, 'latin1').toString('utf8');
+      // 检测转换后是否包含有效的中文字符（Unicode 范围 4E00-9FFF）
+      const hasValidChinese = /[\u4E00-\u9FFF]/.test(latin1Converted);
+      if (hasValidChinese) {
+        filename = latin1Converted;
+      }
+    }
+    // 移除非法的文件系统字符
+    filename = filename.replace(/[\/\\:*?"<>|]/g, '_');
+    cb(null, `${Date.now()}-${filename}`);
   }
 });
 
@@ -97,7 +109,7 @@ app.delete('/api/jobs/:id', printerController.cancelJob);
 
 // ==================== 文件相关 ====================
 
-app.post('/api/upload', upload.single('file'), fileController.uploadFile);
+app.post('/api/upload', upload.array('files'), fileController.uploadFile);
 app.get('/api/history', fileController.getHistory);
 app.delete('/api/history/:filename', fileController.deleteHistoryFile);
 app.delete('/api/history', fileController.clearHistory);

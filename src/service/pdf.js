@@ -7,7 +7,7 @@ import * as fontkit from 'fontkit';
 import path from 'path';
 import fs from 'fs';
 import sharp from 'sharp';
-import { CACHE_DIR, FONTS_DIR, FONTS_MAP } from '../config/config.js';
+import { CACHE_DIR, FONTS_DIR, FONTS_MAP, IMAGE_EXTENSIONS } from '../config/config.js';
 import logger from '../utils/logger.js';
 import { PRINT_ORIENTATION, PRINT_SCALING, PRINT_PAGE_SET } from '../config/global.js';
 
@@ -160,7 +160,7 @@ export class Pdf {
   async getFileDimensions(filePath) {
     const ext = path.extname(filePath).toLowerCase();
 
-    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
+    if (IMAGE_EXTENSIONS.includes(ext)) {
       return await this.getImageDimensions(filePath);
     } else if (ext === '.pdf') {
       const pdfBytes = fs.readFileSync(filePath);
@@ -469,7 +469,7 @@ export class Pdf {
     // 计算缩放比例
     let scale;
     if (scaling === PRINT_SCALING.FIT || !scaling) {
-      // 自适应模式：内容填满单元格（可能裁剪）
+      // 自适应模式：内容完整适应单元格（不裁剪）
       const scaleX = cellWidth / origW;
       const scaleY = cellHeight / origH;
       scale = Math.min(scaleX, scaleY);
@@ -496,6 +496,8 @@ export class Pdf {
         const srcPageIdx = pageIdx * nup + i;
         if (srcPageIdx >= numPages) break;
 
+        const srcPage = srcPages[srcPageIdx];
+
         const col = i % cols;
         const row = Math.floor(i / cols);
 
@@ -508,7 +510,7 @@ export class Pdf {
         const y = margin + (rows - 1 - row) * (cellHeight + gap) + offsetY;
 
         // 嵌入源页面
-        const [embedded] = await newPdf.embedPages([srcPages[srcPageIdx]]);
+        const [embedded] = await newPdf.embedPages([srcPage]);
 
         // 绘制页面
         newPage.drawPage(embedded, {
@@ -570,6 +572,7 @@ export class Pdf {
 
   /**
    * 处理 PDF 缩放、方向、n-up 和页面筛选
+   * 通过缩放使内容适应目标纸张，保持内容完整显示
    * @param {string} filePath - PDF 文件路径
    * @param {Object} options - 选项
    * @param {string} [options.orientation] - 方向 ('portrait' 或 'landscape')
@@ -639,7 +642,7 @@ export class Pdf {
       // 计算缩放比例
       let scale;
       if (scaling === PRINT_SCALING.FIT || !scaling) {
-        // 自适应模式：内容填满页面（可能裁剪）
+        // 自适应模式：内容完整适应页面（不裁剪）
         const scaleX = pageWidth / origW;
         const scaleY = pageHeight / origH;
         scale = Math.min(scaleX, scaleY);
@@ -651,15 +654,19 @@ export class Pdf {
       const scaledW = origW * scale;
       const scaledH = origH * scale;
 
+      // 居中放置
+      const x = (pageWidth - scaledW) / 2;
+      const y = (pageHeight - scaledH) / 2;
+
       const newPage = newPdf.addPage([pageWidth, pageHeight]);
 
       // 嵌入源 PDF 页面
       const [embedded] = await newPdf.embedPages([srcPage]);
 
-      // 绘制到新页面（居左上角）
+      // 绘制到新页面（居中）
       newPage.drawPage(embedded, {
-        x: 0,
-        y: pageHeight - scaledH,
+        x: x,
+        y: y,
         width: scaledW,
         height: scaledH
       });
@@ -697,7 +704,7 @@ export class Pdf {
     }
 
     // 图片文件：图片独立处理缩放和方向，不走 scalePdf
-    if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
+    if (IMAGE_EXTENSIONS.includes(ext)) {
       // 图片直接根据 orientation 和 scaling 生成 PDF
       const tempPdfPath = await (orientation === PRINT_ORIENTATION.LANDSCAPE
         ? this.imageToPdfLandscape(filePath, pdfOptions)
@@ -952,7 +959,35 @@ export class Pdf {
 
       return outPath;
     } catch (error) {
-      console.error('createTextPdf 错误:', error);
+      logger.error('createTextPdf 错误:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 合并多个 PDF 文件为一个
+   * @param {string[]} filePaths - PDF 文件路径数组
+   * @returns {Promise<string>} 合并后的 PDF 文件路径
+   */
+  async mergePdfs(filePaths) {
+    try {
+      const mergedPdf = await PDFDocument.create();
+
+      for (const filePath of filePaths) {
+        const pdfBytes = fs.readFileSync(filePath);
+        const pdf = await PDFDocument.load(pdfBytes);
+        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        pages.forEach(page => mergedPdf.addPage(page));
+      }
+
+      const filename = `merged_${Date.now()}.pdf`;
+      const outPath = path.join(CACHE_DIR, filename);
+      const pdfBytes = await mergedPdf.save();
+      fs.writeFileSync(outPath, pdfBytes);
+
+      return outPath;
+    } catch (error) {
+      logger.error('mergePdfs 错误:', error);
       throw error;
     }
   }

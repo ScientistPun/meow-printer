@@ -8,8 +8,9 @@ services:
     environment:
       - CUPS_HOST=192.168.10.1
       - CUPS_PORT=631
+      - DEV=false
+      - TZ=Asia/Shanghai
     volumes:
-      - /var/run/cups.sock:/var/run/cups.sock:ro
       - ./public:/app/public
       - ./logs:/app/logs
     restart: unless-stopped

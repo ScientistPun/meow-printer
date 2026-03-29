@@ -12,7 +12,6 @@ createApp({
     const message = ref('');          // 提示消息
     const messageType = ref('');       // 提示消息类型（success/error）
     const showMore = ref(false);       // 是否显示更多选项
-    const showPageSettings = ref(false); // 是否显示页面设置
     const mediaSelected = ref(false);  // 用户是否手动选择了纸张尺寸
 
     // ==================== 打印机相关状态 ====================
@@ -645,31 +644,6 @@ createApp({
     };
 
     /**
-     * 获取文件图标
-     */
-    const getFileIcon = (filename) => {
-      const ext = filename.split('.').pop().toLowerCase();
-      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext)) {
-        return '🖼️';
-      }
-      if (ext === 'pdf') {
-        return '📄';
-      }
-      if (['doc', 'docx'].includes(ext)) {
-        return '📝';
-      }
-      return '📁';
-    };
-
-    /**
-     * 触发文件选择
-     */
-    const triggerFileInput = () => {
-      const input = document.querySelector('input[type="file"]');
-      if (input) input.click();
-    };
-
-    /**
      * 选择文件后上传并选中
      */
     const onFileChange = async (e) => {
@@ -695,22 +669,9 @@ createApp({
     };
 
     /**
-     * 移除指定索引的文件
+     * 移除当前选择的文件
      */
-    const removeFile = (index) => {
-      files.value.splice(index, 1);
-      if (files.value.length === 0) {
-        fileName.value = '';
-        mediaSelected.value = false;
-      } else {
-        fileName.value = `${files.value.length} 个文件`;
-      }
-    };
-
-    /**
-     * 清除所有已选择的文件
-     */
-    const clearFiles = () => {
+    const removeFile = () => {
       files.value = [];
       fileName.value = '';
       mediaSelected.value = false;
@@ -996,7 +957,6 @@ createApp({
       message,
       messageType,
       showMore,
-      showPageSettings,
       mediaSelected,
       printers,
       printersLoading,
@@ -1021,16 +981,11 @@ createApp({
       createFile,
       mediaOptions,
       onFileChange,
-      triggerFileInput,
-      getFileIcon,
       removeFile,
-      clearFiles,
       printFile,
       previewPrint,
       switchToLogs,
       switchToHistory,
-      loadHistory,
-      loadLogs,
       toggleLog,
       clearLog,
       clearAllLogs,

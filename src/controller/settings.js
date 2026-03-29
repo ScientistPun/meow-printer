@@ -4,6 +4,7 @@
 import fs from 'fs';
 import { SETTINGS_FILE } from '../config/config.js';
 import { DEFAULT_SETTINGS } from '../config/global.js';
+import logger from '../utils/logger.js';
 
 /**
  * 读取设置
@@ -44,7 +45,7 @@ export async function saveSettings(req, res) {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(validSettings, null, 2), 'utf-8');
     res.json({ success: true });
   } catch (error) {
-    console.error('保存设置失败:', error);
+    logger.error('保存设置失败:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 }

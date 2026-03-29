@@ -4,9 +4,9 @@
   "customHeight": 150,
   "fontFamily": "AaMingTianHuiYouHaoShiFaSheng",
   "fontSize": 16,
-  "marginTop": 30,
-  "marginRight": 25,
-  "marginBottom": 25,
+  "marginTop": 35,
+  "marginRight": 20,
+  "marginBottom": 15,
   "marginLeft": 40,
   "gridLines": true,
   "addHeader": true

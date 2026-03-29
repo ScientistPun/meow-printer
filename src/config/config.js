@@ -13,6 +13,9 @@ const __dirname = path.dirname(__filename);
 /** 服务器端口 */
 const PORT = process.env.PORT || 3000;
 
+/** 调试 */
+const DEV = process.env.DEV || true;
+
 // ==================== 目录配置 ====================
 
 // 项目根目录 (src 的上级)
@@ -36,8 +39,11 @@ const CACHE_DIR = path.join(PUBLIC_DIR, 'cache');
 // 上传目录
 const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
 
-/** 支持的文件类型 */
-const SUPPORTED_FILE_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'];
+/** 支持的图片类型（用于预览/打印） */
+const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'];
+
+/** 支持的文件类型（包含图片和文档） */
+const SUPPORTED_FILE_EXTENSIONS = [...IMAGE_EXTENSIONS, '.pdf', '.doc', '.docx'];
 
 /** 最大文件大小（字节），默认 50MB */
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -73,7 +79,9 @@ const USE_REMOTE = CUPS_HOST && CUPS_HOST !== 'localhost';
 
 export {
   PORT,
+  DEV,
   SUPPORTED_FILE_EXTENSIONS,
+  IMAGE_EXTENSIONS,
   MAX_FILE_SIZE,
   ROOT_DIR,
   PUBLIC_DIR,

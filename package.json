@@ -1,6 +1,6 @@
 {
   "name": "meow-printer",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "start": "node src/app.js"

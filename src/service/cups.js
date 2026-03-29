@@ -103,7 +103,7 @@ export class Cups {
         .filter(line => line.trim())
         .map((line, idx) => {
           let printerName = line.trim();
-          logger.info(`打印机(${idx}): `, printerName);
+          logger.debug(`打印机(${idx}): `, printerName);
           // 处理中文 "正在接受请求" 提示
           if (printerName.includes('正在接受请求')) {
             printerName = printerName.split('正在接受请求')[0].trim();
@@ -149,7 +149,7 @@ export class Cups {
 
       return this._normalizeMediaOptions(mediaOptions);
     } catch (error) {
-      console.error('获取打印机能力失败:', error);
+      logger.error('获取打印机能力失败:', error);
       return DEFAULT_MEDIA_OPTIONS;
     }
   }
@@ -216,7 +216,7 @@ export class Cups {
         });
       return jobs;
     } catch (error) {
-      console.error('获取打印任务失败:', error);
+      logger.error('获取打印任务失败:', error);
       return [];
     }
   }
@@ -290,7 +290,7 @@ export class Cups {
 
       return { success: true, jobId: this._extractJobId(output) };
     } catch (error) {
-      console.error('打印失败:', error);
+      logger.error('打印失败:', error);
       return { success: false, error: error.message || '打印命令执行失败' };
     }
   }

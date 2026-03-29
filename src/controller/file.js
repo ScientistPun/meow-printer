@@ -11,18 +11,47 @@ import pdfService from '../service/pdf.js';
 // 上传文件（仅保存，不处理）
 export async function uploadFile(req, res) {
   try {
-    if (!req.file) {
+    if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, error: '没有上传文件' });
     }
+    const files = req.files.map(f => ({
+      filename: f.filename,
+      // 修复文件名编码：如果是 Latin-1 编码的乱码，转换回 UTF-8
+      originalName: fixFilenameEncoding(f.originalname)
+    }));
     res.json({
       success: true,
-      filename: req.file.filename,
-      originalName: req.file.originalname
+      files
     });
   } catch (error) {
     logger.error('上传文件失败', { error: error.message });
     res.status(500).json({ success: false, error: error.message });
   }
+}
+
+/**
+ * 修复文件名编码
+ * 浏览器可能使用 Latin-1 发送中文文件名，需要转换回正确的 UTF-8
+ */
+function fixFilenameEncoding(filename) {
+  // 如果包含非 ASCII 字符
+  if (/[^\x00-\x7F]/.test(filename)) {
+    // 检查是否已经是有效的中文 UTF-8（不需要转换）
+    if (/[\u4E00-\u9FFF]/.test(filename)) {
+      return filename; // 已经是有效的 UTF-8 中文
+    }
+    // 否则尝试从 Latin-1 转换
+    try {
+      const converted = Buffer.from(filename, 'latin1').toString('utf8');
+      // 只有转换后产生有效中文才使用转换结果
+      if (/[\u4E00-\u9FFF]/.test(converted)) {
+        return converted;
+      }
+    } catch (e) {
+      // 转换失败，返回原值
+    }
+  }
+  return filename;
 }
 
 // 获取上传文件列表（历史文件）
@@ -36,9 +65,12 @@ export async function getHistory(req, res) {
     const files = await Promise.all(
       supportedFiles.map(async (f) => {
         const stats = await fs.promises.stat(path.join(UPLOAD_DIR, f));
+        // 提取原始文件名（去掉时间戳前缀）
+        const originalName = f.replace(/^\d+-/, '');
         return {
           name: f,
-          originalName: f.replace(/^\d+-/, ''),
+          // 修复文件名编码
+          originalName: fixFilenameEncoding(originalName),
           size: stats.size,
           modified: stats.mtime.toISOString()
         };
@@ -185,11 +217,28 @@ export async function clearCache(req, res) {
 // 创建文本文件
 export async function createTextFile(req, res) {
   try {
-    const { name, paperSize, fontFamily, fontSize, content, customWidth, customHeight, marginTop, marginRight, marginBottom, marginLeft, gridLines, addHeader } = req.body;
+    let { name, paperSize, fontFamily, fontSize, content, customWidth, customHeight, marginTop, marginRight, marginBottom, marginLeft, gridLines, addHeader } = req.body;
+
+    // express.json() 已经正确解析 UTF-8，如果 name 已经是有效的中文，不需要转换
+    // 只有当 name 看起来像 Latin-1 编码被错误解读为 UTF-8 时才需要转换
+    if (/[^\x00-\x7F]/.test(name)) {
+      // 检查是否包含有效的中文字符（正确的 UTF-8）
+      const hasValidChinese = /[\u4E00-\u9FFF]/.test(name);
+      if (!hasValidChinese) {
+        // 没有有效中文，可能是 Latin-1 误读为 UTF-8，尝试转换
+        const latin1Converted = Buffer.from(name, 'latin1').toString('utf8');
+        if (/[\u4E00-\u9FFF]/.test(latin1Converted)) {
+          name = latin1Converted;
+        }
+      }
+    }
 
     if (!name || !content) {
       return res.status(400).json({ success: false, error: '文件名和内容不能为空' });
     }
+
+    // 移除非法的文件系统字符
+    name = name.replace(/[\/\\:*?"<>|]/g, '_');
 
     let mediaWidth, mediaHeight;
 
@@ -242,7 +291,7 @@ export async function createTextFile(req, res) {
     logger.info('创建文件成功', { filename });
     res.json({ success: true, filename });
   } catch (error) {
-    console.error('创建文件失败:', error);
+    logger.error('创建文件失败:', error);
     res.status(500).json({ success: false, error: '创建失败: ' + error.message });
   }
 }

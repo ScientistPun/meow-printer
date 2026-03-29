@@ -3,7 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { UPLOAD_DIR } from '../config/config.js';
+import { UPLOAD_DIR, IMAGE_EXTENSIONS } from '../config/config.js';
 import logger from '../utils/logger.js';
 import { processPrintOptions, buildPrintOptions } from '../utils/common.js';
 import pdfService from '../service/pdf.js';
@@ -11,14 +11,18 @@ import pdfService from '../service/pdf.js';
 // 预览打印效果（生成预览PDF）
 export async function previewPrint(req, res) {
   try {
-    let filePath;
+    let filePaths = [];
 
     if (req.file) {
-      filePath = req.file.path;
+      filePaths.push(req.file.path);
     } else if (req.body.filePath) {
-      filePath = path.join(UPLOAD_DIR, req.body.filePath);
-      if (!fs.existsSync(filePath)) {
-        return res.status(400).json({ error: '历史文件不存在' });
+      const paths = req.body.filePath.split(',');
+      for (const p of paths) {
+        const fullPath = path.join(UPLOAD_DIR, p.trim());
+        if (!fs.existsSync(fullPath)) {
+          return res.status(400).json({ error: '历史文件不存在: ' + p });
+        }
+        filePaths.push(fullPath);
       }
     } else {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -28,24 +32,51 @@ export async function previewPrint(req, res) {
 
     logger.info('Preview options', { body: req.body, options });
 
-    // 处理纸张尺寸
-    await processPrintOptions(options, pdfService.getFileDimensions.bind(pdfService), filePath);
-
-    // 处理文件方向和尺寸
-    const ext = path.extname(filePath).toLowerCase();
     let previewFilePath;
 
-    // PDF 文件：使用 scalePdf 处理
-    if (ext === '.pdf') {
-      previewFilePath = await pdfService.scalePdf(filePath, options);
-    } else if (['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'].includes(ext)) {
-      // 图片：图片独立处理缩放，仅 n-up/pageSet 需要额外处理
-      const tempPdfPath = await (options.orientation === 'landscape'
-        ? pdfService.imageToPdfLandscape(filePath, options)
-        : pdfService.imageToPdfPortrait(filePath, options));
+    // 多文件：先合并为一个 PDF
+    if (filePaths.length > 1) {
+      const pdfPaths = [];
+      for (const filePath of filePaths) {
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext === '.pdf') {
+          pdfPaths.push(filePath);
+        } else if (IMAGE_EXTENSIONS.includes(ext)) {
+          // 图片转为 PDF
+          const tempPdfPath = await (options.orientation === 'landscape'
+            ? pdfService.imageToPdfLandscape(filePath, options)
+            : pdfService.imageToPdfPortrait(filePath, options));
+          pdfPaths.push(tempPdfPath);
+        } else {
+          return res.status(400).json({ error: '不支持的文件类型: ' + ext });
+        }
+      }
+      // 合并所有 PDF
+      previewFilePath = await pdfService.mergePdfs(pdfPaths);
+      // 清理临时的图片 PDF
+      for (const p of pdfPaths) {
+        if (!filePaths.includes(p)) {
+          try { fs.unlinkSync(p); } catch (e) {}
+        }
+      }
+      filePaths = [previewFilePath];
+    }
 
-      if (options.nup > 1 || (options.pageSet && options.pageSet !== 'all')) {
-        previewFilePath = await pdfService.scalePdf(tempPdfPath, options);
+    // 单文件处理（合并后也是单文件）
+    const filePath = filePaths[0];
+    const processedOptions = await processPrintOptions(options, pdfService.getFileDimensions.bind(pdfService), filePath);
+
+    const ext = path.extname(filePath).toLowerCase();
+
+    if (ext === '.pdf') {
+      previewFilePath = await pdfService.scalePdf(filePath, processedOptions);
+    } else if (IMAGE_EXTENSIONS.includes(ext)) {
+      const tempPdfPath = await (processedOptions.orientation === 'landscape'
+        ? pdfService.imageToPdfLandscape(filePath, processedOptions)
+        : pdfService.imageToPdfPortrait(filePath, processedOptions));
+
+      if (processedOptions.nup > 1 || (processedOptions.pageSet && processedOptions.pageSet !== 'all')) {
+        previewFilePath = await pdfService.scalePdf(tempPdfPath, processedOptions);
         try { fs.unlinkSync(tempPdfPath); } catch (e) {}
       } else {
         previewFilePath = tempPdfPath;
