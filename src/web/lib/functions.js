@@ -89,8 +89,6 @@ const DEFAULT_SETTINGS = {
   addHeader: false
 };
 
-// ==================== 日志模块（简化版 from /utils/logger.js） ====================
-
 const logger = {
   debug: (...args) => console.debug('[DEBUG]', ...args),
   info: (...args) => console.info('[INFO]', ...args),
