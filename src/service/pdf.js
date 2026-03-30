@@ -608,6 +608,11 @@ export class Pdf {
       srcPages = indices.map(i => srcPdf.getPages()[i]);
     }
 
+    // 如果筛选后没有页面，抛出一个明确的错误
+    if (srcPages.length === 0) {
+      throw new Error('没有匹配的页面（页码筛选可能排除了所有页面）');
+    }
+
     // 确定目标纸张尺寸
     let targetWidthMM = options.mediaWidth;
     let targetHeightMM = options.mediaHeight;
@@ -721,6 +726,123 @@ export class Pdf {
     }
 
     return filePath;
+  }
+
+  // ==================== 页码相关 ====================
+
+  /**
+   * 为 PDF 添加页码
+   * @param {string} filePath - PDF 文件路径
+   * @param {Object} options - 选项
+   * @param {number} options.nup - 每版页数
+   * @param {number} options.totalSrcPages - 原始总页数
+   * @returns {Promise<string>} 添加页码后的 PDF 文件路径
+   */
+  async addPageNumbers(filePath, options = {}) {
+    try {
+      const nup = options.nup || 1;
+      const totalSrcPages = options.totalSrcPages || 0;
+      const totalOutputPages = options.totalOutputPages || 0;
+
+      // 确保输出路径与输入路径不同，避免读写冲突
+      const inputFileName = path.basename(filePath);
+      const outPath = path.join(CACHE_DIR, `${inputFileName}_numbered.pdf`);
+
+      // 如果输入文件就在缓存目录，先复制一份再处理
+      let sourcePath = filePath;
+      if (filePath === outPath || filePath.startsWith(CACHE_DIR)) {
+        const tempPath = path.join(CACHE_DIR, `temp_${Date.now()}_${inputFileName}`);
+        fs.copyFileSync(filePath, tempPath);
+        sourcePath = tempPath;
+      }
+
+      const pdfBytes = fs.readFileSync(sourcePath);
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const pages = pdfDoc.getPages();
+      const actualTotalPages = totalOutputPages > 0 ? totalOutputPages : pages.length;
+
+      // 使用 Helvetica 字体
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontSize = 8;
+      const bottomMargin = 10; // 约20mm (20 * 2.834645669 ≈ 57)
+
+      for (let i = 0; i < pages.length; i++) {
+        const page = pages[i];
+        const { width, height } = page.getSize();
+        const outputPageNum = i + 1;
+
+        if (nup > 1 && totalSrcPages > 0) {
+          // n-up 模式：在每个缩小的页面上显示其对应的原页码
+          // 计算网格布局
+          let cols, rows;
+          if (nup === 2) { cols = 2; rows = 1; }
+          else if (nup === 3) { cols = 3; rows = 1; }
+          else if (nup === 4) { cols = 2; rows = 2; }
+          else if (nup <= 6) { cols = 3; rows = 2; }
+          else if (nup <= 9) { cols = 3; rows = 3; }
+          else { cols = 4; rows = Math.ceil(nup / 4); }
+
+          const margin = 10;
+          const gap = 6;
+          const cellWidth = (width - margin * 2 - gap * (cols - 1)) / cols;
+          const cellHeight = (height - margin * 2 - gap * (rows - 1)) / rows;
+
+          // 计算这一页上每个单元格的位置和页码
+          for (let j = 0; j < nup; j++) {
+            const origPageNum = i * nup + j + 1; // 原页面页码（从1开始）
+            if (origPageNum > totalSrcPages) break;
+
+            const col = j % cols;
+            const row = Math.floor(j / cols);
+
+            // 单元格位置
+            const cellX = margin + col * (cellWidth + gap);
+            const cellY = margin + (rows - 1 - row) * (cellHeight + gap);
+
+            // 页码位置在页面下方，格式 1/n
+            const pageNumText = `${origPageNum}/${totalSrcPages}`;
+            const textWidth = font.widthOfTextAtSize(pageNumText, fontSize);
+            const textX = cellX + (cellWidth - textWidth) / 2;
+            const textY = cellY - fontSize + 5;
+
+            page.drawText(pageNumText, {
+              x: textX,
+              y: textY,
+              size: fontSize,
+              font: font,
+              color: rgb(0.3, 0.3, 0.3)
+            });
+          }
+        } else {
+          // 普通模式：当前页 / 总页数，格式 1/n
+          const pageText = `${outputPageNum}/${actualTotalPages}`;
+          const textWidth = font.widthOfTextAtSize(pageText, fontSize);
+          const x = (width - textWidth) / 2;
+          const y = bottomMargin;
+          page.drawText(pageText, {
+            x: x,
+            y: y,
+            size: fontSize,
+            font: font,
+            color: rgb(0.3, 0.3, 0.3)
+          });
+        }
+      }
+
+      const numberedPdfBytes = await pdfDoc.save();
+      fs.writeFileSync(outPath, numberedPdfBytes);
+      logger.log(`添加页码: ${outPath}, nup=${nup}, 原始总页数=${totalSrcPages}, 输出页数=${actualTotalPages}`);
+
+      // 清理临时文件
+      if (sourcePath !== filePath) {
+        try { fs.unlinkSync(sourcePath); } catch (e) {}
+      }
+
+      return outPath;
+    } catch (error) {
+      logger.error('添加页码失败', { error: error.message });
+      throw error;
+    }
   }
 
   // ==================== 文本 PDF 创建 ====================

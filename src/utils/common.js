@@ -196,7 +196,8 @@ export function buildPrintOptions(body, isPreview = false) {
     customPages: body.customPages || '',
     nup: parseInt(body.nup) || 1,
     scaling: body.scaling,
-    noHeaderFooter: body.noHeaderFooter === 'true' || body.noHeaderFooter === true
+    noHeaderFooter: body.noHeaderFooter === 'true' || body.noHeaderFooter === true,
+    addPageNumber: body.addPageNumber === 'true' || body.addPageNumber === true
   };
 }
 

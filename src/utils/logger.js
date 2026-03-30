@@ -22,7 +22,7 @@ function shouldOutput(level) {
   // dev 模式开启时全部输出
   if (DEV) return true;
   // dev 关闭时 info 和 warn 不输出
-  if (level === 'INFO' || level === 'WARN') return false;
+  if (level === 'WARN') return false;
   if (level === 'DEBUG') return false;
   return false;
 }
@@ -52,12 +52,12 @@ function log(level, message, data = null) {
     fs.appendFileSync(getLogFilename(), logEntry);
   }
 
-  // 输出到控制台
+  // 输出到控制台（使用 process.stderr/stdout 避免递归）
   if (shouldOutput(level)) {
     if (level === 'ERROR') {
-      console.error(logEntry);
+      process.stderr.write(logEntry + '\n');
     } else {
-      console.log(logEntry);
+      process.stdout.write(logEntry + '\n');
     }
   }
 }

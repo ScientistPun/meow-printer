@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Meow Printer 打印喵</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --primary: #3871d1;
+      --primary-light: #6a9fed;
+      --primary-dark: #2a5cb8;
+      --success: #34c759;
+      --danger: #ff3b30;
+      --warning: #ff9500;
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1d1d1f;
+      --text-primary: #ffffff;
+      --text-hint: #f4f5f7;
+      --text-secondary: #86868b;
+      --border: #e5e5ea;
+      --shadow: rgba(56, 113, 209, 0.12);
+      --radius: 20px;
+      --radius-sm: 14px;
+    }
+
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(160deg, #3871d1 0%, #6a9fed 100%);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    body {
+      padding-bottom: 100px;
+    }
+
+    /* 顶部标题 */
+    .header {
+      padding: 10px 20px 0px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      text-align: center;
+      position: relative;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 6px;
+    }
+    .header-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 16px;
+      font-size: 12px;
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .header-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    .header-btn:active {
+      transform: translateY(-50%) scale(0.98);
+    }
+
+    /* 主内容区 */
+    .content {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* 卡片通用样式 */
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      margin-left: 4px;
+      cursor: pointer;
+    }
+    .section-icon {
+      font-size: 18px;
+    }
+    .section-title {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+    }
+    .section-arrow {
+      font-size: 10px;
+      color: rgba(255,255,255,0.7);
+      transition: transform 0.2s ease;
+    }
+    .section-arrow.open {
+      transform: rotate(180deg);
+    }
+    .section-block {
+      margin-bottom: 20px;
+    }
+
+    /* 文件上传卡片 */
+    .upload-card {
+      border: 2px dashed var(--border);
+      background: transparent;
+      box-shadow: none;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 16px;
+    }
+    .upload-card:active {
+      border-color: var(--primary);
+      background: rgba(56, 113, 209, 0.05);
+    }
+    .upload-card.has-file {
+      border-color: rgba(0, 0, 0, 0);
+      background: rgba(52, 199, 89, 0.05);
+    }
+    .upload-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .upload-icon {
+      font-size: 36px;
+    }
+    .upload-text {
+      flex: 1;
+    }
+    .upload-title {
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .upload-hint {
+      color: var(--text-hint);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .upload-text strong {
+      color: var(--primary);
+    }
+    .file-preview {
+      padding: 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+    .file-preview-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .file-preview-header .file-icon {
+      font-size: 28px;
+    }
+    .file-preview-header .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .file-preview-header .file-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .file-preview-header .file-size {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .file-preview-header .remove-btn {
+      width: 32px;
+      height: 32px;
+      color: var(--danger);
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      background: rgba(255, 59, 48, 0.1);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .file-preview-header .remove-btn:active {
+      transform: scale(0.9);
+    }
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .file-list-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--card);
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    .file-list-item .file-icon {
+      font-size: 18px;
+    }
+    .file-list-item .file-name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-list-item .remove-btn {
+      width: 24px;
+      height: 24px;
+      color: var(--danger);
+      font-size: 12px;
+      border: none;
+      background: rgba(255, 59, 48, 0.1);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-list-item .remove-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* 表单元素 */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      outline: none;
+      background: var(--bg);
+      transition: all 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.15);
+    }
+    select.form-control {
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2386868b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    /* 横向布局 */
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .input-row .form-control {
+      flex: 1;
+    }
+    .input-suffix {
+      font-size: 13px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* 选项组 */
+    .option-group {
+      display: flex;
+      gap: 8px;
+    }
+    .option-chip {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1.5px solid transparent;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .option-chip:active {
+      transform: scale(0.96);
+    }
+    .option-chip.selected {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+    }
+    .option-chip input {
+      display: none;
+    }
+
+    /* 开关 */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .switch-row:last-child {
+      border-bottom: none;
+    }
+    .switch-label {
+      font-size: 13px;
+      color: var(--text);
+    }
+    .switch {
+      width: 46px;
+      height: 26px;
+      background: #e5e5ea;
+      border-radius: 13px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    .switch.active {
+      background: var(--primary);
+    }
+    .switch.active::after {
+      transform: translateX(20px);
+    }
+
+    /* 滑块 */
+    .slider-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      background: #e5e5ea;
+      border-radius: 3px;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .slider-value {
+      min-width: 48px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary);
+      text-align: right;
+    }
+
+    /* 操作按钮 */
+    .btn {
+      width: 100%;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-print {
+      background: linear-gradient(135deg, #bb00d4 0%, #2026ee 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(32, 38, 238, 0.4);
+    }
+    .btn-preview {
+      background: linear-gradient(135deg, #5fb6f8 0%, #0259b6 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(2, 89, 182, 0.4);
+    }
+    .btn-print:disabled, .btn-preview:disabled {
+      background: #d1d1d6;
+      box-shadow: none;
+      color: #aeaeb2;
+    }
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      margin-bottom: 120px;
+    }
+    .btn-group .btn {
+      flex: 1;
+    }
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 列表卡片 */
+    .list-card {
+      padding: 0;
+      overflow: hidden;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+    .list-item:active {
+      background: var(--bg);
+    }
+    .list-item.selected {
+      background: rgba(94, 114, 228, 0.08);
+    }
+    .list-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: transparent;
+    }
+    .list-checkbox.checked {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    .list-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .list-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .list-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .list-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .list-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .list-btn {
+      width: 50px;
+      height: 36px;
+      border: none;
+      border-radius: 40%;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      background: rgba(56, 113, 209, 0.1);
+      color: var(--primary);
+    }
+    .list-btn:active {
+      transform: scale(0.95);
+    }
+    .list-btn-primary {
+      background: rgba(56, 113, 209, 0.1);
+      color: var(--primary);
+    }
+    .list-btn-danger {
+      background: rgba(255, 59, 48, 0.1);
+      color: var(--danger);
+    }
+
+    /* 工具栏 */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .toolbar-right {
+      display: flex;
+      gap: 10px;
+    }
+    .toolbar-btn {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--card);
+      border: none;
+      border-radius: 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .toolbar-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .toolbar-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .toolbar-btn.danger {
+      color: var(--danger);
+    }
+    .toolbar-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-secondary);
+    }
+    .empty-state .icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* 模态框 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: white;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      background: var(--bg);
+      border: none;
+      border-radius: 50%;
+      font-size: 18px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      padding: 16px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border);
+      position: sticky;
+      bottom: 0;
+      background: white;
+    }
+    .modal-footer .btn {
+      margin-top: 0;
+    }
+
+    /* 模态框内更多设置 */
+    .modal-body .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0;
+      margin-bottom: 12px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-body .section-icon {
+      font-size: 16px;
+    }
+    .modal-body .section-title {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .modal-body .section-arrow {
+      font-size: 10px;
+      color: var(--text-secondary);
+      transition: transform 0.2s ease;
+    }
+    .modal-body .section-arrow.open {
+      transform: rotate(180deg);
+    }
+
+    /* 多选底部栏 */
+    .multi-select-bar {
+      position: fixed;
+      top: max(16px, env(safe-area-inset-top));
+      left: 16px;
+      right: 16px;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+      z-index: 99;
+      animation: slideDown 0.3s ease;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+    .multi-select-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .multi-select-count {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .multi-select-btn {
+      padding: 8px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .multi-select-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .multi-select-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      background: var(--bg);
+      border-radius: 12px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .multi-select-item .remove {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+    .multi-select-item .remove:hover {
+      opacity: 1;
+    }
+
+    /* 消息提示 */
+    .toast {
+      position: fixed;
+      top: max(16px, env(safe-area-inset-top));
+      left: 16px;
+      right: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 300;
+      animation: fadeIn 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .toast.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .toast.error {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .toast-close {
+      margin-left: 10px;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    /* 底部标签栏 */
+    .bottom-tabs {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      left: 32%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 40px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 100;
+      gap: 12px;
+    }
+    .bottom-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: var(--text-secondary);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+    }
+    .bottom-tab:active {
+      transform: scale(0.9);
+    }
+    .bottom-tab.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      box-shadow: 0 4px 16px rgba(56, 113, 209, 0.4);
+    }
+    .bottom-tab-icon {
+      font-size: 24px;
+    }
+    .bottom-tab-text {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* 底部设置按钮 */
+    .bottom-settings {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: 90px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 22px;
+      transition: all 0.2s ease;
+    }
+    .bottom-settings:active {
+      transform: scale(0.9);
+    }
+    .bottom-settings-text {
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .bottom-clear-cache {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      right: 20px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 22px;
+      transition: all 0.2s ease;
+    }
+    .bottom-clear-cache:active {
+      transform: scale(0.9);
+    }
+
+    /* 隐藏页面 */
+    .page-hidden {
+      display: none;
+    }
+
+    /* 日志详情 */
+    .log-detail {
+      background: #1d1d1f;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      padding: 12px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    .log-detail pre {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 11px;
+      color: #e8e8ed;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin: 0;
+    }
+    .log-line {
+      margin-bottom: 4px;
+    }
+    .log-line.error { color: #ff6b6b; }
+    .log-line.warn { color: #ffd43b; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部标题 -->
+    <div class="header">
+      <h1>🐱 Meow Printer</h1>
+      <a href="./old.html" class="header-btn">📱 旧版</a>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="content">
+      <!-- ========== 打印页面 ========== -->
+      <div v-show="activeTab === 'print'">
+
+        <!-- 打印机卡片 -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-icon">🖨️</div>
+            <div class="section-title">打印机</div>
+          </div>
+          <div class="card">
+            <div class="form-group">
+              <select class="form-control" v-model="options.printer" @change="onPrinterChange" v-if="printers.length > 0">
+                <option v-for="p in printers" :key="p.id" :value="p.id">{{ p.name }}</option>
+              </select>
+              <div v-else class="empty-state" style="padding: 20px;">
+                <p>{{ printersLoading ? '🔄 加载中...' : '❌ 未检测到打印机' }}</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">打印份数</label>
+              <div class="input-row">
+                <input type="number" class="form-control" v-model.number="options.copies" min="1" max="99">
+                <span class="input-suffix">份</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 文件上传卡片 -->
+        <div class="section-block">
+          <div class="section-header">
+            <div class="section-icon">📁</div>
+            <div class="section-title">文件</div>
+          </div>
+          <div class="card upload-card" :class="{ 'has-file': files.length > 0 }" @click="triggerFileInput">
+            <input type="file" ref="fileInput" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="display: none;">
+            <div v-if="files.length === 0" class="upload-content">
+              <div class="upload-icon">📄</div>
+              <div class="upload-text">
+                <div class="upload-title">点击选择文件</div>
+                <div class="upload-hint">支持 PDF、图片、Word</div>
+              </div>
+            </div>
+            <div v-else class="file-preview">
+              <div class="file-preview-header">
+                <div class="file-icon">📄</div>
+                <div class="file-info">
+                  <div class="file-name">已选择 {{ files.length }} 个文件</div>
+                  <div class="file-size">点击添加更多</div>
+                </div>
+                <button class="remove-btn" @click.stop="clearFiles">✕</button>
+              </div>
+              <div class="file-list">
+                <div v-for="(file, index) in files" :key="index" class="file-list-item">
+                  <span class="file-icon">{{ getFileIcon(file.name) }}</span>
+                  <span class="file-name">{{ file.name }}</span>
+                  <button class="remove-btn" @click.stop="removeFile(index)">✕</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 页面设置卡片 -->
+        <div class="section-block">
+          <div class="section-header" @click="showPageSettings = !showPageSettings">
+            <div class="section-icon">📄</div>
+            <div class="section-title">页面设置</div>
+            <div class="section-arrow" :class="{ open: showPageSettings }">▼</div>
+          </div>
+          <div class="card" v-show="showPageSettings">
+          <div class="form-group">
+            <label class="form-label">纸张尺寸</label>
+            <select class="form-control" v-model="options.media">
+              <option v-for="size in mediaOptions" :key="size" :value="size">{{ size }}</option>
+              <option value="Custom">自定义尺寸</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="options.media === 'Custom'">
+            <label class="form-label">自定义尺寸 (mm)</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="options.customWidth" min="50" max="500" placeholder="宽">
+              <span class="input-suffix">×</span>
+              <input type="number" class="form-control" v-model.number="options.customHeight" min="50" max="500" placeholder="高">
+              <span class="input-suffix">mm</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">页面方向</label>
+            <div class="option-group">
+              <label class="option-chip" :class="{ selected: options.orientation === 'portrait' }">
+                <input type="radio" v-model="options.orientation" value="portrait">
+                纵向
+              </label>
+              <label class="option-chip" :class="{ selected: options.orientation === 'landscape' }">
+                <input type="radio" v-model="options.orientation" value="landscape">
+                横向
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">页面范围</label>
+            <select class="form-control" v-model="options.pageSet">
+              <option value="all">全部页面</option>
+              <option value="odd">奇数页</option>
+              <option value="even">偶数页</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="options.pageSet === 'custom'">
+            <label class="form-label">自定义页码</label>
+            <input type="text" class="form-control" v-model="options.customPages" placeholder="如: 1,3,5-10">
+          </div>
+          <div class="form-group">
+            <label class="form-label">每版页数</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="options.nup" min="1" max="16">
+              <span class="input-suffix">页/版</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">缩放</label>
+            <select class="form-control" v-model="options.scaling">
+              <option value="fit">适应页面</option>
+              <option value="100">100%</option>
+              <option value="90">90%</option>
+              <option value="80">80%</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="options.scaling === 'custom'">
+            <div class="slider-wrapper">
+              <input type="range" class="slider" min="10" max="200" v-model="options.scalingPercent">
+              <span class="slider-value">{{ options.scalingPercent }}%</span>
+            </div>
+          </div>
+          <div class="switch-row">
+            <span class="switch-label">添加页码</span>
+            <div class="switch" :class="{ active: options.addPageNumber }" @click="options.addPageNumber = !options.addPageNumber"></div>
+          </div>
+        </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="btn-group">
+          <button class="btn btn-preview" @click="previewPrint" :disabled="files.length === 0 || previewLoading">
+            <span v-if="previewLoading" class="loading"><span class="spinner"></span></span>
+            <span v-else>👁️ 预览</span>
+          </button>
+          <button class="btn btn-print" @click="printFile" :disabled="files.length === 0 || !options.printer || loading">
+            <span v-if="loading" class="loading"><span class="spinner"></span></span>
+            <span v-else>🖨️ 打印</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========== 文件页面 ========== -->
+      <div v-show="activeTab === 'history'">
+        <div class="toolbar">
+          <button class="toolbar-btn danger" @click="clearHistory" :disabled="history.length === 0">
+            <span>🗑️</span><span>全部删除</span>
+          </button>
+          <div class="toolbar-right">
+            <button class="toolbar-btn" @click="openCreateFile">
+              <span>📝</span><span>创建</span>
+            </button>
+            <button class="toolbar-btn" :class="{ active: selectMode }" @click="toggleSelectMode">
+              <span>{{ selectMode ? '✖️' : '☑️' }}</span><span>{{ selectMode ? '取消' : '多选' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card list-card">
+          <div v-if="history.length > 0">
+            <div v-for="item in history" :key="item.name">
+              <div class="list-item" :class="{ selected: selectedHistoryFiles.includes(item.name) }">
+                <div v-if="selectMode" class="list-checkbox" :class="{ checked: selectedHistoryFiles.includes(item.name) }" @click="toggleHistoryFileSelection(item)">
+                  {{ selectedHistoryFiles.includes(item.name) ? '✓' : '' }}
+                </div>
+                <div class="list-icon">📄</div>
+                <div class="list-content" @click="viewHistoryFile(item)">
+                  <div class="list-title">{{ item.originalName }}</div>
+                  <div class="list-meta">{{ formatSize(item.size) }} · {{ formatTime(item.modified) }}</div>
+                </div>
+                <div v-if="!selectMode" class="list-actions">
+                  <button class="list-btn list-btn-primary" @click.stop="reprintFile(item)">选择</button>
+                  <button class="list-btn list-btn-danger" @click.stop="deleteHistoryFile(item.name)">删除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="historyLoading" class="empty-state">
+            <div class="icon">🔄</div>
+            <p>加载中...</p>
+          </div>
+          <div v-else class="empty-state">
+            <div class="icon">📭</div>
+            <p>暂无历史文件</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== 日志页面 ========== -->
+      <div v-show="activeTab === 'logs'">
+        <div class="toolbar">
+          <button class="toolbar-btn danger" @click="clearAllLogs" :disabled="logFiles.length === 0">
+            <span>🗑️</span><span>全部删除</span>
+          </button>
+        </div>
+
+        <div class="card list-card">
+          <div v-if="logFiles.length > 0">
+            <div v-for="log in logFiles" :key="log.date">
+              <div class="list-item" :class="{ active: selectedLogDate === log.date }" @click="toggleLog(log.date)">
+                <div class="list-icon">📋</div>
+                <div class="list-content">
+                  <div class="list-title">{{ log.date }}</div>
+                  <div class="list-meta">{{ formatSize(log.size) }}</div>
+                </div>
+                <div class="list-actions">
+                  <button class="list-btn list-btn-danger" @click.stop="clearLog(log.date)">删除</button>
+                </div>
+              </div>
+              <div v-if="selectedLogDate === log.date" class="log-detail">
+                <pre><div v-for="(line, i) in logContent" :key="i"
+                     :style="{ color: line.includes('[ERROR]') ? '#ff6b6b' : line.includes('[WARN]') ? '#ffd43b' : '#e8e8ed' }">{{ line }}</div></pre>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="logsLoading" class="empty-state">
+            <div class="icon">🔄</div>
+            <p>加载中...</p>
+          </div>
+          <div v-else class="empty-state">
+            <div class="icon">📭</div>
+            <p>暂无日志</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 多选底部栏 -->
+    <div v-if="selectMode && selectedHistoryFiles.length > 0" class="multi-select-bar">
+      <div class="multi-select-header">
+        <span class="multi-select-count">已选择 {{ selectedHistoryFiles.length }} 个文件</span>
+        <button class="multi-select-btn" @click="confirmMultiSelect">完成</button>
+      </div>
+      <div class="multi-select-list">
+        <div v-for="filename in selectedHistoryFiles" :key="filename" class="multi-select-item">
+          <span>📄</span>
+          <span>{{ history.find(h => h.name === filename)?.originalName || filename }}</span>
+          <span class="remove" @click="toggleHistoryFileSelection(history.find(h => h.name === filename))">✕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 设置模态框 ========== -->
+    <div v-if="showSettings" class="modal-overlay" @click.self="showSettings = false">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">⚙️ 设置</div>
+          <button class="modal-close" @click="showSettings = false">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">默认纸张尺寸</label>
+            <select class="form-control" v-model="settings.defaultMedia">
+              <option v-for="size in mediaOptions" :key="size" :value="size">{{ size }}</option>
+              <option value="Custom">自定义尺寸</option>
+            </select>
+          </div>
+          <div class="form-group" v-if="settings.defaultMedia === 'Custom'">
+            <label class="form-label">自定义尺寸 (mm)</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="settings.customWidth" min="50" max="500" placeholder="宽">
+              <span class="input-suffix">×</span>
+              <input type="number" class="form-control" v-model.number="settings.customHeight" min="50" max="500" placeholder="高">
+              <span class="input-suffix">mm</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">默认字体</label>
+            <select class="form-control" v-model="settings.fontFamily">
+              <option v-for="font in availableFonts" :key="font.id" :value="font.id">{{ font.name }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">默认字号</label>
+            <div class="input-row">
+              <input type="number" class="form-control" v-model.number="settings.fontSize" min="6" max="72">
+              <span class="input-suffix">pt</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">页面边距</label>
+            <div class="input-row" style="gap: 6px;">
+              <div style="flex:1;text-align:center;">
+                <input type="number" class="form-control" v-model.number="settings.marginTop" min="0" max="50" placeholder="上">
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">上</div>
+              </div>
+              <div style="flex:1;text-align:center;">
+                <input type="number" class="form-control" v-model.number="settings.marginRight" min="0" max="50" placeholder="右">
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">右</div>
+              </div>
+              <div style="flex:1;text-align:center;">
+                <input type="number" class="form-control" v-model.number="settings.marginBottom" min="0" max="50" placeholder="下">
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">下</div>
+              </div>
+              <div style="flex:1;text-align:center;">
+                <input type="number" class="form-control" v-model.number="settings.marginLeft" min="0" max="50" placeholder="左">
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">左</div>
+              </div>
+            </div>
+          </div>
+          <div class="switch-row">
+            <span class="switch-label">网格线</span>
+            <div class="switch" :class="{ active: settings.gridLines }" @click="settings.gridLines = !settings.gridLines"></div>
+          </div>
+          <div class="switch-row">
+            <span class="switch-label">页眉（序号、日期）</span>
+            <div class="switch" :class="{ active: settings.addHeader }" @click="settings.addHeader = !settings.addHeader"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="showSettings = false">取消</button>
+          <button class="btn btn-primary" @click="saveSettings">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 创建文件模态框 ========== -->
+    <div v-if="showCreateFile" class="modal-overlay" @click.self="showCreateFile = false">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">📝 创建新文件</div>
+          <button class="modal-close" @click="showCreateFile = false">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">文件名</label>
+            <input type="text" class="form-control" v-model="createFile.name" placeholder="请输入文件名">
+          </div>
+          <div class="form-group">
+            <label class="form-label">文件内容</label>
+            <textarea class="form-control" v-model="createFile.content" rows="6" placeholder="请输入文件内容" style="resize:vertical;"></textarea>
+          </div>
+          <!-- 更多设置 -->
+          <div class="section-header" @click="createFile.showMore = !createFile.showMore">
+            <div class="section-icon">⚙️</div>
+            <div class="section-title">更多设置</div>
+            <div class="section-arrow" :class="{ open: createFile.showMore }">▼</div>
+          </div>
+          <div v-show="createFile.showMore">
+            <div class="form-group">
+              <label class="form-label">纸张尺寸</label>
+              <select class="form-control" v-model="createFile.paperSize">
+                <option v-for="size in mediaOptions" :key="size" :value="size">{{ size }}</option>
+                <option value="Custom">自定义尺寸</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">字体</label>
+              <select class="form-control" v-model="createFile.fontFamily">
+                <option v-for="font in availableFonts" :key="font.id" :value="font.id">{{ font.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">字号</label>
+              <div class="input-row">
+                <input type="number" class="form-control" v-model.number="createFile.fontSize" min="6" max="72">
+                <span class="input-suffix">pt</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">边距</label>
+              <div class="input-row" style="gap: 6px;">
+                <div style="flex:1;text-align:center;">
+                  <input type="number" class="form-control" v-model.number="createFile.marginTop" min="0" max="50" placeholder="上">
+                  <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">上</div>
+                </div>
+                <div style="flex:1;text-align:center;">
+                  <input type="number" class="form-control" v-model.number="createFile.marginRight" min="0" max="50" placeholder="右">
+                  <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">右</div>
+                </div>
+                <div style="flex:1;text-align:center;">
+                  <input type="number" class="form-control" v-model.number="createFile.marginBottom" min="0" max="50" placeholder="下">
+                  <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">下</div>
+                </div>
+                <div style="flex:1;text-align:center;">
+                  <input type="number" class="form-control" v-model.number="createFile.marginLeft" min="0" max="50" placeholder="左">
+                  <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">左</div>
+                </div>
+              </div>
+            </div>
+            <div class="switch-row">
+              <span class="switch-label">添加网格线</span>
+              <div class="switch" :class="{ active: createFile.gridLines }" @click="createFile.gridLines = !createFile.gridLines"></div>
+            </div>
+            <div class="switch-row">
+              <span class="switch-label">添加页眉（No.、日期）</span>
+              <div class="switch" :class="{ active: createFile.addHeader }" @click="createFile.addHeader = !createFile.addHeader"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="showCreateFile = false">取消</button>
+          <button class="btn btn-primary" @click="createTextFile" :disabled="creatingFile">
+            <span v-if="creatingFile" class="loading"><span class="spinner"></span></span>
+            <span v-else>保存</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div v-if="message" class="toast" :class="messageType">
+      {{ message }}
+      <span class="toast-close" @click="message = ''">✕</span>
+    </div>
+
+    <!-- 底部标签栏 -->
+    <div class="bottom-tabs">
+      <div class="bottom-tab" :class="{ active: activeTab === 'print' }" @click="activeTab = 'print'">
+        <span class="bottom-tab-icon">🖨️</span>
+        <span class="bottom-tab-text">打印</span>
+      </div>
+      <div class="bottom-tab" :class="{ active: activeTab === 'history' }" @click="activeTab = 'history'; loadHistory()">
+        <span class="bottom-tab-icon">📁</span>
+        <span class="bottom-tab-text">文件</span>
+      </div>
+      <div class="bottom-tab" :class="{ active: activeTab === 'logs' }" @click="activeTab = 'logs'; loadLogs()">
+        <span class="bottom-tab-icon">📋</span>
+        <span class="bottom-tab-text">日志</span>
+      </div>
+    </div>
+
+    <!-- 底部设置按钮 -->
+    <div class="bottom-settings" @click="openSettings">
+      <span>⚙️</span>
+      <span class="bottom-settings-text">设置</span>
+    </div>
+    <!-- 清缓存 -->
+    <div class="bottom-clear-cache" @click="clearCache">
+      <span>🧹</span>
+      <span class="bottom-settings-text">清理</span>
+    </div>
+  </div>
+
+  <!-- PDF 预览容器 -->
+  <div id="pdfh5-viewer" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:998;display:none;background:#fff;"></div>
+
+  <link rel="stylesheet" href="./lib/pdfh5/css/pdfh5.css">
+  <script src="./lib/pdfh5/js/jquery-1.11.3.min.js"></script>
+  <script src="./lib/pdfh5/js/pdf.js"></script>
+  <script src="./lib/pdfh5/js/pdf.worker.js"></script>
+  <script src="./lib/pdfh5/js/pdfh5.js"></script>
+  <script src="./lib/vue.min.js"></script>
+  <script src="./index.js" type="module"></script>
+</body>
+</html>

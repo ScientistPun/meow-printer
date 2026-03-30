@@ -16,7 +16,6 @@ import logger from './utils/logger.js';
 import * as fontController from './controller/font.js';
 import * as printerController from './controller/printer.js';
 import * as fileController from './controller/file.js';
-import * as previewController from './controller/preview.js';
 import * as logController from './controller/log.js';
 import * as settingsController from './controller/settings.js';
 
@@ -52,7 +51,7 @@ app.use(cors({
 app.use(express.json());
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, 'view')));
+app.use(express.static(path.join(__dirname, 'web')));
 
 // Serve utils files (for ES modules)
 app.use('/utils', express.static(path.join(__dirname, 'utils')));
@@ -124,7 +123,7 @@ app.post('/api/print', upload.single('file'), printerController.printFile);
 
 // ==================== 预览相关 ====================
 
-app.post('/api/preview', upload.single('file'), previewController.previewPrint);
+app.post('/api/preview', upload.single('file'), printerController.previewPrint);
 
 // ==================== 文本文件相关 ====================
 
