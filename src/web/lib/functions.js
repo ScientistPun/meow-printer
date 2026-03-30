@@ -973,15 +973,6 @@ function createSharedState(API_BASE, showMessage) {
   // ==================== 打印相关函数 ====================
 
   /**
-   * 检测是否为微信浏览器
-   * @returns {boolean}
-   */
-  const isWechatBrowser = () => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.indexOf('micromessenger') !== -1;
-  };
-
-  /**
    * 取消指定的打印任务
    * @param {string} jobId - 打印任务 ID
    */
@@ -1113,13 +1104,6 @@ function createSharedState(API_BASE, showMessage) {
       const blob = await res.blob();
       const arrayBuffer = await blob.arrayBuffer();
 
-      if (isWechatBrowser()) {
-        const blobUrl = URL.createObjectURL(blob);
-        window.open(blobUrl, '_blank');
-        previewLoading.value = false;
-        return;
-      }
-
       openPdfPreview(arrayBuffer, null);
 
       previewLoading.value = false;
@@ -1188,7 +1172,6 @@ function createSharedState(API_BASE, showMessage) {
     openSettings,
     saveSettings,
     clearCache,
-    isWechatBrowser,
     cancelJobItem,
     printFile,
     previewPrint,
