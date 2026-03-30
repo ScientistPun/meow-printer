@@ -5,4 +5,4 @@
 public/uploads
 public/cache
 node_modules
-package-lock.json
+package-lock.jsonlogs/*.log
