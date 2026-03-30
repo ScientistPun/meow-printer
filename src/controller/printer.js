@@ -108,11 +108,6 @@ export async function printFile(req, res) {
 
     const result = await cupsService.printFile(filePath, printer, options);
 
-    // 清理合并后的临时文件
-    if (filePath) {
-      try { fs.unlinkSync(filePath); } catch (e) {}
-    }
-
     if (result.success) {
       logger.info('打印任务提交成功', {
         requestId: req.requestId,
