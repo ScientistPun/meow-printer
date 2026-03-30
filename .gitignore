@@ -1,8 +1,10 @@
 .claude/
 .DS_Store
 
+node_modules
 ./logs
+logs/*.log
 public/uploads
 public/cache
 node_modules
-package-lock.jsonlogs/*.log
+package-lock.json
