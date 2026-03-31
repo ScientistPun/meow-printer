@@ -8,6 +8,8 @@ services:
     environment:
       - CUPS_HOST=192.168.10.1
       - CUPS_PORT=631
+      - CUPS_USER=admin
+      - CUPS_PWD=123456
       - DEV=false
       - TZ=Asia/Shanghai
     volumes:

@@ -4,7 +4,7 @@
  */
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { CUPS_HOST, CUPS_PORT, USE_REMOTE } from '../config/config.js';
+import { CUPS_HOST, CUPS_PORT, CUPS_USER, CUPS_PWD, USE_REMOTE } from '../config/config.js';
 import { DEFAULT_MEDIA_OPTIONS } from '../config/global.js';
 import logger from '../utils/logger.js';
 import pdfService from './pdf.js';
@@ -292,6 +292,42 @@ export class Cups {
     } catch (error) {
       logger.error('打印失败:', error);
       return { success: false, error: error.message || '打印命令执行失败' };
+    }
+  }
+
+  /**
+   * 重启 CUPS 服务
+   * @param {string} adminUser - CUPS admin 用户名
+   * @param {string} adminPassword - CUPS admin 密码
+   * @returns {Promise<{success: boolean, message: string}>}
+   */
+  async restartCups(adminUser, adminPassword) {
+    try {
+      const host = CUPS_HOST;
+      const port = CUPS_PORT;
+
+      // 使用 curl 重启 CUPS 服务
+      const curlCmd = `curl -s -u "${adminUser}:${adminPassword}" "http://${host}:${port}/admin/" -X POST -d "org.cups.cupsd=true&/restart=1" -H "Content-Type: application/x-www-form-urlencoded"`;
+
+      logger.log('重启 CUPS 命令:', curlCmd);
+      const { stdout, stderr } = await execAsync(curlCmd);
+
+      const output = stdout + stderr;
+      // 检测认证失败
+      if (output.includes('Unauthorized') || output.includes('401')) {
+        logger.error('CUPS 认证失败');
+        return { success: false, message: 'Unauthorized' };
+      }
+      // 认证成功（返回 HTML 管理页面）
+      if (output.includes('<title>Administration - CUPS') || output.includes('config-server')) {
+        logger.info('CUPS 重启成功');
+        return { success: true, message: 'CUPS 重启成功' };
+      }
+      logger.error('CUPS 重启失败:', output);
+      return { success: false, message: output || '重启失败' };
+    } catch (error) {
+      logger.error('CUPS 重启异常:', error);
+      return { success: false, message: error.message || '重启异常' };
     }
   }
 }

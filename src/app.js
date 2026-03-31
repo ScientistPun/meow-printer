@@ -125,6 +125,10 @@ app.post('/api/print', upload.single('file'), printerController.printFile);
 
 app.post('/api/preview', upload.single('file'), printerController.previewPrint);
 
+// ==================== CUPS 相关 ====================
+
+app.post('/api/cups/restart', printerController.restartCups);
+
 // ==================== 文本文件相关 ====================
 
 app.post('/api/files', upload.none(), fileController.createTextFile);

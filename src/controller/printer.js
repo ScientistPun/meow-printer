@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument } from 'pdf-lib';
-import { UPLOAD_DIR, IMAGE_EXTENSIONS } from '../config/config.js';
+import { UPLOAD_DIR, IMAGE_EXTENSIONS, CUPS_USER, CUPS_PWD } from '../config/config.js';
 import cupsService from '../service/cups.js';
 import pdfService from '../service/pdf.js';
 import logger from '../utils/logger.js';
@@ -19,6 +19,32 @@ export async function getPrinters(req, res) {
   } catch (error) {
     logger.error('获取打印机列表失败', { error: error.message, requestId: req.requestId });
     res.status(500).json({ error: error.message });
+  }
+}
+
+// 重启 CUPS 服务
+export async function restartCups(req, res) {
+  try {
+    const adminUser = CUPS_USER;
+    const adminPassword = CUPS_PWD;
+
+    logger.info('收到重启 CUPS 请求', { adminUser, requestId: req.requestId });
+
+    const result = await cupsService.restartCups(adminUser, adminPassword);
+
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      // 检测认证失败
+      if (result.message.includes('Unauthorized') || result.message.includes('HTML')) {
+        res.status(500).json({ success: false, error: 'CUPS 认证失败，请检查配置中的 CUPS_USER 和 CUPS_PWD' });
+      } else {
+        res.status(500).json({ success: false, error: result.message });
+      }
+    }
+  } catch (error) {
+    logger.error('重启 CUPS 失败', { error: error.message, requestId: req.requestId });
+    res.status(500).json({ success: false, error: error.message });
   }
 }
 

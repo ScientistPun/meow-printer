@@ -202,6 +202,30 @@ function createSharedState(API_BASE, showMessage) {
   };
 
   /**
+   * 双击打印机选择器时调用：重启 CUPS 并重新加载打印机列表
+   */
+  const restartCupsAndReload = async () => {
+    if (!confirm('确定要重启 CUPS 服务吗？')) return;
+    try {
+      const res = await fetch(`${API_BASE}/cups/restart`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      if (data.success) {
+        showMessage('CUPS 重启成功，正在重新加载...', 'success');
+        // 等待 CUPS 重启完成
+        setTimeout(() => {
+          loadPrinters();
+        }, 3000);
+      } else {
+        showMessage(`CUPS 重启失败: ${data.error || '未知错误'}`, 'error');
+      }
+    } catch (e) {
+      showMessage(`请求失败: ${e.message}`, 'error');
+    }
+  };
+
+  /**
    * 加载指定打印机的能力（如支持的纸张尺寸）
    * @param {string} printer - 打印机名称
    */
@@ -1143,6 +1167,7 @@ function createSharedState(API_BASE, showMessage) {
     loadPrinters,
     loadPrinterCapabilities,
     onPrinterChange,
+    restartCupsAndReload,
     loadLogs,
     toggleLog,
     clearLog,

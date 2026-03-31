@@ -74,6 +74,12 @@ const CUPS_HOST = process.env.CUPS_HOST || '192.168.10.1';
 /** CUPS 打印服务器端口 */
 const CUPS_PORT = process.env.CUPS_PORT || '631';
 
+/** CUPS 管理用户名 */
+const CUPS_USER = process.env.CUPS_USER || 'admin';
+
+/** CUPS 管理密码 */
+const CUPS_PWD = process.env.CUPS_PWD || '123456';
+
 /** 是否启用远程 CUPS */
 const USE_REMOTE = CUPS_HOST && CUPS_HOST !== 'localhost';
 
@@ -92,6 +98,8 @@ export {
   UPLOAD_DIR,
   CUPS_HOST,
   CUPS_PORT,
+  CUPS_USER,
+  CUPS_PWD,
   USE_REMOTE,
   SETTINGS_FILE
 };

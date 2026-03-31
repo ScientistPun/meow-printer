@@ -18,7 +18,9 @@ export const DEFAULT_SETTINGS = {
   marginBottom: 20,
   marginLeft: 20,
   gridLines: false,
-  addHeader: false
+  addHeader: false,
+  cupsAdminUser: 'root',
+  cupsAdminPassword: ''
 };
 
 /** 页面方向 */
