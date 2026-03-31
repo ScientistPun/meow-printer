@@ -42,6 +42,8 @@ EXPOSE 3000
 ENV TZ=Asia/Shanghai
 ENV CUPS_HOST=192.168.10.1
 ENV CUPS_PORT=631
+ENV CUPS_USER=admin
+ENV CUPS_PWD=123456
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["node", "src/app.js"]

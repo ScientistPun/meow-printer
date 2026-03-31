@@ -113,6 +113,8 @@ docker-compose up -d
 |------|--------|------|
 | CUPS_HOST | 192.168.10.1 | CUPS 服务器地址 |
 | CUPS_PORT | 631 | CUPS 服务器端口 |
+| CUPS_USER | admin | CUPS 用户名 |
+| CUPS_PWD | 123456 | CUPS 密码 |
 | DEV | false | 调试模式 |
 | TZ | Asia/Shanghai | 时区 |
 
@@ -124,6 +126,8 @@ docker-compose up -d
 environment:
   - CUPS_HOST=192.168.10.1
   - CUPS_PORT=631
+  - CUPS_USER=admin
+  - CUPS_PWD=123456
 ```
 
 ## License
