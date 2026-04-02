@@ -271,14 +271,13 @@ export class Cups {
           scaling: options.scaling,
           nup: options.nup,
           pageSet: options.pageSet,
-          customPages: options.customPages
-        });
+          customPages: options.customPages});
       }
 
       // 构建 lp 命令
       const baseCmd = USE_REMOTE ? `lp -h ${CUPS_HOST}:${CUPS_PORT}` : 'lp';
       const opts = this._buildLpOptions(options);
-      const cmd = `${baseCmd} -d "${printer}" ${opts.join(' ')} "${filePath}"`;
+      const cmd = `${baseCmd} -o position=left -d "${printer}" ${opts.join(' ')} "${filePath}"`;
 
       logger.log('打印命令:', cmd);
 

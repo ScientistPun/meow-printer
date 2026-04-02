@@ -131,8 +131,21 @@ export async function printFile(req, res) {
       printer,
       options
     });
+    
+    // 生成打印的pdf时已经将页面设计好了
+    const printerOptions = { 
+      copies: options.copies,
+      scaling: 'fit'
+    }
 
-    const result = await cupsService.printFile(filePath, printer, options);
+    const result = await cupsService.printFile(filePath, printer, printerOptions);
+
+    logger.info('发送打印请求', {
+      requestId: req.requestId,
+      file: originalName,
+      printer,
+      printerOptions
+    });
 
     if (result.success) {
       logger.info('打印任务提交成功', {
@@ -230,7 +243,7 @@ export async function generatePrintPdf(filePaths, options) {
       totalSrcPages: originalTotalPages,
       totalOutputPages: totalOutputPages
     });
-    try { fs.unlinkSync(filePath); } catch (e) {}
+    // try { fs.unlinkSync(filePath); } catch (e) {}
     filePath = numberedPath;
   }
 
