@@ -54,10 +54,20 @@ export class Cups {
     // 纸张尺寸
     if (options.media) {
       if (options.media === 'Custom' && options.mediaWidth && options.mediaHeight) {
-        opts.push(`-o media=${options.mediaWidth}x${options.mediaHeight}mm`);
+        // 自定义尺寸时考虑方向
+        if (options.orientation === 'landscape') {
+          opts.push(`-o media=${options.mediaHeight}x${options.mediaWidth}mm`);
+        } else {
+          opts.push(`-o media=${options.mediaWidth}x${options.mediaHeight}mm`);
+        }
       } else {
         opts.push(`-o media=${options.media}`);
       }
+    }
+
+    // 横向模式
+    if (options.orientation === 'landscape') {
+      opts.push('-o landscape');
     }
 
     // 页面范围（奇偶页）
@@ -68,13 +78,6 @@ export class Cups {
     // 每版页数
     if (options.nup && options.nup > 1) {
       opts.push(`-o number-up=${options.nup}`);
-    }
-
-    // 缩放模式
-    if (options.scaling === 'fit') {
-      opts.push('-o fitplot');
-    } else if (options.scaling && options.scaling !== 100) {
-      opts.push(`-o scaling=${options.scaling}`);
     }
 
     // 隐藏页眉页脚
