@@ -289,26 +289,33 @@ export async function stitchImages(req, res) {
 
     // ==================== 调用 pdfService 处理 ====================
 
-    // 内容区域宽度 = 纸张宽度 - 左右边距
-    const contentWidth = paperRatio.w - marginLeft - marginRight;
+    // 单位转换：mm → points（PDF 标准单位）
+    const mmToPoints = (mm) => mm * 72 / 25.4;
+
+    // 纸张尺寸（points）
+    const pageWidthPt = mmToPoints(paperRatio.w);
+    const pageHeightPt = mmToPoints(paperRatio.h);
+
+    // 内容区域宽度 = 纸张宽度 - 左右边距（points）
+    const contentWidthPt = pageWidthPt - marginLeft - marginRight;
 
     logger.info('长图拼接开始', {
       fileCount: files.length,
       paperSize,
-      contentWidth,
+      contentWidth: contentWidthPt,
       margins: { top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft }
     });
 
     // Step 1: 生成长图（缩放→拼接）
-    const { stitchedPath, stitchedWidth, stitchedHeight } = await pdfService.stitchImages(fullPaths, contentWidth);
+    const { stitchedPath, stitchedWidth, stitchedHeight } = await pdfService.stitchImages(fullPaths, contentWidthPt);
 
     // Step 2: 切割长图生成每页图片
     const pageImages = await pdfService.cutStitchedImage(
       stitchedPath,
       stitchedWidth,
       stitchedHeight,
-      paperRatio.w,
-      paperRatio.h,
+      pageWidthPt,
+      pageHeightPt,
       marginTop,
       marginBottom,
       marginLeft
