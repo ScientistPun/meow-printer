@@ -112,6 +112,7 @@ function createSharedState(API_BASE, showMessage) {
   const fileName = Vue.ref('');
   const loading = Vue.ref(false);
   const previewLoading = Vue.ref(false);
+  const stitching = Vue.ref(false);
   const mediaSelected = Vue.ref(false);
 
   // 打印机相关状态
@@ -812,7 +813,7 @@ function createSharedState(API_BASE, showMessage) {
   const doStitchImages = async () => {
     showStitchModal.value = false;
 
-    loading.value = true;
+    stitching.value = true;
     try {
       const res = await fetch(`${API_BASE}/stitch`, {
         method: 'POST',
@@ -840,7 +841,7 @@ function createSharedState(API_BASE, showMessage) {
     } catch (e) {
       showMessage('拼接失败', 'error');
     } finally {
-      loading.value = false;
+      stitching.value = false;
     }
   };
 
@@ -1272,6 +1273,7 @@ function createSharedState(API_BASE, showMessage) {
     confirmMultiSelect,
     stitchImages,
     doStitchImages,
+    stitching,
     showStitchModal,
     stitchPaperSize,
     stitchFileName,

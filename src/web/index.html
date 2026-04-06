@@ -1267,8 +1267,8 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" @click="showStitchModal = false">取消</button>
-          <button class="btn btn-primary" @click="doStitchImages" :disabled="loading">
-            <span v-if="loading" class="loading"><span class="spinner"></span></span>
+          <button class="btn btn-primary" :class="{ 'btn-stitching': stitching }" @click="doStitchImages" :disabled="loading || stitching">
+            <span v-if="stitching" class="loading"><span class="spinner"></span><span>拼接中...</span></span>
             <span v-else>确认拼接</span>
           </button>
         </div>

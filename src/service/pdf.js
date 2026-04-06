@@ -116,6 +116,15 @@ export class Pdf {
   }
 
   /**
+   * 像素转点
+   * @param {number} px - 像素值
+   * @returns {number} 点数
+   */
+  _pixelsToPoints(px) {
+    return px * 72 / this.DPI;
+  }
+
+  /**
    * 生成唯一的 PDF 文件名
    * @returns {string} 文件名，格式：时间戳_序号.pdf
    */
@@ -1143,27 +1152,22 @@ export class Pdf {
    * @param {string[]} filePaths - 图片文件路径数组（按顺序拼接）
    * @param {number} paperWidth - 纸张宽度（mm）
    * @param {number} paperHeight - 纸张高度（mm）
-   * @param {number} marginTop - 上边距（mm）
-   * @param {number} marginRight - 右边距（mm）
-   * @param {number} marginBottom - 下边距（mm）
-   * @param {number} marginLeft - 左边距（mm）
+   * @param {number} marginTopPt - 上边距（pt）
+   * @param {number} marginRightPt - 右边距（pt）
+   * @param {number} marginBottomPt - 下边距（pt）
+   * @param {number} marginLeftPt - 左边距（pt）
    * @returns {Promise<string>} 生成的 PDF 文件路径
    */
-  async stitchImagesToPdf(filePaths, paperWidth, paperHeight, marginTop, marginRight, marginBottom, marginLeft) {
+  async stitchImagesToPdf(filePaths, paperWidth, paperHeight, marginTopPt, marginRightPt, marginBottomPt, marginLeftPt) {
     // 转换为 points
     const pageWidthPt = this._mmToPoints(paperWidth);
     const pageHeightPt = this._mmToPoints(paperHeight);
-    const marginTopPt = this._mmToPoints(marginTop);
-    const marginRightPt = this._mmToPoints(marginRight);
-    const marginBottomPt = this._mmToPoints(marginBottom);
-    const marginLeftPt = this._mmToPoints(marginLeft);
 
+    
     // 内容区域尺寸（points）
-    const contentWidthPt = pageWidthPt - marginLeftPt - marginRightPt;
-    const contentHeightPt = pageHeightPt - marginTopPt - marginBottomPt;
-
     // 转换为像素
-    const imgWidthPx = this._pointsToPixels(contentWidthPt);
+    const contentWidthPx = this._pointsToPixels(pageWidthPt - marginLeftPt - marginRightPt);
+    const contentHeightPx = this._pointsToPixels(pageHeightPt - marginTopPt - marginBottomPt);
 
     // Step 1: 获取原图尺寸，缩放每张图到统一宽度
     const originalMetas = await Promise.all(
@@ -1173,9 +1177,9 @@ export class Pdf {
     const resizedBuffers = await Promise.all(
       filePaths.map(async (fp, i) => {
         const original = originalMetas[i];
-        const scale = imgWidthPx / original.width;
+        const scale = contentWidthPx / original.width;
         const targetHeight = Math.round(original.height * scale);
-        return sharp(fp).resize(imgWidthPx, targetHeight).png().toBuffer();
+        return sharp(fp).resize(contentWidthPx, targetHeight).png().toBuffer();
       })
     );
 
@@ -1184,13 +1188,12 @@ export class Pdf {
     );
 
     // Step 2: 垂直拼接（无白边）
-    const stitchedWidth = imgWidthPx;
     const imgHeights = resizedMetas.map(meta => meta.height);
     const stitchedHeight = imgHeights.reduce((sum, h) => sum + h, 0);
 
     const stitchedImage = await sharp({
       create: {
-        width: stitchedWidth,
+        width: contentWidthPx,
         height: stitchedHeight,
         channels: 4,
         background: { r: 255, g: 255, b: 255, alpha: 1 }
@@ -1211,53 +1214,38 @@ export class Pdf {
     fs.writeFileSync(stitchedPath, stitchedImage);
 
     // Step 3: 按固定高度切割长图
-    const pageCount = Math.ceil(stitchedHeight / contentHeightPt);
+    const pageCount = Math.ceil(stitchedHeight / contentHeightPx);
 
     // Step 4: 生成 PDF
-    const PDF_PAGE_WIDTH = pageWidthPt;
-    const PDF_PAGE_HEIGHT = pageHeightPt;
-    const marginTopPx = this._pointsToPixels(marginTopPt);
-    const marginLeftPx = this._pointsToPixels(marginLeftPt);
-
     const pdfDoc = await PDFDocument.create();
     const stitchedImageSharp = sharp(stitchedPath);
 
     for (let i = 0; i < pageCount; i++) {
-      const top = i * contentHeightPt;
-      const cropHeight = Math.min(contentHeightPt, stitchedHeight - top);
+      const topPx = Math.round(i * contentHeightPx);
+      const remainingHeight = stitchedHeight - topPx;
+      const cropHeightPx = remainingHeight > 0 ? Math.min(Math.round(contentHeightPx), remainingHeight) : 0;
 
-      // 切割长图
+      // 切割长图（像素）
       const cropImage = await stitchedImageSharp
         .clone()
-        .extract({ left: 0, top, width: stitchedWidth, height: cropHeight })
+        .extract({ left: 0, top: topPx, width: contentWidthPx, height: cropHeightPx })
         .png()
         .toBuffer();
 
-      // 创建页面画布
-      const pageBuffer = await sharp({
-        create: {
-          width: this._pointsToPixels(PDF_PAGE_WIDTH),
-          height: this._pointsToPixels(PDF_PAGE_HEIGHT),
-          channels: 4,
-          background: { r: 255, g: 255, b: 255, alpha: 1 }
-        }
-      })
-        .composite([{
-          input: cropImage,
-          left: marginLeftPx,
-          top: marginTopPx
-        }])
-        .png()
-        .toBuffer();
+      // 嵌入 PDF（用 points）
+      const pageWidthPx = this._pointsToPixels(pageWidthPt);
+      const pageHeightPx = this._pointsToPixels(pageHeightPt);
+      const pngImage = await pdfDoc.embedPng(cropImage);
+      const page = pdfDoc.addPage([pageWidthPx, pageHeightPx]);
 
-      // 嵌入 PDF
-      const pngImage = await pdfDoc.embedPng(pageBuffer);
-      const page = pdfDoc.addPage([PDF_PAGE_WIDTH, PDF_PAGE_HEIGHT]);
+      // PDF 坐标系 y 向上
+      // 图片从左下角开始放置，y = 内容区域底部
+      // 切割图片高度 pixels → points
       page.drawImage(pngImage, {
-        x: 0,
-        y: 0,
-        width: PDF_PAGE_WIDTH,
-        height: PDF_PAGE_HEIGHT
+        x: this._pointsToPixels(marginLeftPt),
+        y: pageHeightPx - cropHeightPx - this._pointsToPixels(marginTopPt),
+        width: contentWidthPx,
+        height: cropHeightPx
       });
     }
 
