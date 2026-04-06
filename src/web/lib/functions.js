@@ -135,6 +135,12 @@ function createSharedState(API_BASE, showMessage) {
   const clearingCache = Vue.ref(false);
   const creatingFile = Vue.ref(false);
   const showSettings = Vue.ref(false);
+  const showStitchModal = Vue.ref(false);
+  const stitchPaperSize = Vue.ref('A4');
+  const stitchMarginTop = Vue.ref(20);
+  const stitchMarginRight = Vue.ref(20);
+  const stitchMarginBottom = Vue.ref(20);
+  const stitchMarginLeft = Vue.ref(20);
   const availableFonts = Vue.ref([]);
 
   // 设置状态
@@ -757,6 +763,73 @@ function createSharedState(API_BASE, showMessage) {
   };
 
   /**
+   * 长图拼接 - 显示弹窗选择纸张
+   */
+  const stitchImages = () => {
+    if (selectedHistoryFiles.value.length < 2) {
+      showMessage('请至少选择2张图片', 'error');
+      return;
+    }
+
+    // 检查是否为图片文件
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+    const selectedItems = history.value.filter(item => selectedHistoryFiles.value.includes(item.name));
+    const nonImageFiles = selectedItems.filter(item => {
+      const ext = item.name.split('.').pop().toLowerCase();
+      return !imageExtensions.includes(ext);
+    });
+
+    if (nonImageFiles.length > 0) {
+      showMessage('请只选择图片文件', 'error');
+      return;
+    }
+
+    stitchPaperSize.value = settings.defaultMedia || 'A4';
+    stitchMarginTop.value = settings.marginTop || 20;
+    stitchMarginRight.value = settings.marginRight || 20;
+    stitchMarginBottom.value = settings.marginBottom || 20;
+    stitchMarginLeft.value = settings.marginLeft || 20;
+    showStitchModal.value = true;
+  };
+
+  /**
+   * 执行长图拼接
+   */
+  const doStitchImages = async () => {
+    showStitchModal.value = false;
+
+    loading.value = true;
+    try {
+      const res = await fetch(`${API_BASE}/stitch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          files: selectedHistoryFiles.value,
+          paperSize: stitchPaperSize.value,
+          marginTop: stitchMarginTop.value,
+          marginRight: stitchMarginRight.value,
+          marginBottom: stitchMarginBottom.value,
+          marginLeft: stitchMarginLeft.value
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showMessage(`长图拼接成功 (${data.pages} 页)`, 'success');
+        selectedHistoryFiles.value = [];
+        selectMode.value = false;
+        loadHistory();
+      } else {
+        showMessage(data.error || '拼接失败', 'error');
+      }
+    } catch (e) {
+      showMessage('拼接失败', 'error');
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
    * 切换到历史文件标签页
    */
   const switchToHistory = () => {
@@ -1182,6 +1255,14 @@ function createSharedState(API_BASE, showMessage) {
     toggleSelectMode,
     toggleHistoryFileSelection,
     confirmMultiSelect,
+    stitchImages,
+    doStitchImages,
+    showStitchModal,
+    stitchPaperSize,
+    stitchMarginTop,
+    stitchMarginRight,
+    stitchMarginBottom,
+    stitchMarginLeft,
     switchToHistory,
     switchToLogs,
     uploadFile,

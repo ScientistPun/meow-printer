@@ -764,7 +764,7 @@ export class Pdf {
       // 使用 Helvetica 字体
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontSize = 8;
-      const bottomMargin = 10; // 约20mm (20 * 2.834645669 ≈ 57)
+      const bottomMargin = 12; // 约20mm (20 * 2.834645669 ≈ 57)
 
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
@@ -1112,6 +1112,205 @@ export class Pdf {
       logger.error('mergePdfs 错误:', error);
       throw error;
     }
+  }
+
+  // ==================== 长图拼接相关 ====================
+
+  /**
+   * mm 转点（PDF 单位）
+   * @param {number} mm - 毫米
+   * @returns {number} 点数
+   */
+  _mmToPoints(mm) {
+    return mm * 72 / 25.4;
+  }
+
+  /**
+   * 生成长图：缩放→拼接
+   *
+   * @param {string[]} filePaths - 图片文件路径数组（按顺序拼接）
+   * @param {number} contentWidth - 内容区域宽度（mm），即 纸张宽度 - 左右边距
+   * @returns {Promise<Object>} 包含长图路径和尺寸的对象
+   * @returns {string} stitchedPath - 长图保存路径
+   * @returns {number} stitchedWidth - 长图宽度（px）
+   * @returns {number} stitchedHeight - 长图高度（px）
+   * @returns {number[]} imgHeights - 每张图片的高度数组
+   */
+  async stitchImages(filePaths, contentWidth) {
+    // DPI 设置（1 inch = 25.4mm）
+    const DPI = 150;
+    const mmToPixels = (mm) => Math.round(mm * DPI / 25.4);
+
+    // 每张图片的像素尺寸：宽度 = 内容区域宽度（等比缩放）
+    const imgWidthPx = mmToPixels(contentWidth);
+
+    // Step 1: 缩放每张图片到内容区域尺寸（等比缩放，只指定宽度）
+    const resizedBuffers = await Promise.all(
+      filePaths.map(fp => {
+        return sharp(fp)
+          .resize(imgWidthPx, null, { fit: 'inside', background: { r: 255, g: 255, b: 255, alpha: 1 } })
+          .toBuffer();
+      })
+    );
+
+    // 获取缩放后的实际尺寸
+    const resizedMetas = await Promise.all(
+      resizedBuffers.map(buf => sharp(buf).metadata())
+    );
+
+    // 计算每张图片的实际高度和拼接位置
+    const imgHeights = resizedMetas.map(meta => meta.height);
+    const totalContentHeight = imgHeights.reduce((sum, h) => sum + h, 0);
+
+    // 拼接后的尺寸（宽度取最大宽度图片的宽度，高度为实际总高度）
+    const maxImgWidth = Math.max(...resizedMetas.map(meta => meta.width));
+    const stitchedWidth = maxImgWidth;
+    const stitchedHeight = totalContentHeight;
+
+    logger.info('图片缩放完成，开始拼接', {
+      stitchedWidth,
+      stitchedHeight,
+      pageCount: resizedMetas.length
+    });
+
+    // Step 2: 垂直拼接所有图片（无白边）
+    const stitchedImage = await sharp({
+      create: {
+        width: stitchedWidth,
+        height: stitchedHeight,
+        channels: 4,
+        background: { r: 255, g: 255, b: 255, alpha: 1 }
+      }
+    })
+      .composite(
+        resizedBuffers.reduce((composites, buf, i) => {
+          const prevHeight = imgHeights.slice(0, i).reduce((sum, h) => sum + h, 0);
+          composites.push({
+            input: buf,
+            left: 0,
+            top: prevHeight
+          });
+          return composites;
+        }, [])
+      )
+      .png()
+      .toBuffer();
+
+    // 保存长图到 cache 目录
+    const stitchedPath = path.join(CACHE_DIR, `stitched_${Date.now()}.png`);
+    fs.writeFileSync(stitchedPath, stitchedImage);
+    logger.info('长图已保存到:', stitchedPath);
+
+    return { stitchedPath, stitchedWidth, stitchedHeight, imgHeights };
+  }
+
+  /**
+   * 切割长图：按固定高度切割生成每页图片
+   *
+   * @param {string} stitchedPath - 长图路径
+   * @param {number} stitchedWidth - 长图宽度（px）
+   * @param {number} stitchedHeight - 长图高度（px）
+   * @param {number} pageWidth - 页面宽度（mm）
+   * @param {number} pageHeight - 页面高度（mm）
+   * @param {number} marginTop - 上边距（mm）
+   * @param {number} marginBottom - 下边距（mm）
+   * @param {number} marginLeft - 左边距（mm）
+   * @returns {Promise<Buffer[]>} 每页图片的 Buffer 数组
+   */
+  async cutStitchedImage(stitchedPath, stitchedWidth, stitchedHeight, pageWidth, pageHeight, marginTop, marginBottom, marginLeft) {
+    const DPI = 150;
+    const mmToPixels = (mm) => Math.round(mm * DPI / 25.4);
+
+    // 页面尺寸（像素）
+    const pageWidthPx = mmToPixels(pageWidth);
+    const pageHeightPx = mmToPixels(pageHeight);
+
+    // 切割高度 = 纸张长度 - 上下边距
+    const contentHeightPx = pageHeightPx - mmToPixels(marginTop) - mmToPixels(marginBottom);
+
+    const pageImages = [];
+
+    // 按固定高度切割
+    const pageCount = Math.ceil(stitchedHeight / contentHeightPx);
+
+    for (let i = 0; i < pageCount; i++) {
+      const top = i * contentHeightPx;
+      const cropHeight = Math.min(contentHeightPx, stitchedHeight - top);
+
+      // 从保存的长图读取并切割
+      const pageImage = await sharp(stitchedPath)
+        .extract({ left: 0, top, width: stitchedWidth, height: cropHeight })
+        .png()
+        .toBuffer();
+
+      // 创建完整页面，内容放置在左边距和上边距位置
+      const leftMarginPx = mmToPixels(marginLeft);
+      const topMarginPx = mmToPixels(marginTop);
+
+      const finalPage = await sharp({
+        create: {
+          width: pageWidthPx,
+          height: pageHeightPx,
+          channels: 4,
+          background: { r: 255, g: 255, b: 255, alpha: 1 }
+        }
+      })
+        .composite([{
+          input: pageImage,
+          left: leftMarginPx,
+          top: topMarginPx
+        }])
+        .png()
+        .toBuffer();
+      pageImages.push(finalPage);
+    }
+
+    logger.info('长图切割完成', { pageCount: pageImages.length });
+    return pageImages;
+  }
+
+  /**
+   * 将切割后的图片生成为 PDF
+   *
+   * @param {Buffer[]} pageImages - 每页图片的 Buffer 数组
+   * @param {number} pageWidth - 页面宽度（mm）
+   * @param {number} pageHeight - 页面高度（mm）
+   * @returns {Promise<string>} 生成的 PDF 文件路径
+   */
+  async createStitchedPdf(pageImages, pageWidth, pageHeight) {
+    // 页面尺寸（点）
+    const PDF_PAGE_WIDTH = this._mmToPoints(pageWidth);
+    const PDF_PAGE_HEIGHT = this._mmToPoints(pageHeight);
+
+    const pdfDoc = await PDFDocument.create();
+
+    for (const pageImage of pageImages) {
+      // 将 PNG 图片嵌入 PDF
+      const pngImage = await pdfDoc.embedPng(pageImage);
+
+      const page = pdfDoc.addPage([PDF_PAGE_WIDTH, PDF_PAGE_HEIGHT]);
+
+      // 图片填满整个页面
+      page.drawImage(pngImage, {
+        x: 0,
+        y: 0,
+        width: PDF_PAGE_WIDTH,
+        height: PDF_PAGE_HEIGHT
+      });
+    }
+
+    // 保存 PDF
+    const pdfBytes = await pdfDoc.save();
+    const filename = `长图_${Date.now()}.pdf`;
+    const outputPath = path.join(CACHE_DIR, filename);
+    fs.writeFileSync(outputPath, pdfBytes);
+
+    logger.info('长图拼接 PDF 生成成功', {
+      outputPages: pageImages.length,
+      output: filename
+    });
+
+    return outputPath;
   }
 }
 

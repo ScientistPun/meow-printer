@@ -133,6 +133,10 @@ app.post('/api/cups/restart', printerController.restartCups);
 
 app.post('/api/files', upload.none(), fileController.createTextFile);
 
+// ==================== 长图拼接相关 ====================
+
+app.post('/api/stitch', fileController.stitchImages);
+
 // ==================== 日志相关 ====================
 
 app.get('/api/logs', logController.getLogs);

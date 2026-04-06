@@ -3,7 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { UPLOAD_DIR, CACHE_DIR, SUPPORTED_FILE_EXTENSIONS } from '../config/config.js';
+import { UPLOAD_DIR, CACHE_DIR, SETTINGS_FILE, SUPPORTED_FILE_EXTENSIONS } from '../config/config.js';
 import { CONTENT_TYPES, getMediaSizeMM } from '../utils/common.js';
 import logger from '../utils/logger.js';
 import pdfService from '../service/pdf.js';
@@ -204,13 +204,139 @@ export async function previewFile(req, res) {
 export async function clearCache(req, res) {
   try {
     const allFiles = await fs.promises.readdir(CACHE_DIR);
-    const pdfFiles = allFiles.filter(f => f.endsWith('.pdf'));
-    await Promise.all(pdfFiles.map(f => fs.promises.unlink(path.join(CACHE_DIR, f))));
-    logger.info('清空缓存文件', { count: pdfFiles.length });
+    await Promise.all(allFiles.map(f => fs.promises.unlink(path.join(CACHE_DIR, f))));
+    logger.info('清空缓存文件', { count: allFiles.length });
     res.json({ success: true, message: `已成功清空缓存文件` });
   } catch (error) {
     logger.error('清空缓存文件失败', { error: error.message });
     res.status(500).json({ error: error.message });
+  }
+}
+
+/**
+ * 长图拼接：缩放→拼接→分页切割→生成 PDF
+ *
+ * @param {Object} req - Express 请求对象
+ * @param {Object} req.body - 请求体参数
+ * @param {string[]} req.body.files - 要拼接的图片文件名数组（按顺序拼接）
+ * @param {string} req.body.paperSize - 纸张尺寸，如 'A4', 'A5', 'A6', 'B5', 'Letter', 'Legal'
+ * @param {number} [req.body.marginTop] - 上边距（mm），不传则使用默认值 20
+ * @param {number} [req.body.marginRight] - 右边距（mm），不传则使用默认值 20
+ * @param {number} [req.body.marginBottom] - 下边距（mm），不传则使用默认值 20
+ * @param {number} [req.body.marginLeft] - 左边距（mm），不传则使用默认值 20
+ *
+ * @param {Object} res - Express 响应对象
+ *
+ * @returns {Object} JSON 响应
+ * @returns {boolean} success - 是否成功
+ * @returns {string} filename - 生成的 PDF 文件名
+ * @returns {string} originalName - 原始文件名
+ * @returns {number} pages - 生成的页数
+ *
+ * 处理流程（由 pdfService 提供）：
+ * 1. 缩放每张图片宽度 = 纸张宽度 - 左右边距（等比缩放）
+ * 2. 垂直拼接所有图片（无白边）
+ * 3. 保存长图到 cache 目录
+ * 4. 按固定高度切割（切割高度 = 纸张长度 - 上下边距）
+ * 5. 每页添加白边（左上角对齐），生成 PDF
+ */
+export async function stitchImages(req, res) {
+  try {
+    // ==================== 数据校验 ====================
+    const { files, paperSize } = req.body;
+    if (!paperSize) {
+      return res.status(400).json({ success: false, error: '缺少纸张尺寸参数' });
+    }
+
+    if (!files || !Array.isArray(files) || files.length < 2) {
+      return res.status(400).json({ success: false, error: '至少需要选择2张图片' });
+    }
+
+    // 读取默认设置
+    let defaultSettings = {};
+    try {
+      const settingsData = fs.readFileSync(SETTINGS_FILE, 'utf-8');
+      defaultSettings = JSON.parse(settingsData);
+    } catch (e) {
+      // 忽略读取失败，使用空对象
+    }
+
+    // 边距：优先使用请求参数，否则使用配置值
+    const marginTop = req.body.marginTop !== undefined ? req.body.marginTop : (defaultSettings.marginTop || 20);
+    const marginRight = req.body.marginRight !== undefined ? req.body.marginRight : (defaultSettings.marginRight || 20);
+    const marginBottom = req.body.marginBottom !== undefined ? req.body.marginBottom : (defaultSettings.marginBottom || 20);
+    const marginLeft = req.body.marginLeft !== undefined ? req.body.marginLeft : (defaultSettings.marginLeft || 20);
+
+    // 验证文件存在
+    const fullPaths = files.map(f => path.join(UPLOAD_DIR, f));
+    for (let i = 0; i < fullPaths.length; i++) {
+      if (!fs.existsSync(fullPaths[i])) {
+        return res.status(400).json({ success: false, error: `文件不存在: ${files[i]}` });
+      }
+    }
+
+    // 纸张尺寸（mm）
+    const PAPER_RATIOS = {
+      'A4': { w: 210, h: 297 },
+      'A5': { w: 148, h: 210 },
+      'A6': { w: 105, h: 148 },
+      'B5': { w: 176, h: 250 },
+      'Letter': { w: 216, h: 279 },
+      'Legal': { w: 216, h: 356 }
+    };
+
+    const paperRatio = PAPER_RATIOS[paperSize];
+
+    // ==================== 调用 pdfService 处理 ====================
+
+    // 内容区域宽度 = 纸张宽度 - 左右边距
+    const contentWidth = paperRatio.w - marginLeft - marginRight;
+
+    logger.info('长图拼接开始', {
+      fileCount: files.length,
+      paperSize,
+      contentWidth,
+      margins: { top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft }
+    });
+
+    // Step 1: 生成长图（缩放→拼接）
+    const { stitchedPath, stitchedWidth, stitchedHeight } = await pdfService.stitchImages(fullPaths, contentWidth);
+
+    // Step 2: 切割长图生成每页图片
+    const pageImages = await pdfService.cutStitchedImage(
+      stitchedPath,
+      stitchedWidth,
+      stitchedHeight,
+      paperRatio.w,
+      paperRatio.h,
+      marginTop,
+      marginBottom,
+      marginLeft
+    );
+
+    // Step 3: 将切割后的图片生成为 PDF
+    const pdfPath = await pdfService.createStitchedPdf(pageImages, paperRatio.w, paperRatio.h);
+
+    // 移动 PDF 到上传目录
+    const outputFilename = `长图_${Date.now()}.pdf`;
+    const outputPath = path.join(UPLOAD_DIR, outputFilename);
+    fs.renameSync(pdfPath, outputPath);
+
+    logger.info('长图拼接 PDF 生成成功', {
+      inputCount: files.length,
+      outputPages: pageImages.length,
+      output: outputFilename
+    });
+
+    res.json({
+      success: true,
+      filename: outputFilename,
+      originalName: outputFilename,
+      pages: pageImages.length
+    });
+  } catch (error) {
+    logger.error('长图拼接失败', { error: error.message, stack: error.stack });
+    res.status(500).json({ success: false, error: '拼接失败: ' + error.message });
   }
 }
 
