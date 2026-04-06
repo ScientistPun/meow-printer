@@ -141,6 +141,19 @@ function createSharedState(API_BASE, showMessage) {
   const stitchMarginRight = Vue.ref(20);
   const stitchMarginBottom = Vue.ref(20);
   const stitchMarginLeft = Vue.ref(20);
+
+  // 生成默认文件名：yyyymmddhhii_长图
+  const getDefaultStitchFilename = () => {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const ii = String(now.getMinutes()).padStart(2, '0');
+    return `${yyyy}${mm}${dd}${hh}${ii}_长图`;
+  };
+
+  const stitchFileName = Vue.ref(getDefaultStitchFilename());
   const availableFonts = Vue.ref([]);
 
   // 设置状态
@@ -789,6 +802,7 @@ function createSharedState(API_BASE, showMessage) {
     stitchMarginRight.value = settings.marginRight || 20;
     stitchMarginBottom.value = settings.marginBottom || 20;
     stitchMarginLeft.value = settings.marginLeft || 20;
+    stitchFileName.value = getDefaultStitchFilename();
     showStitchModal.value = true;
   };
 
@@ -805,6 +819,7 @@ function createSharedState(API_BASE, showMessage) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           files: selectedHistoryFiles.value,
+          fileName: stitchFileName.value,
           paperSize: stitchPaperSize.value,
           marginTop: stitchMarginTop.value,
           marginRight: stitchMarginRight.value,
@@ -1259,6 +1274,7 @@ function createSharedState(API_BASE, showMessage) {
     doStitchImages,
     showStitchModal,
     stitchPaperSize,
+    stitchFileName,
     stitchMarginTop,
     stitchMarginRight,
     stitchMarginBottom,

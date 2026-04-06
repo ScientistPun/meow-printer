@@ -242,7 +242,6 @@ export async function clearCache(req, res) {
  */
 export async function stitchImages(req, res) {
   try {
-    // ==================== 数据校验 ====================
     const { files, paperSize } = req.body;
     if (!paperSize) {
       return res.status(400).json({ success: false, error: '缺少纸张尺寸参数' });
@@ -252,22 +251,19 @@ export async function stitchImages(req, res) {
       return res.status(400).json({ success: false, error: '至少需要选择2张图片' });
     }
 
-    // 读取默认设置
     let defaultSettings = {};
     try {
       const settingsData = fs.readFileSync(SETTINGS_FILE, 'utf-8');
       defaultSettings = JSON.parse(settingsData);
     } catch (e) {
-      // 忽略读取失败，使用空对象
+      // 忽略读取失败
     }
 
-    // 边距：优先使用请求参数，否则使用配置值
     const marginTop = req.body.marginTop !== undefined ? req.body.marginTop : (defaultSettings.marginTop || 20);
     const marginRight = req.body.marginRight !== undefined ? req.body.marginRight : (defaultSettings.marginRight || 20);
     const marginBottom = req.body.marginBottom !== undefined ? req.body.marginBottom : (defaultSettings.marginBottom || 20);
     const marginLeft = req.body.marginLeft !== undefined ? req.body.marginLeft : (defaultSettings.marginLeft || 20);
 
-    // 验证文件存在
     const fullPaths = files.map(f => path.join(UPLOAD_DIR, f));
     for (let i = 0; i < fullPaths.length; i++) {
       if (!fs.existsSync(fullPaths[i])) {
@@ -275,63 +271,36 @@ export async function stitchImages(req, res) {
       }
     }
 
-    // 纸张尺寸（mm）
-    const PAPER_RATIOS = {
-      'A4': { w: 210, h: 297 },
-      'A5': { w: 148, h: 210 },
-      'A6': { w: 105, h: 148 },
-      'B5': { w: 176, h: 250 },
-      'Letter': { w: 216, h: 279 },
-      'Legal': { w: 216, h: 356 }
-    };
-
-    const paperRatio = PAPER_RATIOS[paperSize];
-
-    // ==================== 调用 pdfService 处理 ====================
-
-    // 单位转换：mm → points（PDF 标准单位）
-    const mmToPoints = (mm) => mm * 72 / 25.4;
-
-    // 纸张尺寸（points）
-    const pageWidthPt = mmToPoints(paperRatio.w);
-    const pageHeightPt = mmToPoints(paperRatio.h);
-
-    // 内容区域宽度 = 纸张宽度 - 左右边距（points）
-    const contentWidthPt = pageWidthPt - marginLeft - marginRight;
+    const paperSizeMm = getMediaSizeMM(paperSize);
+    if (!paperSizeMm) {
+      return res.status(400).json({ success: false, error: '不支持的纸张尺寸' });
+    }
 
     logger.info('长图拼接开始', {
       fileCount: files.length,
       paperSize,
-      contentWidth: contentWidthPt,
       margins: { top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft }
     });
 
-    // Step 1: 生成长图（缩放→拼接）
-    const { stitchedPath, stitchedWidth, stitchedHeight } = await pdfService.stitchImages(fullPaths, contentWidthPt);
-
-    // Step 2: 切割长图生成每页图片
-    const pageImages = await pdfService.cutStitchedImage(
-      stitchedPath,
-      stitchedWidth,
-      stitchedHeight,
-      pageWidthPt,
-      pageHeightPt,
+    const { pdfPath, pageCount } = await pdfService.stitchImagesToPdf(
+      fullPaths,
+      paperSizeMm.width,
+      paperSizeMm.height,
       marginTop,
+      marginRight,
       marginBottom,
       marginLeft
     );
 
-    // Step 3: 将切割后的图片生成为 PDF
-    const pdfPath = await pdfService.createStitchedPdf(pageImages, paperRatio.w, paperRatio.h);
-
-    // 移动 PDF 到上传目录
-    const outputFilename = `长图_${Date.now()}.pdf`;
+    // 使用传入的文件名
+    let outputFilename = (req.body.fileName || `长图_${Date.now()}`) + '.pdf';
+    outputFilename = outputFilename.replace(/[\\/:*?"<>|]/g, '_'); // 移除非法的文件系统字符
     const outputPath = path.join(UPLOAD_DIR, outputFilename);
     fs.renameSync(pdfPath, outputPath);
 
     logger.info('长图拼接 PDF 生成成功', {
       inputCount: files.length,
-      outputPages: pageImages.length,
+      outputPages: pageCount,
       output: outputFilename
     });
 
@@ -339,7 +308,7 @@ export async function stitchImages(req, res) {
       success: true,
       filename: outputFilename,
       originalName: outputFilename,
-      pages: pageImages.length
+      pages: pageCount
     });
   } catch (error) {
     logger.error('长图拼接失败', { error: error.message, stack: error.stack });

@@ -1234,6 +1234,10 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
+            <label class="form-label">文件名</label>
+            <input type="text" class="form-control" v-model="stitchFileName" placeholder="yyyymmddhhii_长图">
+          </div>
+          <div class="form-group">
             <label class="form-label">纸张尺寸</label>
             <select class="form-control" v-model="stitchPaperSize">
               <option v-for="size in mediaOptions" :key="size" :value="size">{{ size }}</option>
@@ -1260,9 +1264,6 @@
               </div>
             </div>
           </div>
-          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
-            图片将统一缩放到宽度 1500px，按选择顺序垂直拼接，再根据纸张比例分页生成 PDF
-          </p>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" @click="showStitchModal = false">取消</button>
