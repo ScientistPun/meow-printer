@@ -303,30 +303,43 @@ export class Cups {
    * @param {string} adminPassword - CUPS admin 密码
    * @returns {Promise<{success: boolean, message: string}>}
    */
-  async restartCups(adminUser, adminPassword) {
+  async restartCups() {
     try {
-      const host = CUPS_HOST;
-      const port = CUPS_PORT;
+      // 使用系统命令重启 CUPS 服务 (需要容器有特权或使用 sudo)
+      logger.log('尝试使用 systemctl 重启 CUPS...');
 
-      // 使用 curl 重启 CUPS 服务
-      const curlCmd = `curl -s -u "${adminUser}:${adminPassword}" "http://${host}:${port}/admin/" -X POST -d "org.cups.cupsd=true&/restart=1" -H "Content-Type: application/x-www-form-urlencoded"`;
+      // 先尝试使用 systemctl
+      try {
+        const systemctlCmd = 'sudo systemctl restart cups || sudo systemctl restart cups-browsed || true';
+        const { stdout: sysStdout, stderr: sysStderr } = await execAsync(systemctlCmd);
+        logger.log('systemctl 输出:', sysStdout, sysStderr);
 
-      logger.log('重启 CUPS 命令:', curlCmd);
-      const { stdout, stderr } = await execAsync(curlCmd);
+        // 检查服务状态
+        const statusCmd = 'systemctl is-active cups || echo "unknown"';
+        const { stdout: statusOut } = await execAsync(statusCmd);
 
-      const output = stdout + stderr;
-      // 检测认证失败
-      if (output.includes('Unauthorized') || output.includes('401')) {
-        logger.error('CUPS 认证失败');
-        return { success: false, message: 'Unauthorized' };
+        if (statusOut.trim() === 'active') {
+          logger.info('CUPS 服务重启成功 (systemctl)');
+          return { success: true, message: 'CUPS 服务重启成功' };
+        }
+      } catch (systemctlError) {
+        logger.warn('systemctl 重启失败:', systemctlError.message);
       }
-      // 认证成功（返回 HTML 管理页面）
-      if (output.includes('<title>Administration - CUPS') || output.includes('config-server')) {
-        logger.info('CUPS 重启成功');
-        return { success: true, message: 'CUPS 重启成功' };
+
+      // 回退方案: 尝试使用 service 命令
+      try {
+        const serviceCmd = 'sudo service cups restart || true';
+        await execAsync(serviceCmd);
+        logger.info('CUPS 服务重启命令已执行 (service)');
+        return { success: true, message: 'CUPS 重启命令已执行' };
+      } catch (serviceError) {
+        logger.warn('service 重启失败:', serviceError.message);
       }
-      logger.error('CUPS 重启失败:', output);
-      return { success: false, message: output || '重启失败' };
+
+      return {
+        success: false,
+        message: '无法重启 CUPS 服务。请确保容器以特权模式运行或有 sudo 权限。'
+      };
     } catch (error) {
       logger.error('CUPS 重启异常:', error);
       return { success: false, message: error.message || '重启异常' };

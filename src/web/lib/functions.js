@@ -131,6 +131,7 @@ function createSharedState(API_BASE, showMessage) {
   const historyLoading = Vue.ref(false);
   const selectMode = Vue.ref(false);
   const selectedHistoryFiles = Vue.ref([]);
+  const selectedFilesCollapsed = Vue.ref(false);
 
   // 其他状态
   const clearingCache = Vue.ref(false);
@@ -737,6 +738,13 @@ function createSharedState(API_BASE, showMessage) {
   };
 
   /**
+   * 切换已选文件列表折叠状态
+   */
+  const toggleSelectedFilesCollapse = () => {
+    selectedFilesCollapsed.value = !selectedFilesCollapsed.value;
+  };
+
+  /**
    * 切换历史文件选中状态
    * @param {Object} item - 历史文件项
    */
@@ -1243,6 +1251,7 @@ function createSharedState(API_BASE, showMessage) {
     historyLoading,
     selectMode,
     selectedHistoryFiles,
+    selectedFilesCollapsed,
     clearingCache,
     creatingFile,
     showSettings,
@@ -1269,6 +1278,7 @@ function createSharedState(API_BASE, showMessage) {
     viewHistoryFile,
     reprintFile,
     toggleSelectMode,
+    toggleSelectedFilesCollapse,
     toggleHistoryFileSelection,
     confirmMultiSelect,
     stitchImages,

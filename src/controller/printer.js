@@ -25,12 +25,9 @@ export async function getPrinters(req, res) {
 // 重启 CUPS 服务
 export async function restartCups(req, res) {
   try {
-    const adminUser = CUPS_USER;
-    const adminPassword = CUPS_PWD;
+    logger.info('收到重启 CUPS 请求', { requestId: req.requestId });
 
-    logger.info('收到重启 CUPS 请求', { adminUser, requestId: req.requestId });
-
-    const result = await cupsService.restartCups(adminUser, adminPassword);
+    const result = await cupsService.restartCups();
 
     if (result.success) {
       res.json({ success: true, message: result.message });

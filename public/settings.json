@@ -6,7 +6,7 @@
   "fontSize": 16,
   "marginTop": 35,
   "marginRight": 20,
-  "marginBottom": 15,
+  "marginBottom": 20,
   "marginLeft": 40,
   "gridLines": true,
   "addHeader": true

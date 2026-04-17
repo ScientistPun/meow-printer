@@ -756,6 +756,26 @@
       color: var(--text);
       font-size: 13px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .collapse-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .collapse-btn:hover {
+      background: var(--hover);
+      color: var(--text);
     }
     .multi-select-btn {
       padding: 8px 16px;
@@ -1210,13 +1230,18 @@
     <!-- 多选底部栏 -->
     <div v-if="selectMode && selectedHistoryFiles.length > 0" class="multi-select-bar">
       <div class="multi-select-header">
-        <span class="multi-select-count">已选择 {{ selectedHistoryFiles.length }} 个文件</span>
+        <span class="multi-select-count">
+          <button class="collapse-btn" @click="toggleSelectedFilesCollapse" :title="selectedFilesCollapsed ? '展开' : '折叠'">
+            {{ selectedFilesCollapsed ? '▶' : '▼' }}
+          </button>
+          已选择 {{ selectedHistoryFiles.length }} 个文件
+        </span>
         <div class="multi-select-btn-bar">
           <button class="multi-select-btn" @click="confirmMultiSelect">🖨️ 打印</button>
           <button v-if="selectedHistoryFiles.length >= 2" class="multi-select-btn" style="background: var(--secondary); color: var(--text);" @click="stitchImages">🖼️ 拼接</button>
         </div>
       </div>
-      <div class="multi-select-list">
+      <div v-if="!selectedFilesCollapsed" class="multi-select-list">
         <div v-for="filename in selectedHistoryFiles" :key="filename" class="multi-select-item">
           <span>{{ getFileIcon(filename) }}</span>
           <span>{{ history.find(h => h.name === filename)?.originalName || filename }}</span>
