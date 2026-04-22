@@ -75,10 +75,10 @@ const CUPS_HOST = process.env.CUPS_HOST || '192.168.10.1';
 const CUPS_PORT = process.env.CUPS_PORT || '631';
 
 /** CUPS 管理用户名 */
-const CUPS_USER = process.env.CUPS_USER || 'admin';
+const CUPS_USER = process.env.CUPS_USER || 'print';
 
 /** CUPS 管理密码 */
-const CUPS_PWD = process.env.CUPS_PWD || '123456';
+const CUPS_PWD = process.env.CUPS_PWD || 'print';
 
 /** 是否启用远程 CUPS */
 const USE_REMOTE = CUPS_HOST && CUPS_HOST !== 'localhost';

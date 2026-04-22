@@ -980,7 +980,6 @@
     <!-- 顶部标题 -->
     <div class="header">
       <h1>🐱 Meow Printer</h1>
-      <a href="./old.html" class="header-btn">📱 旧版</a>
     </div>
 
     <!-- 主内容 -->
@@ -993,7 +992,7 @@
           <div class="section-header">
             <div class="section-icon">🖨️</div>
             <div class="section-title">打印机</div>
-            <button class="btn btn-restart-printer" @click="restartCupsAndReload" title="重启 CUPS">🔄 重启</button>
+            <button class="btn btn-restart-printer" @click="reconnectPrinterAndReload" title="重新连接打印机">🔄 重连</button>
           </div>
           <div class="card">
             <div class="form-group">

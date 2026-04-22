@@ -223,23 +223,22 @@ function createSharedState(API_BASE, showMessage) {
   };
 
   /**
-   * 双击打印机选择器时调用：重启 CUPS 并重新加载打印机列表
+   * 双击打印机选择器时调用：重新连接当前选中的打印机
    */
-  const restartCupsAndReload = async () => {
-    if (!confirm('确定要重启 CUPS 服务吗？')) return;
+  const reconnectPrinterAndReload = async () => {
+    if (!confirm('确定要重新连接当前打印机吗？')) return;
     try {
-      const res = await fetch(`${API_BASE}/cups/restart`, {
+      const res = await fetch(`${API_BASE}/printer/reconnect?printer=${encodeURIComponent(options.printer)}`, {
         method: 'POST'
       });
       const data = await res.json();
       if (data.success) {
-        showMessage('CUPS 重启成功，正在重新加载...', 'success');
-        // 等待 CUPS 重启完成
+        showMessage('打印机重新连接成功，正在重新加载...', 'success');
         setTimeout(() => {
           loadPrinters();
-        }, 3000);
+        }, 2000);
       } else {
-        showMessage(`CUPS 重启失败: ${data.error || '未知错误'}`, 'error');
+        showMessage(`重新连接失败: ${data.error || '未知错误'}`, 'error');
       }
     } catch (e) {
       showMessage(`请求失败: ${e.message}`, 'error');
@@ -1265,7 +1264,7 @@ function createSharedState(API_BASE, showMessage) {
     loadPrinters,
     loadPrinterCapabilities,
     onPrinterChange,
-    restartCupsAndReload,
+    reconnectPrinterAndReload,
     loadLogs,
     toggleLog,
     clearLog,

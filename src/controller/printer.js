@@ -22,25 +22,25 @@ export async function getPrinters(req, res) {
   }
 }
 
-// 重启 CUPS 服务
-export async function restartCups(req, res) {
+// 重新连接打印机
+export async function reconnectPrinter(req, res) {
   try {
-    logger.info('收到重启 CUPS 请求', { requestId: req.requestId });
+    const printerName = req.body.printer || req.query.printer;
+    logger.info('收到重新连接打印机请求', { printer: printerName, requestId: req.requestId });
 
-    const result = await cupsService.restartCups();
+    if (!printerName) {
+      return res.status(400).json({ success: false, error: '缺少打印机名称' });
+    }
+
+    const result = await cupsService.reconnectPrinter(printerName);
 
     if (result.success) {
       res.json({ success: true, message: result.message });
     } else {
-      // 检测认证失败
-      if (result.message.includes('Unauthorized') || result.message.includes('HTML')) {
-        res.status(500).json({ success: false, error: 'CUPS 认证失败，请检查配置中的 CUPS_USER 和 CUPS_PWD' });
-      } else {
-        res.status(500).json({ success: false, error: result.message });
-      }
+      res.status(500).json({ success: false, error: result.message });
     }
   } catch (error) {
-    logger.error('重启 CUPS 失败', { error: error.message, requestId: req.requestId });
+    logger.error('重新连接打印机失败', { error: error.message, requestId: req.requestId });
     res.status(500).json({ success: false, error: error.message });
   }
 }
