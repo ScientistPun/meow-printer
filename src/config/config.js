@@ -42,8 +42,8 @@ const UPLOAD_DIR = path.join(PUBLIC_DIR, 'uploads');
 /** 支持的图片类型（用于预览/打印） */
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.tiff', '.bmp'];
 
-/** 支持的文件类型（包含图片和文档） */
-const SUPPORTED_FILE_EXTENSIONS = [...IMAGE_EXTENSIONS, '.pdf', '.doc', '.docx'];
+/** 支持的文件类型 */
+const SUPPORTED_FILE_EXTENSIONS = [...IMAGE_EXTENSIONS, '.pdf'];
 
 /** 最大文件大小（字节），默认 50MB */
 const MAX_FILE_SIZE = 50 * 1024 * 1024;

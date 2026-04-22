@@ -1020,12 +1020,12 @@
             <div class="section-title">文件</div>
           </div>
           <div class="card upload-card" :class="{ 'has-file': files.length > 0 }" @click="triggerFileInput">
-            <input type="file" ref="fileInput" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="display: none;">
+            <input type="file" ref="fileInput" @change="onFileChange" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;">
             <div v-if="files.length === 0" class="upload-content">
               <div class="upload-icon">📄</div>
               <div class="upload-text">
                 <div class="upload-title">点击选择文件</div>
-                <div class="upload-hint">支持 PDF、图片、Word</div>
+                <div class="upload-hint">支持 PDF、图片</div>
               </div>
             </div>
             <div v-else class="file-preview">
