@@ -31,6 +31,22 @@ npm start
 
 ### Docker 部署
 
+使用 docker run 快速启动：
+
+```bash
+docker run -d \
+  --name meow-printer \
+  -p 3000:3000 \
+  -e CUPS_HOST=192.168.10.1 \
+  -e CUPS_PORT=631 \
+  -e CUPS_USER=admin \
+  -e CUPS_PWD=123456 \
+  -e TZ=Asia/Shanghai \
+  scientistpun/meow-printer:latest
+```
+
+或使用 docker-compose：
+
 ```bash
 docker-compose up -d
 ```
@@ -99,8 +115,7 @@ meow-printer/
 本应用为局域网打印机控制服务，部署前需要：
 
 1. **CUPS 服务器** - 局域网内已部署并配置好打印机的 CUPS 服务器
-2. **AirPrint 功能** - CUPS 服务器需启用 AirPrint（Bonjour/mDNS 广播）
-3. **网络互通** - 部署机器与 CUPS 服务器网络相通
+2. **网络互通** - 部署机器与 CUPS 服务器网络相通
 
 ### Docker 部署
 
@@ -118,18 +133,6 @@ docker-compose up -d
 | CUPS_PWD | 123456 | CUPS 密码 |
 | DEV | false | 调试模式 |
 | TZ | Asia/Shanghai | 时区 |
-
-### AirPrint 配置
-
-确保 CUPS 已启用 Bonjour 广播，容器通过网络访问 CUPS:
-
-```yaml
-environment:
-  - CUPS_HOST=192.168.10.1
-  - CUPS_PORT=631
-  - CUPS_USER=admin
-  - CUPS_PWD=123456
-```
 
 ## License
 
