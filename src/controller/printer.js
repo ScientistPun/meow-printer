@@ -130,9 +130,13 @@ export async function printFile(req, res) {
     });
     
     // 生成打印的pdf时已经将页面设计好了
-    const printerOptions = { 
+    const printerOptions = {
       copies: options.copies,
-      scaling: 'fit'
+      scaling: 'fit',
+      media: options.media,
+      mediaWidth: options.mediaWidth,
+      mediaHeight: options.mediaHeight,
+      orientation: options.orientation
     }
 
     const result = await cupsService.printFile(filePath, printer, printerOptions);
