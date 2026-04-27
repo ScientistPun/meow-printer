@@ -1,7 +1,7 @@
 services:
   meow-printer:
     build: .
-    image: scientistpun/meow-printer:2.4.2
+    image: scientistpun/meow-printer:2.4.3
     container_name: meow-printer
     ports:
       - "3000:3000"

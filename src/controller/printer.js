@@ -129,14 +129,13 @@ export async function printFile(req, res) {
       options
     });
     
-    // 生成打印的pdf时已经将页面设计好了
+    // 生成打印的pdf时已经将页面设计好了，不传递orientation避免重复处理
     const printerOptions = {
       copies: options.copies,
       scaling: 'fit',
       media: options.media,
       mediaWidth: options.mediaWidth,
-      mediaHeight: options.mediaHeight,
-      orientation: options.orientation
+      mediaHeight: options.mediaHeight
     }
 
     const result = await cupsService.printFile(filePath, printer, printerOptions);

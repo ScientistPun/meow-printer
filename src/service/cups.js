@@ -54,7 +54,7 @@ export class Cups {
     // 纸张尺寸
     if (options.media) {
       if (options.media === 'Custom' && options.mediaWidth && options.mediaHeight) {
-        // 自定义尺寸时考虑方向
+        // 自定义尺寸时，如果有 orientation 才考虑交换（用于未预先处理 PDF 的情况）
         if (options.orientation === 'landscape') {
           opts.push(`-o media=${options.mediaHeight}x${options.mediaWidth}mm`);
         } else {
@@ -65,7 +65,7 @@ export class Cups {
       }
     }
 
-    // 横向模式
+    // 横向模式 - 仅在明确指定 orientation 时添加（用于未预先处理 PDF 的情况）
     if (options.orientation === 'landscape') {
       opts.push('-o landscape');
     }
@@ -264,6 +264,7 @@ export class Cups {
   async printFile(filePath, printer, options = {}) {
     try {
       // 处理文件方向、尺寸、n-up 等
+      // 注意：如果该 PDF 已经在 printer.js 的 generatePrintPdf 中处理过方向，则不需要再次处理
       if (options.orientation) {
         filePath = await pdfService.processFileForOrientation(filePath, options.orientation, {
           mediaWidth: options.mediaWidth,
