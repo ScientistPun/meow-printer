@@ -197,6 +197,7 @@ function createSharedState(API_BASE, showMessage) {
     customWidth: 100,
     customHeight: 150,
     addPageNumber: false,
+    pageNumberBase: 'print',
   });
 
   // ==================== 打印机相关函数 ====================
@@ -1149,6 +1150,9 @@ function createSharedState(API_BASE, showMessage) {
       }
       if (options.addPageNumber) {
         formData.append('addPageNumber', 'true');
+        if (options.pageSet !== 'all' && options.pageNumberBase === 'file') {
+          formData.append('pageNumberBase', 'file');
+        }
       }
 
       const res = await fetch(`${API_BASE}/print`, {
@@ -1204,6 +1208,9 @@ function createSharedState(API_BASE, showMessage) {
     }
     if (options.addPageNumber) {
       formData.append('addPageNumber', 'true');
+      if (options.pageSet !== 'all' && options.pageNumberBase === 'file') {
+        formData.append('pageNumberBase', 'file');
+      }
     }
 
     try {

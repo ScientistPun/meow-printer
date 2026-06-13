@@ -241,7 +241,8 @@ export async function generatePrintPdf(filePaths, options) {
     const numberedPath = await pdfService.addPageNumbers(filePath, {
       nup: options.nup || 1,
       totalSrcPages: originalTotalPages,
-      totalOutputPages: totalOutputPages
+      totalOutputPages: totalOutputPages,
+      pageNumberBase: options.pageNumberBase || 'print'
     });
     // try { fs.unlinkSync(filePath); } catch (e) {}
     filePath = numberedPath;

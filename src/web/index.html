@@ -343,6 +343,10 @@
     .switch-row:last-child {
       border-bottom: none;
     }
+    .switch-row:has(+ .form-group-sub) {
+      border-bottom: none;
+      padding-bottom: 16px;
+    }
     .switch-label {
       font-size: 13px;
       color: var(--text);
@@ -1124,6 +1128,19 @@
           <div class="switch-row">
             <span class="switch-label">添加页码</span>
             <div class="switch" :class="{ active: options.addPageNumber }" @click="options.addPageNumber = !options.addPageNumber"></div>
+          </div>
+          <div class="form-group form-group-sub" v-if="options.addPageNumber && options.pageSet !== 'all'">
+            <label class="form-label">文件总页码</label>
+            <div class="option-group">
+              <label class="option-chip" :class="{ selected: options.pageNumberBase === 'print' }">
+                <input type="radio" v-model="options.pageNumberBase" value="print">
+                打印总页数
+              </label>
+              <label class="option-chip" :class="{ selected: options.pageNumberBase === 'file' }">
+                <input type="radio" v-model="options.pageNumberBase" value="file">
+                文件总页数
+              </label>
+            </div>
           </div>
         </div>
         </div>

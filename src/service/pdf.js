@@ -766,6 +766,8 @@ export class Pdf {
    * @param {Object} options - 选项
    * @param {number} options.nup - 每版页数
    * @param {number} options.totalSrcPages - 原始总页数
+   * @param {number} options.totalOutputPages - 输出 PDF 总页数（页面范围筛选后）
+   * @param {string} [options.pageNumberBase='print'] - 页码分母基准：'file' 文件总页数，'print' 打印总页数（页面范围）
    * @returns {Promise<string>} 添加页码后的 PDF 文件路径
    */
   async addPageNumbers(filePath, options = {}) {
@@ -773,6 +775,7 @@ export class Pdf {
       const nup = options.nup || 1;
       const totalSrcPages = options.totalSrcPages || 0;
       const totalOutputPages = options.totalOutputPages || 0;
+      const pageNumberBase = options.pageNumberBase === 'file' ? 'file' : 'print';
 
       // 确保输出路径与输入路径不同，避免读写冲突
       const inputFileName = path.basename(filePath);
@@ -791,6 +794,13 @@ export class Pdf {
       const pages = pdfDoc.getPages();
       const actualTotalPages = totalOutputPages > 0 ? totalOutputPages : pages.length;
 
+      // 根据 pageNumberBase 决定页码分母
+      // - 'file': 文件总页数
+      // - 'print': 打印总页数（页面范围筛选后的输出页数）
+      const displayTotal = pageNumberBase === 'file' && totalSrcPages > 0
+        ? totalSrcPages
+        : actualTotalPages;
+
       // 使用 Helvetica 字体
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontSize = 8;
@@ -801,7 +811,7 @@ export class Pdf {
         const { width, height } = page.getSize();
         const outputPageNum = i + 1;
 
-        if (nup > 1 && totalSrcPages > 0) {
+        if (nup > 1 && displayTotal > 0) {
           // n-up 模式：在每个缩小的页面上显示其对应的原页码
           // 计算网格布局
           let cols, rows;
@@ -820,7 +830,7 @@ export class Pdf {
           // 计算这一页上每个单元格的位置和页码
           for (let j = 0; j < nup; j++) {
             const origPageNum = i * nup + j + 1; // 原页面页码（从1开始）
-            if (origPageNum > totalSrcPages) break;
+            if (origPageNum > displayTotal) break;
 
             const col = j % cols;
             const row = Math.floor(j / cols);
@@ -830,7 +840,7 @@ export class Pdf {
             const cellY = margin + (rows - 1 - row) * (cellHeight + gap);
 
             // 页码位置在页面下方，格式 1/n
-            const pageNumText = `${origPageNum}/${totalSrcPages}`;
+            const pageNumText = `${origPageNum}/${displayTotal}`;
             const textWidth = font.widthOfTextAtSize(pageNumText, fontSize);
             const textX = cellX + (cellWidth - textWidth) / 2;
             const textY = cellY - fontSize + 5;
@@ -845,7 +855,7 @@ export class Pdf {
           }
         } else {
           // 普通模式：当前页 / 总页数，格式 1/n
-          const pageText = `${outputPageNum}/${actualTotalPages}`;
+          const pageText = `${outputPageNum}/${displayTotal}`;
           const textWidth = font.widthOfTextAtSize(pageText, fontSize);
           const x = (width - textWidth) / 2;
           const y = bottomMargin;
@@ -861,7 +871,7 @@ export class Pdf {
 
       const numberedPdfBytes = await pdfDoc.save();
       fs.writeFileSync(outPath, numberedPdfBytes);
-      logger.log(`添加页码: ${outPath}, nup=${nup}, 原始总页数=${totalSrcPages}, 输出页数=${actualTotalPages}`);
+      logger.log(`添加页码: ${outPath}, nup=${nup}, 文件总页数=${totalSrcPages}, 输出页数=${actualTotalPages}, 页码基准=${pageNumberBase}`);
 
       // 清理临时文件
       if (sourcePath !== filePath) {
