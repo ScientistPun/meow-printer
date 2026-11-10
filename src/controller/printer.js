@@ -237,12 +237,17 @@ export async function generatePrintPdf(filePaths, options) {
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const totalOutputPages = pdfDoc.getPages().length;
 
+    // 页面范围筛选后，输出序列中每页对应的源页索引（用于"按文件页数"计算当前页）
+    const srcPageIndices = pdfService.getFilteredPageIndices(originalTotalPages, options.pageSet, options.customPages);
+
     // n-up 模式下 totalSrcPages 应该是原始总页数，用于显示 "第 X-Y 页 / 共 Z 页"
     const numberedPath = await pdfService.addPageNumbers(filePath, {
       nup: options.nup || 1,
       totalSrcPages: originalTotalPages,
       totalOutputPages: totalOutputPages,
-      pageNumberBase: options.pageNumberBase || 'print'
+      pageNumberBase: options.pageNumberBase || 'print',
+      currentPageBase: options.currentPageBase || 'print',
+      srcPageIndices
     });
     // try { fs.unlinkSync(filePath); } catch (e) {}
     filePath = numberedPath;

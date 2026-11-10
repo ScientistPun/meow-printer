@@ -198,6 +198,7 @@ function createSharedState(API_BASE, showMessage) {
     customHeight: 150,
     addPageNumber: false,
     pageNumberBase: 'print',
+    currentPageBase: 'print',
   });
 
   // ==================== 打印机相关函数 ====================
@@ -421,6 +422,54 @@ function createSharedState(API_BASE, showMessage) {
       }
     } catch (e) {
       showMessage('删除失败', 'error');
+    }
+  };
+
+  /**
+   * 删除多选中选中的历史文件
+   */
+  const deleteSelectedFiles = async () => {
+    const names = [...selectedHistoryFiles.value];
+    if (names.length === 0) {
+      showMessage('请先选择文件', 'error');
+      return;
+    }
+    if (!confirm(`确定要删除选中的 ${names.length} 个文件吗？此操作不可恢复`)) return;
+
+    const failed = [];
+    let successCount = 0;
+
+    // 分批并发删除（每批 6 个，避免超出浏览器并发连接数限制）
+    const BATCH_SIZE = 6;
+    for (let i = 0; i < names.length; i += BATCH_SIZE) {
+      const batch = names.slice(i, i + BATCH_SIZE);
+      const results = await Promise.allSettled(
+        batch.map(name =>
+          fetch(`${API_BASE}/history/${encodeURIComponent(name)}`, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+              if (!data.success) throw new Error(data.error || '删除失败');
+              return name;
+            })
+        )
+      );
+      results.forEach((result, idx) => {
+        if (result.status === 'fulfilled') {
+          successCount++;
+        } else {
+          failed.push(batch[idx]);
+        }
+      });
+    }
+
+    // 仅保留删除失败的文件选中状态
+    selectedHistoryFiles.value = selectedHistoryFiles.value.filter(name => failed.includes(name));
+    loadHistory();
+
+    if (failed.length === 0) {
+      showMessage(`已删除 ${successCount} 个文件`, 'success');
+    } else {
+      showMessage(`已删除 ${successCount} 个，${failed.length} 个删除失败`, 'error');
     }
   };
 
@@ -1153,6 +1202,9 @@ function createSharedState(API_BASE, showMessage) {
         if (options.pageSet !== 'all' && options.pageNumberBase === 'file') {
           formData.append('pageNumberBase', 'file');
         }
+        if (options.pageSet !== 'all' && options.currentPageBase === 'file') {
+          formData.append('currentPageBase', 'file');
+        }
       }
 
       const res = await fetch(`${API_BASE}/print`, {
@@ -1210,6 +1262,9 @@ function createSharedState(API_BASE, showMessage) {
       formData.append('addPageNumber', 'true');
       if (options.pageSet !== 'all' && options.pageNumberBase === 'file') {
         formData.append('pageNumberBase', 'file');
+      }
+      if (options.pageSet !== 'all' && options.currentPageBase === 'file') {
+        formData.append('currentPageBase', 'file');
       }
     }
 
@@ -1279,6 +1334,7 @@ function createSharedState(API_BASE, showMessage) {
     loadHistory,
     clearHistory,
     deleteHistoryFile,
+    deleteSelectedFiles,
     openCreateFile,
     createTextFile,
     viewHistoryFile,

@@ -601,6 +601,33 @@ export class Pdf {
   }
 
   /**
+   * 根据页面范围选项计算筛选后的源页索引（0-based，按输出顺序）
+   * 与 scalePdf 的页面筛选逻辑保持一致
+   * @param {number} totalPages - 源 PDF 总页数
+   * @param {string} pageSet - 页面范围 ('all', 'odd', 'even', 'custom')
+   * @param {string} customPagesStr - 自定义页数字符串
+   * @returns {number[]} 源页索引数组
+   */
+  getFilteredPageIndices(totalPages, pageSet, customPagesStr) {
+    if (pageSet === PRINT_PAGE_SET.ODD) {
+      // 奇数页（页码 1,3,5,... 对应索引 0,2,4,...）
+      const indices = [];
+      for (let i = 0; i < totalPages; i += 2) indices.push(i);
+      return indices;
+    }
+    if (pageSet === PRINT_PAGE_SET.EVEN) {
+      // 偶数页（页码 2,4,6,... 对应索引 1,3,5,...）
+      const indices = [];
+      for (let i = 1; i < totalPages; i += 2) indices.push(i);
+      return indices;
+    }
+    if (pageSet === PRINT_PAGE_SET.CUSTOM && customPagesStr) {
+      return this._parseCustomPages(customPagesStr, totalPages);
+    }
+    return Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  /**
    * 处理 PDF 缩放、方向、n-up 和页面筛选
    * 通过缩放使内容适应目标纸张，保持内容完整显示
    * @param {string} filePath - PDF 文件路径
@@ -625,18 +652,9 @@ export class Pdf {
     const srcPdf = await PDFDocument.load(fs.readFileSync(filePath));
     let srcPages = srcPdf.getPages();
 
-    // 处理页面范围筛选
-    if (pageSet === PRINT_PAGE_SET.ODD) {
-      // 奇数页（页码 1,3,5,... 对应索引 0,2,4,...）
-      srcPages = srcPages.filter((_, i) => i % 2 === 0);
-    } else if (pageSet === PRINT_PAGE_SET.EVEN) {
-      // 偶数页（页码 2,4,6,... 对应索引 1,3,5,...）
-      srcPages = srcPages.filter((_, i) => i % 2 === 1);
-    } else if (pageSet === PRINT_PAGE_SET.CUSTOM && customPages) {
-      // 自定义页数
-      const indices = this._parseCustomPages(customPages, srcPdf.getPages().length);
-      srcPages = indices.map(i => srcPdf.getPages()[i]);
-    }
+    // 处理页面范围筛选（与 getFilteredPageIndices 逻辑一致）
+    const filteredIndices = this.getFilteredPageIndices(srcPages.length, pageSet, customPages);
+    srcPages = filteredIndices.map(i => srcPdf.getPages()[i]);
 
     // 如果筛选后没有页面，抛出一个明确的错误
     if (srcPages.length === 0) {
@@ -768,6 +786,8 @@ export class Pdf {
    * @param {number} options.totalSrcPages - 原始总页数
    * @param {number} options.totalOutputPages - 输出 PDF 总页数（页面范围筛选后）
    * @param {string} [options.pageNumberBase='print'] - 页码分母基准：'file' 文件总页数，'print' 打印总页数（页面范围）
+   * @param {string} [options.currentPageBase='print'] - 当前页计算基准：'file' 按文件页数（该页在文件中的页码），'print' 按打印页数（该页在打印序列中的序号）
+   * @param {number[]} [options.srcPageIndices] - 页面范围筛选后，输出序列中每页对应的源页索引（0-based，按输出顺序）
    * @returns {Promise<string>} 添加页码后的 PDF 文件路径
    */
   async addPageNumbers(filePath, options = {}) {
@@ -776,6 +796,8 @@ export class Pdf {
       const totalSrcPages = options.totalSrcPages || 0;
       const totalOutputPages = options.totalOutputPages || 0;
       const pageNumberBase = options.pageNumberBase === 'file' ? 'file' : 'print';
+      const currentPageBase = options.currentPageBase === 'file' ? 'file' : 'print';
+      const srcPageIndices = Array.isArray(options.srcPageIndices) ? options.srcPageIndices : null;
 
       // 确保输出路径与输入路径不同，避免读写冲突
       const inputFileName = path.basename(filePath);
@@ -796,10 +818,26 @@ export class Pdf {
 
       // 根据 pageNumberBase 决定页码分母
       // - 'file': 文件总页数
-      // - 'print': 打印总页数（页面范围筛选后的输出页数）
-      const displayTotal = pageNumberBase === 'file' && totalSrcPages > 0
-        ? totalSrcPages
-        : actualTotalPages;
+      // - 'print': 打印总页数（页面范围筛选后实际打印的页数）
+      let displayTotal;
+      if (pageNumberBase === 'file' && totalSrcPages > 0) {
+        displayTotal = totalSrcPages;
+      } else if (nup > 1 && srcPageIndices && srcPageIndices.length > 0) {
+        // n-up 模式下页码标注在每个单元格（页）上，分母与分子同单位，使用实际打印的页数
+        displayTotal = srcPageIndices.length;
+      } else {
+        displayTotal = actualTotalPages;
+      }
+
+      // 计算当前页码（分子）
+      // - 'file': 该输出页对应的源文件页码（按文件页数）
+      // - 'print': 该页在打印序列中的序号（按打印页数）
+      const currentPageOf = (filteredIdx) => {
+        if (currentPageBase === 'file' && srcPageIndices && filteredIdx < srcPageIndices.length) {
+          return srcPageIndices[filteredIdx] + 1;
+        }
+        return filteredIdx + 1;
+      };
 
       // 使用 Helvetica 字体
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -809,7 +847,6 @@ export class Pdf {
       for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
         const { width, height } = page.getSize();
-        const outputPageNum = i + 1;
 
         if (nup > 1 && displayTotal > 0) {
           // n-up 模式：在每个缩小的页面上显示其对应的原页码
@@ -829,8 +866,13 @@ export class Pdf {
 
           // 计算这一页上每个单元格的位置和页码
           for (let j = 0; j < nup; j++) {
-            const origPageNum = i * nup + j + 1; // 原页面页码（从1开始）
-            if (origPageNum > displayTotal) break;
+            const filteredIdx = i * nup + j; // 打印序列中的位置（0-based）
+            // 超出实际打印的页数则停止（末版补齐的空单元格不编号）
+            if (srcPageIndices
+              ? filteredIdx >= srcPageIndices.length
+              : filteredIdx + 1 > displayTotal) {
+              break;
+            }
 
             const col = j % cols;
             const row = Math.floor(j / cols);
@@ -840,7 +882,7 @@ export class Pdf {
             const cellY = margin + (rows - 1 - row) * (cellHeight + gap);
 
             // 页码位置在页面下方，格式 1/n
-            const pageNumText = `${origPageNum}/${displayTotal}`;
+            const pageNumText = `${currentPageOf(filteredIdx)}/${displayTotal}`;
             const textWidth = font.widthOfTextAtSize(pageNumText, fontSize);
             const textX = cellX + (cellWidth - textWidth) / 2;
             const textY = cellY - fontSize + 5;
@@ -855,7 +897,7 @@ export class Pdf {
           }
         } else {
           // 普通模式：当前页 / 总页数，格式 1/n
-          const pageText = `${outputPageNum}/${displayTotal}`;
+          const pageText = `${currentPageOf(i)}/${displayTotal}`;
           const textWidth = font.widthOfTextAtSize(pageText, fontSize);
           const x = (width - textWidth) / 2;
           const y = bottomMargin;
@@ -871,7 +913,7 @@ export class Pdf {
 
       const numberedPdfBytes = await pdfDoc.save();
       fs.writeFileSync(outPath, numberedPdfBytes);
-      logger.log(`添加页码: ${outPath}, nup=${nup}, 文件总页数=${totalSrcPages}, 输出页数=${actualTotalPages}, 页码基准=${pageNumberBase}`);
+      logger.log(`添加页码: ${outPath}, nup=${nup}, 文件总页数=${totalSrcPages}, 输出页数=${actualTotalPages}, 页码基准=${pageNumberBase}, 当前页基准=${currentPageBase}, 打印页数=${srcPageIndices ? srcPageIndices.length : '未知'}`);
 
       // 清理临时文件
       if (sourcePath !== filePath) {
@@ -1009,108 +1051,115 @@ export class Pdf {
         }
       }
 
-      // 创建第一页
-      let currentY = pageHeight - margin.top - fontSize;
-      let page = pdfDoc.addPage([pageWidth, pageHeight]);
+      // ---- 行布局：以「行槽」为统一坐标系 ----
+      // 每个行槽的上、下边各有一条网格线（间距 lineHeight），文字基线按字体
+      // 度量计算，使文字的视觉中心正好落在两条网格线的中间。
+      const mmToPoints = (mm) => mm * 72 / 25.4;
+      const gridColor = rgb(0.8, 0.8, 0.8);
 
-      // 绘制页眉（可选）- No. 和 Date
-      if (addHeader) {
-        const today = new Date().toISOString().split('T')[0];
-        const headerFontSize = fontSize * 0.8;
-        const headerY = pageHeight - margin.top + headerFontSize * 0.3;
+      // pdf-lib: heightAtSize(size) = ascent - descent，
+      // heightAtSize(size, { descender: false }) = ascent。
+      // 两者相减可得「文字视觉中心相对基线」的高度。
+      const fontHeight = font.heightAtSize(fontSize);
+      const fontAscent = font.heightAtSize(fontSize, { descender: false });
+      const centerAboveBaseline = fontAscent - fontHeight / 2;
 
-        // No. 在左侧
-        page.drawText(`No.`, {
-          x: margin.left,
-          y: headerY,
-          size: headerFontSize,
-          font: font,
-          color: rgb(0.8, 0.8, 0.8)
-        });
+      /**
+       * 基线相对行槽上边的下移量
+       * - 网格线模式：行槽中心 - 文字视觉中心 → 居中于两条网格线之间
+       * - 无网格线：沿用原有排版（有页眉时正文距横线 2mm）
+       */
+      const baselineDropFor = (withHeader) => gridLines
+        ? lineHeight / 2 + centerAboveBaseline
+        : fontSize + (withHeader ? mmToPoints(2) : 0);
 
-        // Date 在右侧
-        const dateText = `Date: ${today}`;
-        const dateWidth = font.widthOfTextAtSize(dateText, headerFontSize);
-        page.drawText(dateText, {
-          x: pageWidth - margin.right - dateWidth,
-          y: headerY,
-          size: headerFontSize,
-          font: font,
-          color: rgb(0.8, 0.8, 0.8)
-        });
+      /**
+       * 新建一页：绘制页眉与网格线，并返回该页第一行槽的上边 y
+       * 首页与续页共用，保证每页文字都对齐到网格中间
+       * @param {boolean} withHeader - 是否绘制页眉（沿用原行为，仅首页绘制）
+       */
+      const startPage = (withHeader) => {
+        const newPage = pdfDoc.addPage([pageWidth, pageHeight]);
+        let bodyTop = pageHeight - margin.top;
 
-        // No. 和 Date 下方加一条横线（距底部 2mm）
-        const lineY = headerY - (2 * 72 / 25.4);
-        page.drawLine({
-          start: { x: margin.left, y: lineY },
-          end: { x: pageWidth - margin.right, y: lineY },
-          color: rgb(0.8, 0.8, 0.8),
-          thickness: 0.5
-        });
+        if (withHeader) {
+          const today = new Date().toISOString().split('T')[0];
+          const headerFontSize = fontSize * 0.8;
+          const headerY = pageHeight - margin.top + headerFontSize * 0.3;
 
-        // 标题和正文贴近横线下方（距横线 2mm）
-        currentY = lineY - (fontSize + 2 * 72 / 25.4);
-      }
-
-      // 绘制网格横线（可选）
-      if (gridLines) {
-        const gridColor = rgb(0.8, 0.8, 0.8);
-        let gridY = pageHeight - margin.top;
-
-        // 如果没有页眉，第一行文字距第一条横线 2mm
-        if (!addHeader) {
-          currentY = gridY - lineHeight - (2 * 72 / 25.4);
-        }
-
-        while (gridY > margin.bottom) {
-          page.drawLine({
-            start: { x: margin.left, y: gridY },
-            end: { x: pageWidth - margin.right, y: gridY },
-            color: gridColor,
-            thickness: 0.25
+          // No. 在左侧
+          newPage.drawText(`No.`, {
+            x: margin.left,
+            y: headerY,
+            size: headerFontSize,
+            font: font,
+            color: rgb(0.8, 0.8, 0.8)
           });
-          gridY -= lineHeight;
+
+          // Date 在右侧
+          const dateText = `Date: ${today}`;
+          const dateWidth = font.widthOfTextAtSize(dateText, headerFontSize);
+          newPage.drawText(dateText, {
+            x: pageWidth - margin.right - dateWidth,
+            y: headerY,
+            size: headerFontSize,
+            font: font,
+            color: rgb(0.8, 0.8, 0.8)
+          });
+
+          // 页眉横线：开启网格线时，它同时也是第一条网格线，避免出现双线
+          const lineY = headerY - mmToPoints(2);
+          newPage.drawLine({
+            start: { x: margin.left, y: lineY },
+            end: { x: pageWidth - margin.right, y: lineY },
+            color: gridColor,
+            thickness: 0.5
+          });
+          bodyTop = lineY;
         }
-      }
 
-      // 绘制文本行
-      for (const line of lines) {
-        if (line === '') {
-          currentY -= lineHeight * 0.5; // 空行间距
-          continue;
-        }
-
-        // 检查是否需要新的一页
-        if (currentY < margin.bottom + lineHeight) {
-          page = pdfDoc.addPage([pageWidth, pageHeight]);
-          currentY = pageHeight - margin.top - fontSize;
-
-          // 绘制网格横线（在新页面上）
-          if (gridLines) {
-            const gridColor = rgb(0.85, 0.85, 0.85);
-            let gridY = pageHeight - margin.top;
-
-            while (gridY > margin.bottom) {
-              page.drawLine({
-                start: { x: margin.left, y: gridY },
-                end: { x: pageWidth - margin.right, y: gridY },
-                color: gridColor,
-                thickness: 0.25
-              });
-              gridY -= lineHeight;
-            }
+        if (gridLines) {
+          // 有页眉时 bodyTop 处已画横线，从下一条网格线开始画
+          let gridY = withHeader ? bodyTop - lineHeight : bodyTop;
+          while (gridY >= margin.bottom) {
+            newPage.drawLine({
+              start: { x: margin.left, y: gridY },
+              end: { x: pageWidth - margin.right, y: gridY },
+              color: gridColor,
+              thickness: 0.25
+            });
+            gridY -= lineHeight;
           }
         }
 
-        page.drawText(line, {
-          x: margin.left,
-          y: currentY,
-          size: fontSize,
-          font: font,
-          color: rgb(0, 0, 0)
-        });
+        return {
+          page: newPage,
+          slotTop: bodyTop,
+          baselineDrop: baselineDropFor(withHeader)
+        };
+      };
 
-        currentY -= lineHeight;
+      let current = startPage(addHeader);
+
+      // 绘制文本行
+      for (const line of lines) {
+        // 行槽必须完整落在边距内，保证上下两条网格线都存在
+        if (current.slotTop - lineHeight < margin.bottom) {
+          current = startPage(false);
+        }
+
+        if (line !== '') {
+          current.page.drawText(line, {
+            x: margin.left,
+            y: current.slotTop - current.baselineDrop,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0)
+          });
+        }
+
+        // 网格模式下空行也占满一整行，否则后续文字会脱离格子中心
+        current.slotTop -= (line === '' && !gridLines) ? lineHeight * 0.5 : lineHeight;
       }
 
       // 保存 PDF

@@ -198,7 +198,8 @@ export function buildPrintOptions(body, isPreview = false) {
     scaling: body.scaling,
     noHeaderFooter: body.noHeaderFooter === 'true' || body.noHeaderFooter === true,
     addPageNumber: body.addPageNumber === 'true' || body.addPageNumber === true,
-    pageNumberBase: body.pageNumberBase === 'file' ? 'file' : 'print'
+    pageNumberBase: body.pageNumberBase === 'file' ? 'file' : 'print',
+    currentPageBase: body.currentPageBase === 'file' ? 'file' : 'print'
   };
 }
 
